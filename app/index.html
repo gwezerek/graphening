@@ -20,7 +20,7 @@
     <main>
       <div class="sidebar__filter">
         <h2>Filters</h2>
-        <button class="btn btn__filter">Include reprints</button>
+        <button class="btn btn__filter is-active">Include reprints</button>
         <button class="btn btn__filter">Exclude reprints</button>
         <div class="filter__group">
           <h3>Set</h3>
@@ -66,9 +66,19 @@
       </div>
 
       <article class="viz">
-        <section class="timeline"></section>
-        <section class="scatter"></section>
-        <section class="cards"></section>
+        <section class="timeline">
+          <h2>Set timeline</h2>
+        </section>
+        <section class="scatter">
+          <h2>Card plotter</h2>
+        </section>
+        <section class="cards">
+          <h2>Card viewer</h2>
+          <p>Sort by</p>
+          <button class="btn btn__sort is-active">Rarity</button>
+          <button class="btn btn__sort">Name</button>
+          <button class="btn btn__sort">Release</button>
+        </section>
       </article>
     </main>
 
