@@ -49,19 +49,6 @@ gulp.task('jshint', function () {
     .pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
 });
 
-// Browserify
-gulp.task('browserify', function () {
-  var browserified = $.transform(function(filename) {
-    var b = $.browserify(filename);
-    return b.bundle();
-  });
-
-  return gulp.src(['app/scripts/**/*.js'])
-    .pipe(browserified)
-    .pipe(uglify())
-    .pipe(gulp.dest('dist/scripts'));
-});
-
 // Optimize images
 gulp.task('images', function () {
   return gulp.src('app/images/**/*')

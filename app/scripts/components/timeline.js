@@ -5,4 +5,6 @@
 
   var querySelector = document.querySelector.bind(document);
 
+  console.log('meow');
+
 })();
