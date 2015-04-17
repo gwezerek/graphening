@@ -1,14 +1,104 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/**
+*
+* Cards
+*
+**/
+
 (function () {
-  'use strict';
 
-  var d3 = require('d3');
+	'use strict';
 
-  var querySelector = document.querySelector.bind(document);
+	var d3 = require('d3');
+
+	var querySelector = document.querySelector.bind(document);
+
+	function init( loadedJSON ) {
+		var data = loadedJSON;
+		console.log( querySelector( '#timeline__wrap' ) );
+	}
+
+	module.exports = init;
 
 })();
 
-},{"d3":2}],2:[function(require,module,exports){
+},{"d3":5}],2:[function(require,module,exports){
+/**
+*
+* Filter
+*
+**/
+
+(function () {
+
+	'use strict';
+
+	var d3 = require('d3');
+
+	var querySelector = document.querySelector.bind(document);
+
+	function init( loadedJSON ) {
+		var data = loadedJSON;
+		console.log( querySelector( '#timeline__wrap' ) );
+	}
+
+	module.exports = init;
+
+})();
+
+},{"d3":5}],3:[function(require,module,exports){
+/**
+*
+* Scatter
+*
+**/
+
+(function () {
+
+	'use strict';
+
+	var d3 = require('d3');
+
+	var querySelector = document.querySelector.bind(document);
+
+	function init( loadedJSON ) {
+		var data = loadedJSON;
+		console.log( querySelector( '#timeline__wrap' ) );
+	}
+
+	module.exports = init;
+
+})();
+
+},{"d3":5}],4:[function(require,module,exports){
+/**
+*
+* Init
+*
+**/
+
+
+( function () {
+  'use strict';
+
+  var d3 = require( 'd3' );
+  var scatter = require( './components/scatter' );
+  var timeline = require( './components/scatter' );
+  var cards = require( './components/cards' );
+  var filter = require( './components/filter' );
+
+  var querySelector = document.querySelector.bind( document );
+
+  d3.json( '../data/AllCards.json', function( error, data ) {
+  	scatter( data );
+  	timeline( data );
+  	cards( data );
+		filter( data );
+  });
+
+})();
+
+},{"./components/cards":1,"./components/filter":2,"./components/scatter":3,"d3":5}],5:[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.5"
@@ -9513,4 +9603,4 @@
   if (typeof define === "function" && define.amd) define(d3); else if (typeof module === "object" && module.exports) module.exports = d3;
   this.d3 = d3;
 }();
-},{}]},{},[1]);
+},{}]},{},[4]);

@@ -6,7 +6,7 @@
 
 .sidebar {
 	padding: 20px;
-	background: $colorGrayLight;
+	background: $colorBlueGrey900;
 }
 
 .sidebar__head,
@@ -15,6 +15,16 @@
 	color: white;
 }
 
-.sidebar_head {
-	@include rule--small;
+.sidebar__head {
+	@include rule--large;
+	font-weight: 700;
+}
+
+.filter__head,
+.sidebar__subhead {
+	@include rule--medium;
+}
+
+.filter__label {
+	color: $colorBlueGrey50;
 }

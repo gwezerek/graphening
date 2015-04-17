@@ -13,37 +13,38 @@ h1, h2, h3, h4, h5, p {
 // Definitions
 .small,
 small {
-  @include type--small;
+  @include rule--small;
 }
 
 .base,
 p,
 ul,
 ol {
-  @include type--base;
+  @include rule--base;
 }
 
 .medium,
 h4 {
-  @include type--medium;
+  @include rule--medium;
 }
 
 .large,
 h3 {
-  @include type--large;
+  @include rule--large;
 }
+
 .xlarge,
 h2 {
-  @include type--xlarge;
+  @include rule--xlarge;
 }
 
 .xxlarge,
 h1 {
-  @include type--xxlarge;
+  @include rule--xxlarge;
 }
 
 .huge {
-  @include type--huge;
+  @include rule--huge;
 }
 
 

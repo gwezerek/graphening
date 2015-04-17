@@ -10,24 +10,32 @@
     <link rel="stylesheet" href="styles/main.css">
   </head>
 
-  <body> 
+  <body>
     <main class="main">
       <div class="sidebar">
         <header class="">
           <h1 class="sidebar__head">Magic: The Graphening</h1>
         </header>
-        <div class="filter">
+        <form class="filter">
           <h2 class="sidebar__subhead">Filters</h2>
-          <button class="btn btn__filter is-active">Exclude reprints</button>
-          <button class="btn btn__filter">Include reprints</button>
-          <div class="filter__group">
-            <h3 class="filter__head">Set</h3>
+          <fieldset class="filter__fieldset">
+            <label class="filter__label"><input class="input__radio" type="radio" name="reprints" value="exclude" checked>Exclude reprints</label>
+            <label class="filter__label"><input class="input__radio" type="radio" name="reprints" value="include">Include reprints</label>
+          </fieldset>
+          <fieldset class="filter__fieldset">
+            <legend class="filter__head">Set</legend>
             <select multiple>
               <option value="TK">TK</option>
             </select>
-          </div>
-          <div class="filter__group">
-            <h3 class="filter__head">Color</h3>
+          </fieldset>
+          <fieldset class="filter__fieldset">
+            <legend class="filter__head">Set</legend>
+            <select multiple>
+              <option value="TK">TK</option>
+            </select>
+          </fieldset>
+          <fieldset class="filter__fieldset">
+            <legend class="filter__head">Color</legend>
             <select multiple>
               <option value="R">Red</option>
               <option value="U">Blue</option>
@@ -37,9 +45,9 @@
               <option value="X">Colorless</option>
               <option value="S">Snow</option>
             </select>
-          </div>
-          <div class="filter__group">
-            <h3 class="filter__head">Rarity</h3>
+          </fieldset>
+          <fieldset class="filter__fieldset">
+            <legend class="filter__head">Rarity</legend>
             <select multiple>
               <option value="Common">Common</option>
               <option value="Uncommon">Uncommon</option>
@@ -48,31 +56,32 @@
               <option value="Special">Special</option>
               <option value="Basic Land">Basic Land</option>
             </select>
-          </div>
-          <div class="filter__group">
-            <h3 class="filter__head">Type</h3>
+          </fieldset>
+          <fieldset class="filter__fieldset">
+            <legend class="filter__head">Type</legend>
             <select multiple>
               <option value="TK">TK</option>
             </select>
-          </div>
-          <div class="filter__group">
-            <h3 class="filter__head">Supertype</h3>
+          </fieldset>
+          <fieldset class="filter__fieldset">
+            <legend class="filter__head">Supertype</legend>
             <select multiple>
               <option value="TK">TK</option>
             </select>
-          </div>
-        </div>
+          </fieldset>
+        </form>
       </div>
 
       <article class="stream">
         <section class="timeline">
-          <h2>Set timeline</h2>
+          <h2 class="stream__head">Set timeline</h2>
+          <div class="timeline__wrap" id="timeline__wrap"></div>
         </section>
         <section class="scatter">
-          <h2>Card plotter</h2>
+          <h2 class="stream__head">Card plotter</h2>
         </section>
         <section class="cards">
-          <h2>Card viewer</h2>
+          <h2 class="stream__head">Card viewer</h2>
           <p>Sort by</p>
           <button class="btn btn__sort is-active">Rarity</button>
           <button class="btn btn__sort">Name</button>
@@ -86,7 +95,7 @@
     </footer>
 
     <!-- build:js scripts/main.min.js -->
-    <script src="scripts/bundle.js"></script>
+    <script src="scripts/app.js"></script>
     <!-- endbuild -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
