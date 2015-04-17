@@ -8,23 +8,23 @@ gulp.task('browserify', function(){
 });
 
 function browserifyShare(){
-  // you need to pass these three config option to browserify
-  var b = browserify({
+  var b = watchify( browserify( {
+    entries: ['./app/scripts/init.js'],
     cache: {},
     packageCache: {},
-    fullPaths: true
-  });
-  b = watchify(b);
+    noparse: [ 'd3' ]
+  }));
+
   b.on('update', function(){
+    console.log('update event');
     bundleShare(b);
   });
 
-  b.add('./app/scripts/init.js');
   bundleShare(b);
 }
 
 function bundleShare(b) {
   b.bundle()
-    .pipe(source('app/scripts/init.js'))
-    .pipe(gulp.dest('app/scripts/meow.js'));
+    .pipe( source( 'meow.js' ) )
+    .pipe( gulp.dest('./app/scripts') );
 }
