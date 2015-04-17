@@ -7,6 +7,7 @@
 'use strict';
 
 var d3 = require( 'd3' );
+var _ = require( 'underscore' );
 var utils = require( '../utils' );
 
 var margin = { top: 20, right: 20, bottom: 50, left: 50 };
@@ -38,17 +39,34 @@ var svg = d3.select( '#scatter__wrap' ).append( 'svg' )
 
 svg.append( 'g' )
     .attr( 'class', 'axis axis__x' )
-    .attr( 'transform', 'translate(' + margin.left + ',' + ( height + margin.top ) +')' )
+    .attr( 'transform', 'translate( ' + margin.left + ',' + ( height + margin.top ) +' )' )
     .call( xAxis );
  
 svg.append( 'g' )
     .attr( 'class', 'axis axis__y' )
-    .attr( 'transform', 'translate( ' + margin.left + ',' + margin.top + ')' )
+    .attr( 'transform', 'translate( ' + margin.left + ',' + margin.top + ' )' )
     .call( yAxis );
 
+function updateScatter() {
+
+  // debugger;
+
+  data = _.filter( data, function( card ) {
+      return card.power && card.toughness && card.cmc;
+  });
+
+  svg.selectAll( 'circle' )
+    .data( data )
+  .enter().append( 'circle' )
+    .attr( 'class', 'circle' )
+    .attr( 'cx', function ( d ) { return xScale( d.cmc ); } )
+    .attr( 'cy', function ( d ) { return yScale( d.cmc ); } )
+    .attr( 'r', 5 );
+}
+
 function init( loadedJSON ) {
-	data = loadedJSON;
-	console.log( loadedJSON );
+  data = _.toArray( loadedJSON );
+  updateScatter();
 }
 
 module.exports = init;
