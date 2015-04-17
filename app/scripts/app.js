@@ -97,6 +97,11 @@ var svg = d3.select( '#scatter__wrap' ).append( 'svg' )
     .attr( 'width', width + margin.left + margin.right )
     .attr( 'height', height + margin.top + margin.bottom );
 
+var chart = svg.append( 'g' )
+    .attr( 'width', width )
+    .attr( 'height', height )
+    .attr( 'transform', 'translate( ' + margin.left + ',' + margin.top +' )' );
+
 svg.append( 'g' )
     .attr( 'class', 'axis axis__x' )
     .attr( 'transform', 'translate( ' + margin.left + ',' + ( height + margin.top ) +' )' )
@@ -115,7 +120,7 @@ function updateScatter() {
       return card.power && card.toughness && card.cmc;
   });
 
-  svg.selectAll( 'circle' )
+  chart.selectAll( 'circle' )
     .data( data )
   .enter().append( 'circle' )
     .attr( 'class', 'circle' )
