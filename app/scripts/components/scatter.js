@@ -9,18 +9,45 @@
 var d3 = require( 'd3' );
 var utils = require( '../utils' );
 
-var margin = { top: 20, right: 20, bottom: 30, left: 50 };
+var margin = { top: 20, right: 20, bottom: 50, left: 50 };
 var parentWidth = utils.querySelector( '#scatter__wrap' ).offsetWidth;
 var width = parentWidth - margin.left - margin.right;
 var height = 400 - margin.top - margin.bottom;
+var data = {};
+
+var xScale = d3.scale.linear()
+    .domain([0, 20])
+    .range([0, width]);
+
+var yScale = d3.scale.linear()
+    .domain([0, 20])
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale( xScale )
+    .orient( 'bottom' );
+
+var yAxis = d3.svg.axis()
+    .scale( yScale )
+    .orient( 'left' );
 
 // Create graph
 var svg = d3.select( '#scatter__wrap' ).append( 'svg' )
     .attr( 'width', width + margin.left + margin.right )
     .attr( 'height', height + margin.top + margin.bottom );
 
-var init = function( loadedJSON ) {
-	var data = loadedJSON;
+svg.append( 'g' )
+    .attr( 'class', 'axis axis__x' )
+    .attr( 'transform', 'translate(' + margin.left + ',' + ( height + margin.top ) +')' )
+    .call( xAxis );
+ 
+svg.append( 'g' )
+    .attr( 'class', 'axis axis__y' )
+    .attr( 'transform', 'translate( ' + margin.left + ',' + margin.top + ')' )
+    .call( yAxis );
+
+function init( loadedJSON ) {
+	data = loadedJSON;
 	console.log( loadedJSON );
 }
 
