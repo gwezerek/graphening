@@ -4,19 +4,13 @@
 *
 **/
 
-(function () {
+'use strict';
 
-	'use strict';
+var d3 = require('d3');
+var utils = require( '../utils' );
 
-	var d3 = require('d3');
+function init( loadedJSON ) {
+	var data = loadedJSON;
+}
 
-	var querySelector = document.querySelector.bind(document);
-
-	function init( loadedJSON ) {
-		var data = loadedJSON;
-		console.log( querySelector( '#timeline__wrap' ) );
-	}
-
-	module.exports = init;
-
-})();
+module.exports = init;

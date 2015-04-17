@@ -5,109 +5,101 @@
 *
 **/
 
+'use strict';
 
-( function () {
-  'use strict';
+var d3 = require( 'd3' );
+var utils = require( './utils' );
+var scatter = require( './components/scatter' );
+var timeline = require( './components/scatter' );
+var cards = require( './components/cards' );
+var filter = require( './components/filter' );
 
-  var d3 = require( 'd3' );
-  var scatter = require( './components/scatter' );
-  var timeline = require( './components/scatter' );
-  var cards = require( './components/cards' );
-  var filter = require( './components/filter' );
-
-  var querySelector = document.querySelector.bind( document );
-
-  d3.json( '../data/AllCards.json', function( error, data ) {
-  	scatter( data );
-  	timeline( data );
-  	cards( data );
-		filter( data );
-  });
-
-})();
-
-},{"./components/cards":2,"./components/filter":3,"./components/scatter":4,"d3":5}],2:[function(require,module,exports){
+d3.json( '../data/AllCards.json', function( error, data ) {
+  scatter( data );
+	timeline( data );
+	cards( data );
+	filter( data );
+});
+},{"./components/cards":2,"./components/filter":3,"./components/scatter":4,"./utils":5,"d3":6}],2:[function(require,module,exports){
 /**
 *
 * Cards
 *
 **/
 
-(function () {
+'use strict';
 
-	'use strict';
+var d3 = require('d3');
+var utils = require( '../utils' );
 
-	var d3 = require('d3');
+function init( loadedJSON ) {
+	var data = loadedJSON;
+}
 
-	var querySelector = document.querySelector.bind(document);
-
-	function init( loadedJSON ) {
-		var data = loadedJSON;
-		console.log( querySelector( '#timeline__wrap' ) );
-	}
-
-	module.exports = init;
-
-})();
-
-},{"d3":5}],3:[function(require,module,exports){
+module.exports = init;
+},{"../utils":5,"d3":6}],3:[function(require,module,exports){
 /**
 *
 * Filter
 *
 **/
 
-(function () {
+'use strict';
 
-	'use strict';
+var d3 = require( 'd3' );
+var utils = require( '../utils' );
 
-	var d3 = require('d3');
+function init( loadedJSON ) {
+	var data = loadedJSON;
+}
 
-	var querySelector = document.querySelector.bind(document);
+console.log('test');
 
-	function init( loadedJSON ) {
-		var data = loadedJSON;
-		console.log( querySelector( '#timeline__wrap' ) );
-	}
+module.exports = init;
 
-	module.exports = init;
-
-})();
-
-},{"d3":5}],4:[function(require,module,exports){
+},{"../utils":5,"d3":6}],4:[function(require,module,exports){
 /**
 *
 * Scatter
 *
 **/
 
-(function () {
+'use strict';
 
-	'use strict';
+var d3 = require( 'd3' );
+var utils = require( '../utils' );
 
-	var d3 = require( 'd3' );
+var margin = { top: 20, right: 20, bottom: 30, left: 50 };
+var parentWidth = utils.querySelector( '#scatter__wrap' ).offsetWidth;
+var width = parentWidth - margin.left - margin.right;
+var height = 400 - margin.top - margin.bottom;
 
-	var querySelector = document.querySelector.bind(document);
-	var margin = { top: 20, right: 20, bottom: 30, left: 50 };
-	var parentWidth = querySelector( '#scatter__wrap' ).offsetWidth;
-  var width = parentWidth - margin.left - margin.right;
-  var height = 400 - margin.top - margin.bottom;
+// Create graph
+var svg = d3.select( '#scatter__wrap' ).append( 'svg' )
+    .attr( 'width', width + margin.left + margin.right )
+    .attr( 'height', height + margin.top + margin.bottom );
 
-  // Create graph
-  var svg = d3.select( '#scatter__wrap' ).append( 'svg' )
-      .attr( 'width', width + margin.left + margin.right )
-      .attr( 'height', height + margin.top + margin.bottom );
+var init = function( loadedJSON ) {
+	var data = loadedJSON;
+	console.log( loadedJSON );
+}
 
-	function init( loadedJSON ) {
-		var data = loadedJSON;
-		console.log( parentWidth );
-	}
+module.exports = init;
 
-	module.exports = init;
 
-})();
+},{"../utils":5,"d3":6}],5:[function(require,module,exports){
+/**
+*
+* Utils
+*
+**/
 
-},{"d3":5}],5:[function(require,module,exports){
+'use strict';
+
+var querySelector = document.querySelector.bind(document);
+
+exports.querySelector = querySelector;
+},{}],6:[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.5"
@@ -9612,4 +9604,7 @@
   if (typeof define === "function" && define.amd) define(d3); else if (typeof module === "object" && module.exports) module.exports = d3;
   this.d3 = d3;
 }();
-},{}]},{},[1]);
+},{}]},{},[1])
+
+
+//# sourceMappingURL=app.js.map
