@@ -21,6 +21,8 @@
       .attr( 'width', width + margin.left + margin.right )
       .attr( 'height', height + margin.top + margin.bottom );
 
+  console.log('fress');
+
 	function init( loadedJSON ) {
 		var data = loadedJSON;
 		console.log( parentWidth );

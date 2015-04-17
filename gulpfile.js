@@ -42,7 +42,7 @@ var AUTOPREFIXER_BROWSERS = [
 
 // Lint JavaScript
 gulp.task('jshint', function () {
-  return gulp.src('app/scripts/**/*.js')
+  return gulp.src('app/scripts/components/*.js')
     .pipe(reload({stream: true, once: true}))
     .pipe($.jshint())
     .pipe($.jshint.reporter('jshint-stylish'))
@@ -142,7 +142,7 @@ gulp.task('html', function () {
 gulp.task('clean', del.bind(null, ['.tmp', 'dist/*', '!dist/.git'], {dot: true}));
 
 // Watch files for changes & reload
-gulp.task('serve', ['styles'], function () {
+gulp.task('serve', ['styles', 'browserify', 'jshint'], function () {
   browserSync({
     notify: false,
     // Customize the BrowserSync console logging prefix
@@ -156,7 +156,7 @@ gulp.task('serve', ['styles'], function () {
 
   gulp.watch(['app/**/*.html'], reload);
   gulp.watch(['app/styles/**/*.{scss,css}'], ['styles', reload]);
-  gulp.watch(['app/scripts/**/*.js'], ['jshint']);
+  // gulp.watch(['app/scripts/**/*.js'], ['jshint']);
   gulp.watch(['app/images/**/*'], reload);
 });
 
@@ -190,4 +190,4 @@ gulp.task('pagespeed', function (cb) {
 });
 
 // Load custom tasks from the `tasks` directory
-// try { require('require-dir')('tasks'); } catch (err) { console.error(err); }
+require('require-dir')('./tasks');
