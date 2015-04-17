@@ -29,12 +29,6 @@
             </select>
           </fieldset>
           <fieldset class="filter__fieldset">
-            <legend class="filter__head">Set</legend>
-            <select multiple>
-              <option value="TK">TK</option>
-            </select>
-          </fieldset>
-          <fieldset class="filter__fieldset">
             <legend class="filter__head">Color</legend>
             <select multiple>
               <option value="R">Red</option>
@@ -79,13 +73,16 @@
         </section>
         <section class="scatter">
           <h2 class="stream__head">Card plotter</h2>
+          <div class="scatter__wrap" id="scatter__wrap"></div>
         </section>
         <section class="cards">
           <h2 class="stream__head">Card viewer</h2>
-          <p>Sort by</p>
-          <button class="btn btn__sort is-active">Rarity</button>
-          <button class="btn btn__sort">Name</button>
-          <button class="btn btn__sort">Release</button>
+          <form class="filter">
+            <h4 class="filter__subhead">Sort by</h2>
+            <label class="sort__label"><input class="input__radio" type="radio" name="cards__sort" value="rarity" checked>Rarity</label>
+            <label class="sort__label"><input class="input__radio" type="radio" name="cards__sort" value="name">Name</label>
+            <label class="sort__label"><input class="input__radio" type="radio" name="cards__sort" value="release">Release</label>
+          </form>
         </section>
       </article>
     </main>
