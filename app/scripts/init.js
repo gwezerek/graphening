@@ -23,6 +23,4 @@
 		filter( data );
   });
 
-  console.log('aaa');
-
 })();

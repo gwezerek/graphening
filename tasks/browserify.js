@@ -2,6 +2,9 @@ var gulp = require('gulp');
 var browserify = require('browserify');
 var source = require("vinyl-source-stream");
 var watchify = require('watchify');
+var browserSync = require('browser-sync');
+var reload = browserSync.reload;
+
 
 gulp.task('browserify', function(){
   browserifyShare();
@@ -16,8 +19,8 @@ function browserifyShare(){
   }));
 
   b.on('update', function(){
-    console.log('update event');
     bundleShare(b);
+    reload;
   });
 
   bundleShare(b);
@@ -25,6 +28,7 @@ function browserifyShare(){
 
 function bundleShare(b) {
   b.bundle()
-    .pipe( source( 'meow.js' ) )
-    .pipe( gulp.dest('./app/scripts') );
+    .pipe( source( 'app.js' ) )
+    .pipe( gulp.dest('./app/scripts') )
+    .pipe(reload({stream: true, once: true}));
 }

@@ -1,87 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /**
 *
-* Cards
-*
-**/
-
-(function () {
-
-	'use strict';
-
-	var d3 = require('d3');
-
-	var querySelector = document.querySelector.bind(document);
-
-	function init( loadedJSON ) {
-		var data = loadedJSON;
-		console.log( querySelector( '#timeline__wrap' ) );
-	}
-
-	module.exports = init;
-
-})();
-
-},{"d3":5}],2:[function(require,module,exports){
-/**
-*
-* Filter
-*
-**/
-
-(function () {
-
-	'use strict';
-
-	var d3 = require('d3');
-
-	var querySelector = document.querySelector.bind(document);
-
-	function init( loadedJSON ) {
-		var data = loadedJSON;
-		console.log( querySelector( '#timeline__wrap' ) );
-	}
-
-	module.exports = init;
-
-})();
-
-},{"d3":5}],3:[function(require,module,exports){
-/**
-*
-* Scatter
-*
-**/
-
-(function () {
-
-	'use strict';
-
-	var d3 = require( 'd3' );
-
-	var querySelector = document.querySelector.bind(document);
-	var margin = { top: 20, right: 20, bottom: 30, left: 50 };
-	var parentWidth = querySelector( '#scatter__wrap' ).offsetWidth;
-  var width = parentWidth - margin.left - margin.right;
-  var height = 600 - margin.top - margin.bottom;
-
-  // Create graph
-  var svg = d3.select( '#scatter__wrap' ).append( 'svg' )
-      .attr( 'width', width + margin.left + margin.right )
-      .attr( 'height', height + margin.top + margin.bottom );
-
-	function init( loadedJSON ) {
-		var data = loadedJSON;
-		console.log( parentWidth );
-	}
-
-	module.exports = init;
-
-})();
-
-},{"d3":5}],4:[function(require,module,exports){
-/**
-*
 * Init
 *
 **/
@@ -107,7 +26,88 @@
 
 })();
 
-},{"./components/cards":1,"./components/filter":2,"./components/scatter":3,"d3":5}],5:[function(require,module,exports){
+},{"./components/cards":2,"./components/filter":3,"./components/scatter":4,"d3":5}],2:[function(require,module,exports){
+/**
+*
+* Cards
+*
+**/
+
+(function () {
+
+	'use strict';
+
+	var d3 = require('d3');
+
+	var querySelector = document.querySelector.bind(document);
+
+	function init( loadedJSON ) {
+		var data = loadedJSON;
+		console.log( querySelector( '#timeline__wrap' ) );
+	}
+
+	module.exports = init;
+
+})();
+
+},{"d3":5}],3:[function(require,module,exports){
+/**
+*
+* Filter
+*
+**/
+
+(function () {
+
+	'use strict';
+
+	var d3 = require('d3');
+
+	var querySelector = document.querySelector.bind(document);
+
+	function init( loadedJSON ) {
+		var data = loadedJSON;
+		console.log( querySelector( '#timeline__wrap' ) );
+	}
+
+	module.exports = init;
+
+})();
+
+},{"d3":5}],4:[function(require,module,exports){
+/**
+*
+* Scatter
+*
+**/
+
+(function () {
+
+	'use strict';
+
+	var d3 = require( 'd3' );
+
+	var querySelector = document.querySelector.bind(document);
+	var margin = { top: 20, right: 20, bottom: 30, left: 50 };
+	var parentWidth = querySelector( '#scatter__wrap' ).offsetWidth;
+  var width = parentWidth - margin.left - margin.right;
+  var height = 400 - margin.top - margin.bottom;
+
+  // Create graph
+  var svg = d3.select( '#scatter__wrap' ).append( 'svg' )
+      .attr( 'width', width + margin.left + margin.right )
+      .attr( 'height', height + margin.top + margin.bottom );
+
+	function init( loadedJSON ) {
+		var data = loadedJSON;
+		console.log( parentWidth );
+	}
+
+	module.exports = init;
+
+})();
+
+},{"d3":5}],5:[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.5"
@@ -9612,4 +9612,4 @@
   if (typeof define === "function" && define.amd) define(d3); else if (typeof module === "object" && module.exports) module.exports = d3;
   this.d3 = d3;
 }();
-},{}]},{},[4]);
+},{}]},{},[1]);
