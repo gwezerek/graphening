@@ -10,19 +10,27 @@ var d3 = require( 'd3' );
 var _ = require( 'underscore' );
 var utils = require( '../utils' );
 
-var margin = { top: 20, right: 20, bottom: 50, left: 50 };
+var margin = { top: 20, right: 70, bottom: 50, left: 50 };
 var parentWidth = utils.querySelector( '#scatter__wrap' ).offsetWidth;
 var width = parentWidth - margin.left - margin.right;
-var height = 400 - margin.top - margin.bottom;
+var height = 500 - margin.top - margin.bottom;
 var data = {};
 
 var xScale = d3.scale.linear()
-    .domain([0, 20])
+    .domain([-2, 18])
     .range([0, width]);
 
 var yScale = d3.scale.linear()
-    .domain([0, 20])
+    .domain([-2, 18])
     .range([height, 0]);
+
+var rScale = d3.scale.linear()
+    .domain( [ 0, 1400 ] )
+    .range( [ 1.5, 10 ] );
+
+var colorScale = d3.scale.linear()
+    .domain( [ 0, 1400 ] )
+    .range( [ utils.blueMap[ '700' ], 'white' ] );
 
 var xAxis = d3.svg.axis()
     .scale( xScale )
@@ -37,36 +45,64 @@ var svg = d3.select( '#scatter__wrap' ).append( 'svg' )
     .attr( 'width', width + margin.left + margin.right )
     .attr( 'height', height + margin.top + margin.bottom );
 
-var chart = svg.append( 'g' )
-    .attr( 'width', width )
-    .attr( 'height', height )
-    .attr( 'transform', 'translate( ' + margin.left + ',' + margin.top +' )' );
-
 svg.append( 'g' )
     .attr( 'class', 'axis axis__x' )
     .attr( 'transform', 'translate( ' + margin.left + ',' + ( height + margin.top ) +' )' )
     .call( xAxis );
- 
+
 svg.append( 'g' )
     .attr( 'class', 'axis axis__y' )
     .attr( 'transform', 'translate( ' + margin.left + ',' + margin.top + ' )' )
     .call( yAxis );
 
+var chart = svg.append( 'g' )
+    .attr( 'width', width )
+    .attr( 'height', height )
+    .attr( 'transform', 'translate( ' + margin.left + ',' + margin.top +' )' );
+
 function updateScatter() {
 
-  // debugger;
+  data = getComboData();
 
-  data = _.filter( data, function( card ) {
-      return card.power && card.toughness && card.cmc;
-  });
+  // console.log(data);
+
+  // data = _.filter( data, function( card ) {
+  //     return _.isNumber( +card.power ) && _.isNumber( +card.toughness ) && card.cmc;
+  // });
 
   chart.selectAll( 'circle' )
     .data( data )
   .enter().append( 'circle' )
     .attr( 'class', 'circle' )
-    .attr( 'cx', function ( d ) { return xScale( d.cmc ); } )
-    .attr( 'cy', function ( d ) { return yScale( d.cmc ); } )
-    .attr( 'r', 5 );
+    .attr( 'cx', function ( d ) { return xScale( +d.a ); } )
+    .attr( 'cy', function ( d ) { return yScale( +d.b ); } )
+    .style( 'fill', function ( d ) { return colorScale( d.count ); })
+    // .attr( 'r', 5 );
+    .attr( 'r', function ( d ) { return rScale( d.count ); } );
+}
+
+function getComboData() {
+
+  var groupedData = [];
+
+  _.each( data, function( card ) {
+    var groupAB = _.findWhere( groupedData, { a: card.power, b: card.toughness } );
+
+    if ( groupAB ) {
+      groupAB.cards.push( card );
+      groupAB.count += 1;
+    } else {
+      groupedData.push({
+        a: card.power,
+        b: card.toughness,
+        count: 0,
+        cards: [ card ]
+      });
+    }
+  });
+
+  return groupedData;
+
 }
 
 function init( loadedJSON ) {

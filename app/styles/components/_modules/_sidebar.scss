@@ -13,6 +13,7 @@
 .sidebar__subhead,
 .filter__head {
 	color: white;
+	font-weight: 700;
 }
 
 .sidebar__head {
@@ -20,9 +21,9 @@
 	font-weight: 700;
 }
 
-.filter__head,
 .sidebar__subhead {
-	@include rule--medium;
+	font-size: $fontMedium;
+	padding-top: 4.0000em;
 }
 
 .filter__label {

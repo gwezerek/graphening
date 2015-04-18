@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Magic: The Graphening</title>
     <!-- Page styles -->
+    <link href="styles/selectize.default.css" rel="stylesheet" />
     <link rel="stylesheet" href="styles/main.css">
   </head>
 
@@ -14,7 +15,7 @@
     <main class="main">
       <div class="sidebar">
         <header class="">
-          <h1 class="sidebar__head">Magic: The Graphening</h1>
+          <h1 class="sidebar__head">Magic: The&nbsp;Graphening</h1>
         </header>
         <form class="filter">
           <h2 class="sidebar__subhead">Filters</h2>
@@ -24,13 +25,13 @@
           </fieldset>
           <fieldset class="filter__fieldset">
             <legend class="filter__head">Set</legend>
-            <select multiple>
+            <select class="filter__select--multi" multiple="multiple">
               <option value="TK">TK</option>
             </select>
           </fieldset>
           <fieldset class="filter__fieldset">
             <legend class="filter__head">Color</legend>
-            <select multiple>
+            <select class="filter__select--multi" multiple="multiple">
               <option value="R">Red</option>
               <option value="U">Blue</option>
               <option value="W">White</option>
@@ -42,7 +43,7 @@
           </fieldset>
           <fieldset class="filter__fieldset">
             <legend class="filter__head">Rarity</legend>
-            <select multiple>
+            <select class="filter__select--multi" multiple="multiple">
               <option value="Common">Common</option>
               <option value="Uncommon">Uncommon</option>
               <option value="Rare">Rare</option>
@@ -53,13 +54,13 @@
           </fieldset>
           <fieldset class="filter__fieldset">
             <legend class="filter__head">Type</legend>
-            <select multiple>
+            <select class="filter__select--multi" multiple="multiple">
               <option value="TK">TK</option>
             </select>
           </fieldset>
           <fieldset class="filter__fieldset">
             <legend class="filter__head">Supertype</legend>
-            <select multiple>
+            <select class="filter__select--multi" multiple="multiple">
               <option value="TK">TK</option>
             </select>
           </fieldset>
@@ -86,10 +87,6 @@
         </section>
       </article>
     </main>
-
-    <footer>
-      <p>Footer TK</p>
-    </footer>
 
     <!-- build:js scripts/main.min.js -->
     <script src="scripts/app.js"></script>

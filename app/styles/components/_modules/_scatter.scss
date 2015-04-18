@@ -7,15 +7,12 @@
 .axis path,
 .axis line {
     fill: none;
-    stroke: #eee;
+    stroke: $colorBlueGrey300;
     shape-rendering: crispEdges;
 }
- 
+
 .axis text {
     font-family: sans-serif;
     font-size: 11px;
-}
- 
-.circle {
-    fill: #222;
+    fill: $colorBlueGrey300;
 }
