@@ -14,15 +14,10 @@
   <body>
     <main class="main">
       <div class="sidebar">
-        <header class="">
+        <header class="sidebar__header">
           <h1 class="sidebar__head">Magic: The Graphening</h1>
         </header>
         <form class="filter">
-          <h2 class="sidebar__subhead">Filters</h2>
-          <fieldset class="filter__fieldset">
-            <label class="filter__label"><input class="input__radio" type="radio" name="reprints" value="exclude" checked>Exclude reprints</label>
-            <label class="filter__label"><input class="input__radio" type="radio" name="reprints" value="include">Include reprints</label>
-          </fieldset>
           <fieldset class="filter__fieldset">
             <legend class="filter__head">Set</legend>
             <select class="filter__select--multi" multiple="multiple">
@@ -64,26 +59,53 @@
               <option value="TK">TK</option>
             </select>
           </fieldset>
+          <fieldset class="filter__fieldset">
+            <label class="filter__label"><input class="input__radio" type="radio" name="reprints" value="exclude" checked>Exclude reprints</label>
+            <label class="filter__label"><input class="input__radio" type="radio" name="reprints" value="include">Include reprints</label>
+          </fieldset>
         </form>
       </div>
 
       <article class="stream">
-        <section class="timeline">
-          <h2 class="stream__head">Set timeline</h2>
-          <div class="timeline__wrap" id="timeline__wrap"></div>
+        <section class="cards">
+          <h2 class="stream__head">128 cards selected</h2>
+<!--           <form class="filter">
+            <h4 class="filter__subhead">Sort by</h2>
+            <label class="sort__label"><input class="input__radio" type="radio" name="cards__sort" value="rarity" checked>Rarity</label>
+            <label class="sort__label"><input class="input__radio" type="radio" name="cards__sort" value="name">Name</label>
+            <label class="sort__label"><input class="input__radio" type="radio" name="cards__sort" value="release">Release</label>
+          </form> -->
+          <div class="grid__cards">
+            <a href="" class="card__link">
+              <img class="" src="/images/dummy/card--blue-0.png" width="223" height="311">
+            </a>
+            <a href="" class="card__link">
+              <img class="" src="/images/dummy/card--blue-1.png" width="223" height="311">
+            </a>
+            <a href="" class="card__link">
+              <img class="" src="/images/dummy/card--blue-2.png" width="223" height="311">
+            </a>
+            <a href="" class="card__link">
+              <img class="" src="/images/dummy/card--blue-3.png" width="223" height="311">
+            </a>
+            <a href="" class="card__link">
+              <img class="" src="/images/dummy/card--blue-4.png" width="223" height="311">
+            </a>
+            <a href="" class="card__link">
+              <img class="" src="/images/dummy/card--blue-5.png" width="223" height="311">
+            </a>
+            <a href="" class="card__link">
+              <img class="" src="/images/dummy/card--blue-0.png" width="223" height="311">
+            </a>
+          </div>
         </section>
         <section class="scatter">
           <h2 class="stream__head">Card plotter</h2>
           <div class="scatter__wrap" id="scatter__wrap"></div>
         </section>
-        <section class="cards">
-          <h2 class="stream__head">Card viewer</h2>
-          <form class="filter">
-            <h4 class="filter__subhead">Sort by</h2>
-            <label class="sort__label"><input class="input__radio" type="radio" name="cards__sort" value="rarity" checked>Rarity</label>
-            <label class="sort__label"><input class="input__radio" type="radio" name="cards__sort" value="name">Name</label>
-            <label class="sort__label"><input class="input__radio" type="radio" name="cards__sort" value="release">Release</label>
-          </form>
+        <section class="timeline">
+          <h2 class="stream__head">Set timeline</h2>
+          <div class="timeline__wrap" id="timeline__wrap"></div>
         </section>
       </article>
     </main>

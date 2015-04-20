@@ -9,6 +9,10 @@
 	background: $colorBlueGrey900;
 }
 
+.sidebar__header {
+	margin-bottom: 4.0000em;
+}
+
 .sidebar__head,
 .sidebar__subhead,
 .filter__head {
@@ -23,7 +27,6 @@
 
 .sidebar__subhead {
 	font-size: $fontMedium;
-	padding-top: 4.0000em;
 }
 
 .filter__label {
