@@ -1,0 +1,45 @@
+/**
+*
+* Colors
+*
+**/
+
+// .axis path,
+// .axis line {
+//     fill: none;
+//     stroke: $colorBlueGrey300;
+//     shape-rendering: crispEdges;
+// }
+
+// .axis text {
+//     font-family: sans-serif;
+//     font-size: 11px;
+//     fill: $colorBlueGrey300;
+// }
+
+.colors {
+	display:flex;
+  flex-direction: row;
+}
+
+.color__column {
+	flex-grow: 1;
+	flex-basis: 0;
+}
+
+.color__column__header {
+	text-align: center;
+}
+
+.color__icon {
+
+}
+
+.color__head {
+	color: $colorWhite;
+}
+
+.color__subhead {
+	padding-top: 1em;
+}
+
