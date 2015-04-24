@@ -29,6 +29,8 @@
 
 .color__column__header {
 	text-align: center;
+	padding-bottom: 1em;
+	border-bottom: 1px solid $colorBlueGrey200;
 }
 
 .color__icon {
@@ -40,6 +42,7 @@
 }
 
 .color__subhead {
-	padding-top: 1em;
+	padding-top: 0em;
+	color: $colorWhite;
 }
 
