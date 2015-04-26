@@ -16,8 +16,8 @@ var filterUIEnhancer = require( './components/filter-UI-enhancer' );
 
 filterUIEnhancer();
 
-d3.json( '../data/AllCards.json', function( error, data ) {
-  // colors( data );
+d3.json( '../data/AllSets.json', function( error, data ) {
+  colors( data );
 	// timeline( data );
 	cards( data );
 	filter( data );

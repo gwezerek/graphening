@@ -17,11 +17,11 @@ var height = 100 - margin.top - margin.bottom;
 var data = {};
 
 var xScale = d3.scale.ordinal()
-    .domain( [-2, 18] )
+    .domain( d3.range(0, 10) )
     .rangeRoundBands( [ 0, width ], 0.25 );
 
 var yScale = d3.scale.linear()
-    .domain([-2, 18])
+    .domain([0, 65])
     .range([height, 0]);
 
 var xAxis = d3.svg.axis()
@@ -54,56 +54,81 @@ var xAxisPath = xAxis.selectAll( 'path' )
     .attr('class', 'axis__x__path');
 
 
+function updateViz() {
 
-// function updateViz() {
+  data = getDragons().cards;
 
-//   data = getComboData();
+  var cmc = d3.nest()
+		  .key( function( d ) { return d.cmc; } )
+		  .rollup( function( d ) {
+				  return d.length;
+		  }).entries( data );
 
-//   // console.log(data);
+  console.log(cmc);
 
-//   // data = _.filter( data, function( card ) {
-//   //     return _.isNumber( +card.power ) && _.isNumber( +card.toughness ) && card.cmc;
-//   // });
+  var bars = chart.selectAll('rect')
+    .data( cmc );
 
-//   chart.selectAll( 'circle' )
-//     .data( data )
-//   .enter().append( 'circle' )
-//     .attr( 'class', 'circle' )
-//     .attr( 'cx', function ( d ) { return xScale( +d.a ); } )
-//     .attr( 'cy', function ( d ) { return yScale( +d.b ); } )
-//     .style( 'fill', function ( d ) { return colorScale( d.count ); })
-//     // .attr( 'r', 5 );
-//     .attr( 'r', function ( d ) { return rScale( d.count ); } );
-// }
+  bars.enter().append( 'rect' );
 
-// function getComboData() {
+  console.log(xScale.rangeBand());
 
-//   var groupedData = [];
+  bars.transition()
+      .attr({
+        height: function( d ) { return height - yScale( d.values ); },
+        width: xScale.rangeBand(),
+        x: function( d ) { return xScale( +d.key ); },
+        y: function( d ) { return yScale( d.values ); },
+        class: 'bar__rect'
+      });
 
-//   _.each( data, function( card ) {
-//     var groupAB = _.findWhere( groupedData, { a: card.power, b: card.toughness } );
+  // data = _.filter( data, function( card ) {
+  //     return _.isNumber( +card.power ) && _.isNumber( +card.toughness ) && card.cmc;
+  // });
 
-//     if ( groupAB ) {
-//       groupAB.cards.push( card );
-//       groupAB.count += 1;
-//     } else {
-//       groupedData.push({
-//         a: card.power,
-//         b: card.toughness,
-//         count: 0,
-//         cards: [ card ]
-//       });
-//     }
-//   });
+  // chart.selectAll( 'circle' )
+  //   .data( data )
+  // .enter().append( 'circle' )
+  //   .attr( 'class', 'circle' )
+  //   .attr( 'cx', function ( d ) { return xScale( +d.a ); } )
+  //   .attr( 'cy', function ( d ) { return yScale( +d.b ); } )
+  //   .style( 'fill', function ( d ) { return colorScale( d.count ); })
+  //   // .attr( 'r', 5 );
+  //   .attr( 'r', function ( d ) { return rScale( d.count ); } );
+}
 
-//   return groupedData;
+function getComboData() {
 
-// }
+  // var groupedData = [];
 
-// function init( loadedJSON ) {
-//   data = _.toArray( loadedJSON );
-//   updateViz();
-// }
+  // _.each( data, function( card ) {
+  //   var groupAB = _.findWhere( groupedData, { a: card.power, b: card.toughness } );
 
-// module.exports = init;
+  //   if ( groupAB ) {
+  //     groupAB.cards.push( card );
+  //     groupAB.count += 1;
+  //   } else {
+  //     groupedData.push({
+  //       a: card.power,
+  //       b: card.toughness,
+  //       count: 0,
+  //       cards: [ card ]
+  //     });
+  //   }
+  // });
+
+  return groupedData;
+
+}
+
+function getDragons() {
+	return _.findWhere( data, { name: "Dragons of Tarkir" } );
+}
+
+function init( loadedJSON ) {
+  data = _.toArray( loadedJSON );
+  updateViz();
+}
+
+module.exports = init;
 
