@@ -8,7 +8,7 @@
 
 var d3 = require( 'd3' );
 var utils = require( './utils' );
-// var colors = require( './components/colors' );
+var colors = require( './components/colors' );
 // var timeline = require( './components/colors' );
 var cards = require( './components/cards' );
 var filter = require( './components/filter' );

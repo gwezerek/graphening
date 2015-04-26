@@ -6,59 +6,54 @@
 
 'use strict';
 
-// var d3 = require( 'd3' );
-// var _ = require( 'underscore' );
-// var utils = require( '../utils' );
+var d3 = require( 'd3' );
+var _ = require( 'underscore' );
+var utils = require( '../utils' );
 
-// var margin = { top: 20, right: 70, bottom: 50, left: 50 };
-// var parentWidth = utils.querySelector( '#colors__wrap' ).offsetWidth;
-// var width = parentWidth - margin.left - margin.right;
-// var height = 500 - margin.top - margin.bottom;
-// var data = {};
+var margin = { top: 20, right: 0, bottom: 20, left: 0 };
+var parentEl = utils.querySelector( '#color__column--white' );
+var width = parentEl.offsetWidth - margin.left - margin.right;
+var height = 100 - margin.top - margin.bottom;
+var data = {};
 
-// var xScale = d3.scale.linear()
-//     .domain([-2, 18])
-//     .range([0, width]);
+var xScale = d3.scale.ordinal()
+    .domain( [-2, 18] )
+    .rangeRoundBands( [ 0, width ], 0.25 );
 
-// var yScale = d3.scale.linear()
-//     .domain([-2, 18])
-//     .range([height, 0]);
+var yScale = d3.scale.linear()
+    .domain([-2, 18])
+    .range([height, 0]);
 
-// var rScale = d3.scale.linear()
-//     .domain( [ 0, 1400 ] )
-//     .range( [ 1.5, 10 ] );
-
-// var colorScale = d3.scale.linear()
-//     .domain( [ 0, 1400 ] )
-//     .range( [ utils.blueMap[ '700' ], 'white' ] );
-
-// var xAxis = d3.svg.axis()
-//     .scale( xScale )
-//     .orient( 'bottom' );
+var xAxis = d3.svg.axis()
+    .scale( xScale )
+    .orient( 'bottom' );
 
 // var yAxis = d3.svg.axis()
 //     .scale( yScale )
 //     .orient( 'left' );
 
 // // Create graph
-// var svg = d3.select( '#scatter__wrap' ).append( 'svg' )
-//     .attr( 'width', width + margin.left + margin.right )
-//     .attr( 'height', height + margin.top + margin.bottom );
+var svg = d3.select( '#color__column--white' ).append( 'svg' )
+    .attr( 'width', width + margin.left + margin.right )
+    .attr( 'height', height + margin.top + margin.bottom );
 
-// svg.append( 'g' )
-//     .attr( 'class', 'axis axis__x' )
-//     .attr( 'transform', 'translate( ' + margin.left + ',' + ( height + margin.top ) +' )' )
-//     .call( xAxis );
+var chart = svg.append( 'g' )
+    .attr( 'width', width )
+    .attr( 'height', height )
+    .attr( 'transform', 'translate( ' + margin.left + ',' + margin.top +' )' );
 
-// svg.append( 'g' )
-//     .attr( 'class', 'axis axis__y' )
-//     .attr( 'transform', 'translate( ' + margin.left + ',' + margin.top + ' )' )
-//     .call( yAxis );
+var xAxis = svg.append( 'g' )
+    .attr( 'class', 'axis axis__x' )
+    .attr( 'transform', 'translate( 0,' + ( height + margin.top ) +' )' )
+    .call( xAxis );
 
-// var chart = svg.append( 'g' )
-//     .attr( 'width', width )
-//     .attr( 'height', height )
-//     .attr( 'transform', 'translate( ' + margin.left + ',' + margin.top +' )' );
+var xAxisLabels = xAxis.selectAll( 'text' )
+    .attr('class', 'axis__x__label');
+
+var xAxisPath = xAxis.selectAll( 'path' )
+    .attr('class', 'axis__x__path');
+
+
 
 // function updateViz() {
 

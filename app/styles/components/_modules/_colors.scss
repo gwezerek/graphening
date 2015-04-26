@@ -29,20 +29,32 @@
 
 .color__column__header {
 	text-align: center;
-	padding-bottom: 1em;
+	padding-bottom: $baseSpace / 2;
 	border-bottom: 1px solid $colorBlueGrey200;
 }
 
 .color__icon {
-
+	margin-bottom: $baseSpace / 2;
 }
 
 .color__head {
 	color: $colorWhite;
+	font-size: $fontMedium;
 }
 
 .color__subhead {
 	padding-top: 0em;
 	color: $colorWhite;
+	font-size: $fontBase;
+}
+
+.axis__x__label {
+	fill: $colorWhite;;
+}
+
+.axis__x__path {
+	fill: none;
+	stroke-width: 1px;
+	stroke: $colorWhite;;
 }
 

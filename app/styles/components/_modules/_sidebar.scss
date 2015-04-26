@@ -21,7 +21,7 @@
 }
 
 .sidebar__head {
-	@include rule--large;
+	font-size: $fontLarge;
 	font-weight: 700;
 }
 
