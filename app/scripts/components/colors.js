@@ -28,10 +28,6 @@ var xAxis = d3.svg.axis()
     .scale( xScale )
     .orient( 'bottom' );
 
-// var yAxis = d3.svg.axis()
-//     .scale( yScale )
-//     .orient( 'left' );
-
 // // Create graph
 var svg = d3.select( '#color__column--white' ).append( 'svg' )
     .attr( 'width', width + margin.left + margin.right )

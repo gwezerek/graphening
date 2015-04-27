@@ -25,18 +25,6 @@
             </select>
           </fieldset>
           <fieldset class="filter__fieldset">
-            <legend class="filter__head">Color</legend>
-            <select class="filter__select--multi" multiple="multiple">
-              <option value="R">Red</option>
-              <option value="U">Blue</option>
-              <option value="W">White</option>
-              <option value="B">Black</option>
-              <option value="G">Green</option>
-              <option value="X">Colorless</option>
-              <option value="S">Snow</option>
-            </select>
-          </fieldset>
-          <fieldset class="filter__fieldset">
             <legend class="filter__head">Rarity</legend>
             <select class="filter__select--multi" multiple="multiple">
               <option value="Common">Common</option>
@@ -67,14 +55,14 @@
       </div>
 
       <article class="stream">
-        <section class="cards">
+<!--         <section class="cards">
           <h2 class="stream__head">128 cards selected</h2>
-<!--           <form class="filter">
+          <form class="filter">
             <h4 class="filter__subhead">Sort by</h2>
             <label class="sort__label"><input class="input__radio" type="radio" name="cards__sort" value="rarity" checked>Rarity</label>
             <label class="sort__label"><input class="input__radio" type="radio" name="cards__sort" value="name">Name</label>
             <label class="sort__label"><input class="input__radio" type="radio" name="cards__sort" value="release">Release</label>
-          </form> -->
+          </form>
           <div class="grid__cards">
             <a href="" class="card__link">
               <img class="" src="/images/dummy/card--blue-0.png" width="223" height="311">
@@ -98,64 +86,47 @@
               <img class="" src="/images/dummy/card--blue-0.png" width="223" height="311">
             </a>
           </div>
-        </section>
-        <section class="colors">
+        </section> -->
+        <section class="colors" id="colors">
           <!-- <h2 class="stream__head">Card plotter</h2> -->
           <!-- <div class="colors__wrap" id="colors__wrap"></div> -->
-          <div class="color__column color__column--white" id="color__column--white">
+<!--           <div class="color__column color__column--white" id="color__column--white">
             <header class="color__column__header">
               <img class="color__icon" src="/images/dummy/card--blue-1.png" height="20">
               <h3 class="color__head">White</h3>
               <h4 class="color__subhead">32 cards</h4>
             </header>
-          </div>
-          <div class="color__column color__column--white">
-            <header class="color__column__header">
-              <img class="color__icon" src="/images/dummy/card--blue-1.png" height="20">
-              <h3 class="color__head">Blue</h3>
-              <h4 class="color__subhead">32 cards</h4>
-            </header>
-          </div>
-          <div class="color__column color__column--white">
-            <header class="color__column__header">
-              <img class="color__icon" src="/images/dummy/card--blue-1.png" height="20">
-              <h3 class="color__head">Black</h3>
-              <h4 class="color__subhead">32 cards</h4>
-            </header>
-          </div>
-          <div class="color__column color__column--white">
-            <header class="color__column__header">
-              <img class="color__icon" src="/images/dummy/card--blue-1.png" height="20">
-              <h3 class="color__head">Red</h3>
-              <h4 class="color__subhead">32 cards</h4>
-            </header>
-          </div>
-          <div class="color__column color__column--white">
-            <header class="color__column__header">
-              <img class="color__icon" src="/images/dummy/card--blue-1.png" height="20">
-              <h3 class="color__head">Green</h3>
-              <h4 class="color__subhead">32 cards</h4>
-            </header>
-          </div>
-          <div class="color__column color__column--white">
-            <header class="color__column__header">
-              <img class="color__icon" src="/images/dummy/card--blue-1.png" height="20">
-              <h3 class="color__head">Multicolor</h3>
-              <h4 class="color__subhead">32 cards</h4>
-            </header>
-          </div>
-          <div class="color__column color__column--white">
-            <header class="color__column__header">
-              <img class="color__icon" src="/images/dummy/card--blue-1.png" height="20">
-              <h3 class="color__head">Colorless</h3>
-              <h4 class="color__subhead">32 cards</h4>
-            </header>
-          </div>
+            <div class="color__graph color__graph--cmc">
+              <h4 class="color__graph__name color__graph__name--cmc">Mana cost</h4>
+              <h5 class="color__graph__subhead color__graph__subhead--cmc">Applicable for 12/32 cards</h5>
+            </div>
+            <div class="color__graph color__graph--power">
+              <h4 class="color__graph__name color__graph__name--power">Power</h4>
+              <h5 class="color__graph__subhead color__graph__subhead--power">Applicable for 12/32 cards</h5>
+            </div>
+            <div class="color__graph color__graph--toughness">
+              <h4 class="color__graph__name color__graph__name--toughness">Toughness</h4>
+              <h5 class="color__graph__subhead color__graph__subhead--toughness">Applicable for 12/32 cards</h5>
+            </div>
+            <div class="color__graph color__graph--rarity">
+              <h4 class="color__graph__name color__graph__name--rarity">Rarity</h4>
+              <h5 class="color__graph__subhead color__graph__subhead--rarity">Applicable for 12/32 cards</h5>
+            </div>
+            <div class="color__graph color__graph--type">
+              <h4 class="color__graph__name color__graph__name--type">Type</h4>
+              <h5 class="color__graph__subhead color__graph__subhead--type">Applicable for 12/32 cards</h5>
+            </div>
+            <div class="color__graph color__graph--subtype">
+              <h4 class="color__graph__name color__graph__name--subtype">Subtype</h4>
+              <h5 class="color__graph__subhead color__graph__subhead--subtype">Applicable for 12/32 cards</h5>
+            </div>
+          </div> -->
+
         </section>
-        <section class="timeline">
+<!--         <section class="timeline">
           <h2 class="stream__head">Set timeline</h2>
           <div class="timeline__wrap" id="timeline__wrap"></div>
-        </section>
+        </section> -->
       </article>
     </main>
 
