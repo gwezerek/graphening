@@ -71,6 +71,8 @@ var parentEls = document.querySelector( '.color__column' );
 var width = parentEls.offsetWidth - margin.left - margin.right;
 var height = 100 - margin.top - margin.bottom;
 var domains = {};
+var rollups = {};
+var groupedByColor = {};
 var data = {};
 
 var xScale = d3.scale.ordinal()
@@ -116,6 +118,9 @@ function updateViz() {
 
   // group the cards by color
   groupByColor();
+
+  // get rollups for each dimension
+  getAllRollups();
 
   // update all viz
   updateAllViz();
@@ -165,7 +170,37 @@ function drawViz( color, dimension ) {
 }
 
 function groupByColor() {
+  groupedByColor = _.groupBy( data, function( card ) {
+    if ( card.colors && _.contains( columnColors, card.colors.toString().toLowerCase() ) ) {
+      return card.colors.toString().toLowerCase();
+    } else if ( _.isUndefined( card.colors ) ) {
+      return 'undefined';
+    } else {
+      return 'multicolor';
+    }
+  });
+}
 
+function getAllRollups() {
+  console.log( groupedByColor );
+
+  _.each( columnColors, function( color ) {
+    rollups[ color ] = {};
+    _.each( dimensions, function( dimension ) {
+      rollups[ color ][ dimension ] = rollupByDimension( color, dimension );
+    });
+  });
+
+  debugger;
+}
+
+function rollupByDimension( color, dimension ) {
+  var rollup = d3.nest()
+      .key( function( d ) { return d[ dimension ]; } )
+      .rollup( function( cards ) { return cards.length; } )
+      .entries( groupedByColor[ color ] );
+
+  return rollup;
 }
 
 function getXDomains() {
