@@ -9,6 +9,12 @@
 var d3 = require( 'd3' );
 var _ = require( 'underscore' );
 var utils = require( '../utils' );
+var templateColors = require( '../templates/colors.hbs' );
+
+// var initTemplates = require( '../init-templates' );
+
+// Build the template
+utils.querySelector( '#colors' ).innerHTML = templateColors();
 
 var margin = { top: 20, right: 0, bottom: 20, left: 0 };
 var parentEl = utils.querySelector( '#color__column--white' );
@@ -60,8 +66,6 @@ function updateViz() {
 				  return d.length;
 		  }).entries( data );
 
-  console.log(cmc);
-
   var bars = chart.selectAll('rect')
     .data( cmc );
 
@@ -78,19 +82,9 @@ function updateViz() {
         class: 'bar__rect'
       });
 
-  // data = _.filter( data, function( card ) {
-  //     return _.isNumber( +card.power ) && _.isNumber( +card.toughness ) && card.cmc;
-  // });
-
-  // chart.selectAll( 'circle' )
-  //   .data( data )
-  // .enter().append( 'circle' )
-  //   .attr( 'class', 'circle' )
-  //   .attr( 'cx', function ( d ) { return xScale( +d.a ); } )
-  //   .attr( 'cy', function ( d ) { return yScale( +d.b ); } )
-  //   .style( 'fill', function ( d ) { return colorScale( d.count ); })
-  //   // .attr( 'r', 5 );
-  //   .attr( 'r', function ( d ) { return rScale( d.count ); } );
+  data = _.filter( data, function( card ) {
+      return _.isNumber( +card.power ) && _.isNumber( +card.toughness ) && card.cmc;
+  });
 }
 
 function getComboData() {
@@ -113,7 +107,7 @@ function getComboData() {
   //   }
   // });
 
-  return groupedData;
+  // return groupedData;
 
 }
 

@@ -1,0 +1,55 @@
+Ranges
+
+Colors
+["Blue", "Black", "White", "undefined", "Green", "Red", "Black,Red,Green", "White,Blue,Green", "Black,Red", "White,Blue", "White,Blue,Black", "White,Green", "Blue,Black,Red", "White,Red,Green", "Red,Green", "Blue,Black", "Black,Green", "White,Black,Red", "Blue,Red,Green", "White,Red", "Blue,Red", "White,Black,Green", "White,Black", "Blue,Black,Green", "White,Blue,Red", "Blue,Green", "White,Blue,Black,Red,Green", "White,Black,Red,Green", "Blue,Black,Red,Green", "White,Blue,Red,Green", "White,Blue,Black,Green", "White,Blue,Black,Red"]
+
+CMC
+["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "14", "15", "16", "1000000", "undefined", "0.5"]
+
+Power
+["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "15", "99", "undefined", "*", "1+*", "2+*", "-1", "3.5", "1.5", ".5", "*²", "2.5"]
+
+Toughness
+["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "99", "undefined", "*", "1+*", "7-*", "2+*", "-1", "3.5", "1.5", ".5", "*²", "2.5"]
+
+Rarity
+["Uncommon", "Rare", "Common", "Basic Land", "Special", "Mythic Rare"]
+
+Type
+["Creature", "Instant", "Enchantment", "Artifact", "Sorcery", "Land", "Artifact,Creature", "Planeswalker", "Enchantment,Creature", "Summon", "Vanguard", "Tribal,Enchantment", "Scariest,Creature,You'll,Ever,See", "Enchant,Creature", "Enchant,Player", "Interrupt", "undefined", "Tribal,Instant", "Artifact,Land", "Eaturecray", "Tribal,Sorcery", "Land,Creature", "Enchantment,Artifact", "Tribal,Artifact", "Plane", "Scheme", "Phenomenon", "Conspiracy"]
+
+Subtype
+* 1049
+
+Supertypes
+["undefined", "Basic", "Legendary", "World", "Basic,Snow", "Snow", "Legendary,Snow", "Ongoing"]
+
+Artist
+*636
+
+Layout
+["normal", "leveler", "vanguard", "double-faced", "token", "split", "flip", "plane", "scheme", "phenomenon"]
+
+
+// Code I used to aggregate
+
+var sets = [];
+
+_.each( data, function( set ) {
+
+  var nested = d3.nest()
+      .key( function( d ) { return d.layout; } )
+      .entries( set.cards );
+
+  sets.push( nested );
+
+});
+
+var merged = [];
+merged = merged.concat.apply( merged, sets );
+
+var flattened = d3.nest()
+  .key( function( d ) { return d.key; } )
+  .entries( merged );
+
+console.log(_.pluck( flattened, 'key') );
