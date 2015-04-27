@@ -171,7 +171,7 @@ function groupByColor() {
 function getXDomains() {
   // for each dimension set the domains
   _.each( dimensions, function( dimension ) {
-    domains[ 'xDomain' ][ dimension ] = d3.extent( data, function( card ) {
+    domains[ dimension ] = d3.extent( data, function( card ) {
       if ( _.isNumber( +card[ dimension ] ) ) {
         return +card[ dimension ];
       }
