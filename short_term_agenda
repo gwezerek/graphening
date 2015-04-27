@@ -1,8 +1,9 @@
 Goals for tonight:
 
 Template all graph html across all colors
-	Add title
 	How many are undefined
+
+Group selected cards by color
 Dynamically set x domain to range across colors
 Dynamically set y domain to range across colors
 Hide undefined

@@ -11,23 +11,25 @@ var _ = require( 'underscore' );
 var utils = require( '../utils' );
 var templateColors = require( '../templates/colors.hbs' );
 
-// var initTemplates = require( '../init-templates' );
+var columnColors = [ 'white', 'blue' , 'black', 'red', 'green', 'multicolor', 'undefined' ];
+var dimensions = [ 'cmc', 'power', 'toughness' ];
 
-// Build the template
-utils.querySelector( '#colors' ).innerHTML = templateColors();
+// Compile the template
+_.each( columnColors, function( color ) {
+  document.querySelector( '#colors' ).innerHTML += templateColors( { 'color': color } );
+});
 
 var margin = { top: 20, right: 0, bottom: 20, left: 0 };
-var parentEl = utils.querySelector( '#color__column--white' );
-var width = parentEl.offsetWidth - margin.left - margin.right;
+var parentEls = document.querySelector( '.color__column' );
+var width = parentEls.offsetWidth - margin.left - margin.right;
 var height = 100 - margin.top - margin.bottom;
+var domains = {};
 var data = {};
 
 var xScale = d3.scale.ordinal()
-    .domain( d3.range(0, 10) )
     .rangeRoundBands( [ 0, width ], 0.25 );
 
 var yScale = d3.scale.linear()
-    .domain([0, 65])
     .range([height, 0]);
 
 var xAxis = d3.svg.axis()
@@ -58,57 +60,84 @@ var xAxisPath = xAxis.selectAll( 'path' )
 
 function updateViz() {
 
+  // Assume we start with a flat list of all the selected cards
+  // This will happen in a different file eventually
   data = getDragons().cards;
 
-  var cmc = d3.nest()
-		  .key( function( d ) { return d.cmc; } )
-		  .rollup( function( d ) {
-				  return d.length;
-		  }).entries( data );
+  // set the domains across colors
+  getXDomains();
 
-  var bars = chart.selectAll('rect')
-    .data( cmc );
+  // group the cards by color
+  groupByColor();
 
-  bars.enter().append( 'rect' );
+  // update all viz
+  updateAllViz();
 
-  console.log(xScale.rangeBand());
 
-  bars.transition()
-      .attr({
-        height: function( d ) { return height - yScale( d.values ); },
-        width: xScale.rangeBand(),
-        x: function( d ) { return xScale( +d.key ); },
-        y: function( d ) { return yScale( d.values ); },
-        class: 'bar__rect'
-      });
+  // var cmc = d3.nest()
+		//   .key( function( d ) { return d.cmc; } )
+		//   .rollup( function( d ) {
+		// 		  return d.length;
+		//   }).entries( data );
 
-  data = _.filter( data, function( card ) {
-      return _.isNumber( +card.power ) && _.isNumber( +card.toughness ) && card.cmc;
+  // var bars = chart.selectAll('rect')
+  //   .data( cmc );
+
+  // bars.enter().append( 'rect' );
+
+  // bars.transition()
+  //     .attr({
+  //       height: function( d ) { return height - yScale( d.values ); },
+  //       width: xScale.rangeBand(),
+  //       x: function( d ) { return xScale( +d.key ); },
+  //       y: function( d ) { return yScale( d.values ); },
+  //       class: 'bar__rect'
+  //     });
+
+  // data = _.filter( data, function( card ) {
+  //     return _.isNumber( +card.power ) && _.isNumber( +card.toughness ) && card.cmc;
+  // });
+
+}
+
+function updateAllViz() {
+  // for each color, loop through the dimensions and create the bar graph
+  _.each( columnColors, function( color ) {
+    _.each( dimensions, function( dimension ) {
+      drawViz( color, dimension );
+    });
   });
 }
 
-function getComboData() {
+function drawViz( color, dimension ) {
 
-  // var groupedData = [];
+  // update x and y domains
+  // update x-axis
+  // update bars
 
-  // _.each( data, function( card ) {
-  //   var groupAB = _.findWhere( groupedData, { a: card.power, b: card.toughness } );
+}
 
-  //   if ( groupAB ) {
-  //     groupAB.cards.push( card );
-  //     groupAB.count += 1;
-  //   } else {
-  //     groupedData.push({
-  //       a: card.power,
-  //       b: card.toughness,
-  //       count: 0,
-  //       cards: [ card ]
-  //     });
-  //   }
-  // });
+function groupByColor() {
 
-  // return groupedData;
+}
 
+function getXDomains() {
+  // for each dimension set the domains
+  _.each( dimensions, function( dimension ) {
+    domains[ 'xDomain' ][ dimension ] = d3.extent( data, function( card ) {
+      if ( _.isNumber( +card[ dimension ] ) ) {
+        return +card[ dimension ];
+      }
+    });
+  });
+}
+
+function setXDomain( dimension ) {
+  xScale.domain( dimension.xDomain );
+}
+
+function setYDomain( dimension ) {
+  yScale.domain( dimension.yDomain );
 }
 
 function getDragons() {
