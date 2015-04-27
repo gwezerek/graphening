@@ -113,14 +113,15 @@ function updateViz() {
   // This will happen in a different file eventually
   data = getDragons().cards;
 
-  // set the domains across colors
-  getXDomains();
-
   // group the cards by color
   groupByColor();
 
   // get rollups for each dimension
   getAllRollups();
+
+
+  // set the domains across colors
+  getDomains();
 
   // update all viz
   updateAllViz();
@@ -187,7 +188,10 @@ function getAllRollups() {
   _.each( columnColors, function( color ) {
     rollups[ color ] = {};
     _.each( dimensions, function( dimension ) {
-      rollups[ color ][ dimension ] = rollupByDimension( color, dimension );
+      rollups[ color ][ dimension ] = {};
+      if ( dimension === 'cmc' || dimension === 'power' || dimension === 'toughness' ) {
+        rollups[ color ][ dimension ].rollup = rollupByDimension( color, dimension );
+      }
     });
   });
 
@@ -196,16 +200,30 @@ function getAllRollups() {
 
 function rollupByDimension( color, dimension ) {
   var rollup = d3.nest()
-      .key( function( d ) { return d[ dimension ]; } )
+      .key( function( d ) {
+        if ( !d[ dimension ] ) {
+          // console.log( d[ dimension ] );
+          return 'undefined';
+        } else if ( _.isNaN( +d[ dimension ] ) ) {
+          console.log( d[ dimension ] );
+          // debugger;
+          return 'other';
+        } else if ( +d[ dimension ] >= 10 ) {
+          return '10+';
+        } else {
+          return d[ dimension ];
+        }
+      })
       .rollup( function( cards ) { return cards.length; } )
       .entries( groupedByColor[ color ] );
 
   return rollup;
 }
 
-function getXDomains() {
+function getDomains() {
   // for each dimension set the domains
   _.each( dimensions, function( dimension ) {
+    domains[ dimension ] = {};
     domains[ dimension ] = d3.extent( data, function( card ) {
       if ( _.isNumber( +card[ dimension ] ) ) {
         return +card[ dimension ];
@@ -223,7 +241,7 @@ function setYDomain( dimension ) {
 }
 
 function getDragons() {
-	return _.findWhere( data, { name: "Dragons of Tarkir" } );
+	return _.findWhere( data, { name: "Theros" } );
 }
 
 function init( loadedJSON ) {
