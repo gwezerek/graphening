@@ -116,6 +116,7 @@ function updateAllViz() {
   _.each( columnColors, function( color ) {
     _.each( dimensions, function( dimension ) {
       setYDomain( dimension );
+      updateDefinedTotals( color, dimension );
       vizDispatch( color, dimension );
     });
   });
@@ -269,7 +270,11 @@ function updateCardTotals() {
 }
 
 function updateDefinedTotals( color, dimension ) {
-
+  if ( rollups[ color ][ dimension ].undefined ) {
+    document.querySelector( '#card__undefined--' + dimension + '--' + color ).innerHTML = rollups[ color ][ dimension ].undefined;
+  } else {
+    // TK hide function
+  }
 }
 
 function getDragons() {
@@ -336,17 +341,29 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
     + "\">TK</span> cards</h4>\n  </header>\n  <div class=\"color__graph color__graph--cmc\" id=\"color__graph--cmc--"
     + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">\n    <h4 class=\"color__graph__head color__graph__name--cmc\">Mana cost</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--cmc\">Defined for TK cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--power\" id=\"color__graph--power--"
+    + "\">\n    <h4 class=\"color__graph__head color__graph__name--cmc\">Mana cost</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--cmc\">Undefined for <span id=\"card__undefined--cmc--"
     + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">\n    <h4 class=\"color__graph__head color__graph__name--power\">Power</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--power\">Defined for TK cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--toughness\" id=\"color__graph--toughness--"
+    + "\">0</span> cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--power\" id=\"color__graph--power--"
     + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">\n    <h4 class=\"color__graph__head color__graph__name--toughness\">Toughness</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--toughness\">Defined for TK cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--rarity\" id=\"color__graph--rarity--"
+    + "\">\n    <h4 class=\"color__graph__head color__graph__name--power\">Power</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--power\">Undefined for <span id=\"card__undefined--power--"
     + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">\n    <h4 class=\"color__graph__head color__graph__name--rarity\">Rarity</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--rarity\">Defined for TK cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--type\" id=\"color__graph--type--"
+    + "\">0</span> cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--toughness\" id=\"color__graph--toughness--"
     + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">\n    <h4 class=\"color__graph__head color__graph__name--type\">Type</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--type\">Defined for TK cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--subtype\" id=\"color__graph--subtype--"
+    + "\">\n    <h4 class=\"color__graph__head color__graph__name--toughness\">Toughness</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--toughness\">Undefined for <span id=\"card__undefined--toughness--"
     + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">\n    <h4 class=\"color__graph__head color__graph__name--subtype\">Subtype</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--subtype\">Defined for TK cards</h5>\n  </div>\n</div>\n";
+    + "\">0</span> cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--rarity\" id=\"color__graph--rarity--"
+    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
+    + "\">\n    <h4 class=\"color__graph__head color__graph__name--rarity\">Rarity</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--rarity\">Undefined for <span id=\"card__undefined--rarity--"
+    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
+    + "\">0</span> cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--types\" id=\"color__graph--types--"
+    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
+    + "\">\n    <h4 class=\"color__graph__head color__graph__name--types\">Types</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--types\">Undefined for <span id=\"card__undefined--types--"
+    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
+    + "\">0</span> cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--subtypes\" id=\"color__graph--subtypes--"
+    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
+    + "\">\n    <h4 class=\"color__graph__head color__graph__name--subtypes\">Subtypes</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--subtypes\">Undefined for <span id=\"card__undefined--subtypes--"
+    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
+    + "\">0</span> cards</h5>\n  </div>\n</div>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":16}],7:[function(require,module,exports){

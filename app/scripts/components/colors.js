@@ -69,6 +69,7 @@ function updateAllViz() {
   _.each( columnColors, function( color ) {
     _.each( dimensions, function( dimension ) {
       setYDomain( dimension );
+      updateDefinedTotals( color, dimension );
       vizDispatch( color, dimension );
     });
   });
@@ -222,7 +223,11 @@ function updateCardTotals() {
 }
 
 function updateDefinedTotals( color, dimension ) {
-
+  if ( rollups[ color ][ dimension ].undefined ) {
+    document.querySelector( '#card__undefined--' + dimension + '--' + color ).innerHTML = rollups[ color ][ dimension ].undefined;
+  } else {
+    // TK hide function
+  }
 }
 
 function getDragons() {
