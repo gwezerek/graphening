@@ -59,7 +59,7 @@ var utils = require( '../utils' );
 var templateColors = require( '../templates/colors.hbs' );
 
 var columnColors = [ 'white', 'blue' , 'black', 'red', 'green', 'multicolor', 'colorless' ];
-var dimensions = [ 'cmc', 'power', 'toughness' ];
+var dimensions = [ 'cmc', 'power', 'toughness', 'rarity', 'types', 'subtypes' ];
 
 // Compile the template
 _.each( columnColors, function( color ) {
@@ -88,7 +88,6 @@ var xAxis = d3.svg.axis()
     .outerTickSize( 0 )
     .orient( 'bottom' );
 
-
 function updateViz() {
 
   // Assume we start with a flat list of all the selected cards
@@ -97,6 +96,9 @@ function updateViz() {
 
   // group the cards by color
   groupByColor();
+
+  // update the card totals
+  updateCardTotals();
 
   // get rollups for each dimension
   getAllRollups();
@@ -114,14 +116,24 @@ function updateAllViz() {
   _.each( columnColors, function( color ) {
     _.each( dimensions, function( dimension ) {
       setYDomain( dimension );
-      drawViz( color, dimension );
+      vizDispatch( color, dimension );
     });
   });
 }
 
-function drawViz( color, dimension ) {
+function vizDispatch( color, dimension ) {
 
-  // TK get the right parent element
+  if ( dimension === 'cmc' || dimension === 'power' || dimension === 'toughness' ) {
+    drawBar( color, dimension );
+  } else if ( dimension === 'rarity' ) {
+    drawBubbles( color, dimension );
+  } else {
+    compileInventory( color, dimension );
+  }
+
+}
+
+function drawBar( color, dimension ) {
   var svg = d3.select( '#color__graph--' + dimension + '--' + color ).append( 'svg' )
       .attr( 'width', width + margin.left + margin.right )
       .attr( 'height', height + margin.top + margin.bottom );
@@ -143,8 +155,6 @@ function drawViz( color, dimension ) {
   var xAxisPath = xAxisEl.selectAll( 'path' )
       .attr('class', 'axis__x__path');
 
-  console.log( rollups[ color ][ dimension ].rollup );
-
   var bars = chart.selectAll('rect')
     .data( rollups[ color ][ dimension ].rollup );
 
@@ -158,6 +168,14 @@ function drawViz( color, dimension ) {
         y: function( d ) { return yScale( d.values ); },
         class: 'bar__rect'
       });
+}
+
+function drawBubbles( color, dimension ) {
+
+}
+
+function compileInventory( color, dimension ) {
+
 }
 
 function groupByColor() {
@@ -244,6 +262,16 @@ function setYDomain( dimension ) {
   yScale.domain( [ 0, yMaxes[ dimension ] ] );
 }
 
+function updateCardTotals() {
+  _.each( groupedByColor, function( color, key ) {
+    document.querySelector( '#card__total--' + key ).innerHTML = groupedByColor[ key ].length;
+  });
+}
+
+function updateDefinedTotals( color, dimension ) {
+
+}
+
 function getDragons() {
 	return _.findWhere( data, { name: "Theros" } );
 }
@@ -304,7 +332,9 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
     + "\">\n  <header class=\"color__column__header\">\n    <h3 class=\"color__head\">"
     + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "</h3>\n    <h4 class=\"color__subhead\">32 cards</h4>\n  </header>\n  <div class=\"color__graph color__graph--cmc\" id=\"color__graph--cmc--"
+    + "</h3>\n    <h4 class=\"color__subhead\"><span id=\"card__total--"
+    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
+    + "\">TK</span> cards</h4>\n  </header>\n  <div class=\"color__graph color__graph--cmc\" id=\"color__graph--cmc--"
     + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
     + "\">\n    <h4 class=\"color__graph__head color__graph__name--cmc\">Mana cost</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--cmc\">Defined for TK cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--power\" id=\"color__graph--power--"
     + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
