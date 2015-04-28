@@ -25,12 +25,17 @@
 .color__column {
 	flex-grow: 1;
 	flex-basis: 0;
+	margin-right: 2em;
+	&:last-child {
+		margin-right: 0;
+	}
 }
 
 .color__column__header {
-	text-align: center;
+	// text-align: center;
 	padding-bottom: $baseSpace / 2;
-	border-bottom: 1px solid $colorBlueGrey200;
+	margin-bottom: $baseSpace / 2;
+	border-bottom: 1px solid $colorBlueGrey50;
 }
 
 .color__icon {
@@ -38,24 +43,43 @@
 }
 
 .color__head {
-	color: $colorWhite;
+	color: $colorBlueGrey100;
 	font-size: $fontMedium;
 	text-transform: capitalize;
+  font-weight: 700;
 }
 
 .color__subhead {
 	padding-top: 0em;
-	color: $colorWhite;
+	color: $colorBlueGrey100;
+	font-size: $fontSmall;
+}
+
+.color__graph {
+	margin-bottom: $baseSpace;
+}
+
+.color__graph__head {
 	font-size: $fontBase;
+	color: $colorBlueGrey300;
+}
+
+.color__graph__subhead {
+	font-size: $fontSmall;
+	color: $colorBlueGrey500;
+}
+
+.bar__rect {
+	fill: $colorBlueGrey300;
 }
 
 .axis__x__label {
-	fill: $colorWhite;;
+	fill: $colorBlueGrey500;
 }
 
 .axis__x__path {
 	fill: none;
 	stroke-width: 1px;
-	stroke: $colorWhite;;
+	stroke: $colorBlueGrey500;
 }
 

@@ -21,13 +21,16 @@ var blueMap = {
 };
 
 // from http://stackoverflow.com/questions/14636536/how-to-check-if-a-variable-is-an-integer-in-javascript
-var isInt = function(value) {
-  if ( isNaN( value ) ) {
-    return false;
-  }
-  var x = parseFloat( value );
-  return ( x | 0 ) === x;
-}
+// var isInt = function(value) {
+//   if ( isNaN( value ) ) {
+//     return false;
+//   }
+//   var x = parseFloat( value );
+//   return ( x | 0 ) === x;
+// }
+
+// from http://stackoverflow.com/questions/3885817/how-to-check-if-a-number-is-float-or-integer
+var isInt = function(n) { return parseInt(n) === n };
 
 exports.querySelector = querySelector;
 exports.isInt = isInt;

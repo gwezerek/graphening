@@ -1,20 +1,5 @@
 Goals for today:
 
-Dynamically set x domain to range across colors
-	For each dimension create flattened array of all keys in each color.dimension
-	Save that extent to rollups.color.dimension.xDomain
-Dynamically set y domain to range across colors
-	For each dimension create flattened array of all values in each color.dimension
-	Save that extent to rollups.color.dimension.Domain
 Hide undefined
-Add numbers up top
+Add numbers above bars
 Update template text with how many are undefined
-
-
-If dimension is CMC, power or toughness
-	If +value is not a number, return 'other'
-	If +value is integer between 1 and 9, return it
-	if +value is higher than 9, return '10+'
-
-Else
-	return value

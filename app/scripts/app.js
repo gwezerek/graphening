@@ -58,7 +58,7 @@ var _ = require( 'underscore' );
 var utils = require( '../utils' );
 var templateColors = require( '../templates/colors.hbs' );
 
-var columnColors = [ 'white', 'blue' , 'black', 'red', 'green', 'multicolor', 'undefined' ];
+var columnColors = [ 'white', 'blue' , 'black', 'red', 'green', 'multicolor', 'colorless' ];
 var dimensions = [ 'cmc', 'power', 'toughness' ];
 
 // Compile the template
@@ -66,45 +66,27 @@ _.each( columnColors, function( color ) {
   document.querySelector( '#colors' ).innerHTML += templateColors( { 'color': color } );
 });
 
-var margin = { top: 20, right: 0, bottom: 20, left: 0 };
+var margin = { top: 20, right: 0, bottom: 15, left: 0 };
 var parentEls = document.querySelector( '.color__column' );
 var width = parentEls.offsetWidth - margin.left - margin.right;
 var height = 100 - margin.top - margin.bottom;
-var domains = {};
+var barDomain = [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9+', '*' ];
+var yMaxes = {};
 var rollups = {};
 var groupedByColor = {};
 var data = {};
 
 var xScale = d3.scale.ordinal()
-    .rangeRoundBands( [ 0, width ], 0.25 );
+    .domain( barDomain )
+    .rangeRoundBands( [ 0, width ], 0.33, 0 );
 
 var yScale = d3.scale.linear()
     .range([height, 0]);
 
 var xAxis = d3.svg.axis()
     .scale( xScale )
+    .outerTickSize( 0 )
     .orient( 'bottom' );
-
-// // Create graph
-var svg = d3.select( '#color__column--white' ).append( 'svg' )
-    .attr( 'width', width + margin.left + margin.right )
-    .attr( 'height', height + margin.top + margin.bottom );
-
-var chart = svg.append( 'g' )
-    .attr( 'width', width )
-    .attr( 'height', height )
-    .attr( 'transform', 'translate( ' + margin.left + ',' + margin.top +' )' );
-
-var xAxis = svg.append( 'g' )
-    .attr( 'class', 'axis axis__x' )
-    .attr( 'transform', 'translate( 0,' + ( height + margin.top ) +' )' )
-    .call( xAxis );
-
-var xAxisLabels = xAxis.selectAll( 'text' )
-    .attr('class', 'axis__x__label');
-
-var xAxisPath = xAxis.selectAll( 'path' )
-    .attr('class', 'axis__x__path');
 
 
 function updateViz() {
@@ -119,37 +101,11 @@ function updateViz() {
   // get rollups for each dimension
   getAllRollups();
 
-
-  // set the domains across colors
-  getDomains();
+  // set the y maxes across colors
+  getYMaxes();
 
   // update all viz
   updateAllViz();
-
-
-  // var cmc = d3.nest()
-		//   .key( function( d ) { return d.cmc; } )
-		//   .rollup( function( d ) {
-		// 		  return d.length;
-		//   }).entries( data );
-
-  // var bars = chart.selectAll('rect')
-  //   .data( cmc );
-
-  // bars.enter().append( 'rect' );
-
-  // bars.transition()
-  //     .attr({
-  //       height: function( d ) { return height - yScale( d.values ); },
-  //       width: xScale.rangeBand(),
-  //       x: function( d ) { return xScale( +d.key ); },
-  //       y: function( d ) { return yScale( d.values ); },
-  //       class: 'bar__rect'
-  //     });
-
-  // data = _.filter( data, function( card ) {
-  //     return _.isNumber( +card.power ) && _.isNumber( +card.toughness ) && card.cmc;
-  // });
 
 }
 
@@ -157,6 +113,7 @@ function updateAllViz() {
   // for each color, loop through the dimensions and create the bar graph
   _.each( columnColors, function( color ) {
     _.each( dimensions, function( dimension ) {
+      setYDomain( dimension );
       drawViz( color, dimension );
     });
   });
@@ -164,10 +121,43 @@ function updateAllViz() {
 
 function drawViz( color, dimension ) {
 
-  // update x and y domains
-  // update x-axis
-  // update bars
+  // TK get the right parent element
+  var svg = d3.select( '#color__graph--' + dimension + '--' + color ).append( 'svg' )
+      .attr( 'width', width + margin.left + margin.right )
+      .attr( 'height', height + margin.top + margin.bottom );
 
+  var chart = svg.append( 'g' )
+      .attr( 'width', width )
+      .attr( 'height', height )
+      .attr( 'transform', 'translate( ' + margin.left + ',' + margin.top +' )' );
+
+  var xAxisEl = svg.append( 'g' )
+      .attr( 'class', 'axis axis__x' )
+      .attr( 'transform', 'translate( 0,' + ( height + margin.top ) +' )' )
+      .call( xAxis );
+
+  var xAxisLabels = xAxisEl.selectAll( 'text' )
+      .attr( 'y', 5 )
+      .attr( 'class', 'axis__x__label');
+
+  var xAxisPath = xAxisEl.selectAll( 'path' )
+      .attr('class', 'axis__x__path');
+
+  console.log( rollups[ color ][ dimension ].rollup );
+
+  var bars = chart.selectAll('rect')
+    .data( rollups[ color ][ dimension ].rollup );
+
+  bars.enter().append( 'rect' );
+
+  bars.transition()
+      .attr({
+        height: function( d ) { return height - yScale( d.values ); },
+        width: xScale.rangeBand(),
+        x: function( d ) { return xScale( d.key ); },
+        y: function( d ) { return yScale( d.values ); },
+        class: 'bar__rect'
+      });
 }
 
 function groupByColor() {
@@ -175,7 +165,7 @@ function groupByColor() {
     if ( card.colors && _.contains( columnColors, card.colors.toString().toLowerCase() ) ) {
       return card.colors.toString().toLowerCase();
     } else if ( _.isUndefined( card.colors ) ) {
-      return 'undefined';
+      return 'colorless';
     } else {
       return 'multicolor';
     }
@@ -183,33 +173,38 @@ function groupByColor() {
 }
 
 function getAllRollups() {
-  console.log( groupedByColor );
-
   _.each( columnColors, function( color ) {
     rollups[ color ] = {};
     _.each( dimensions, function( dimension ) {
       rollups[ color ][ dimension ] = {};
+      rollups[ color ][ dimension ].undefined = 0;
+
+      // get the rollup values
       if ( dimension === 'cmc' || dimension === 'power' || dimension === 'toughness' ) {
-        rollups[ color ][ dimension ].rollup = rollupByDimension( color, dimension );
+        rollups[ color ][ dimension ].rollup = rollupByDimensionQuantitative( color, dimension );
+      } else {
+        rollups[ color ][ dimension ].rollup = rollupByDimensionCategorical( color, dimension );
       }
+
+      // remove undefined
+      if ( rollups[ color ][ dimension ].undefined ) {
+        rollups[ color ][ dimension ].rollup = _.reject( rollups[ color ][ dimension ].rollup, function( agg ){ return agg.key === 'undefined'; } )
+      }
+
     });
   });
-
-  debugger;
 }
 
-function rollupByDimension( color, dimension ) {
+function rollupByDimensionQuantitative( color, dimension ) {
   var rollup = d3.nest()
       .key( function( d ) {
         if ( !d[ dimension ] ) {
-          // console.log( d[ dimension ] );
+          rollups[ color ][ dimension ].undefined += 1;
           return 'undefined';
-        } else if ( _.isNaN( +d[ dimension ] ) ) {
-          console.log( d[ dimension ] );
-          // debugger;
-          return 'other';
-        } else if ( +d[ dimension ] >= 10 ) {
-          return '10+';
+        } else if ( _.isNaN( +d[ dimension ] ) || !utils.isInt( +d[ dimension ] ) ) {
+          return '*';
+        } else if ( +d[ dimension ] >= 9 ) {
+          return '9+';
         } else {
           return d[ dimension ];
         }
@@ -220,24 +215,33 @@ function rollupByDimension( color, dimension ) {
   return rollup;
 }
 
-function getDomains() {
-  // for each dimension set the domains
+function rollupByDimensionCategorical( color, dimension ) {
+  var rollup = d3.nest()
+      .key( function( d ) { return d[ dimension ]; })
+      .rollup( function( cards ) { return cards.length; } )
+      .entries( groupedByColor[ color ] );
+
+  return rollup;
+}
+
+function getYMaxes() {
   _.each( dimensions, function( dimension ) {
-    domains[ dimension ] = {};
-    domains[ dimension ] = d3.extent( data, function( card ) {
-      if ( _.isNumber( +card[ dimension ] ) ) {
-        return +card[ dimension ];
-      }
+    yMaxes[ dimension ] = 0;
+
+    var flatArrayY = [];
+
+    _.each( rollups, function( color ) {
+      var values = _.pluck( color[ dimension ].rollup, 'values' );
+      flatArrayY = _.union( flatArrayY, values );
     });
+
+    // get max
+    yMaxes[ dimension ] = d3.max( flatArrayY );
   });
 }
 
-function setXDomain( dimension ) {
-  xScale.domain( dimension.xDomain );
-}
-
 function setYDomain( dimension ) {
-  yScale.domain( dimension.yDomain );
+  yScale.domain( [ 0, yMaxes[ dimension ] ] );
 }
 
 function getDragons() {
@@ -298,9 +302,21 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
     + "\" id=\"color__column--"
     + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">\n  <header class=\"color__column__header\">\n    <img class=\"color__icon\" src=\"/images/dummy/card--blue-1.png\" height=\"20\">\n    <h3 class=\"color__head\">"
+    + "\">\n  <header class=\"color__column__header\">\n    <h3 class=\"color__head\">"
     + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "</h3>\n    <h4 class=\"color__subhead\">32 cards</h4>\n  </header>\n  <div class=\"color__graph color__graph--cmc\">\n    <h4 class=\"color__graph__name color__graph__name--cmc\">Mana cost</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--cmc\">Applicable for 12/32 cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--power\">\n    <h4 class=\"color__graph__name color__graph__name--power\">Power</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--power\">Applicable for 12/32 cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--toughness\">\n    <h4 class=\"color__graph__name color__graph__name--toughness\">Toughness</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--toughness\">Applicable for 12/32 cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--rarity\">\n    <h4 class=\"color__graph__name color__graph__name--rarity\">Rarity</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--rarity\">Applicable for 12/32 cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--type\">\n    <h4 class=\"color__graph__name color__graph__name--type\">Type</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--type\">Applicable for 12/32 cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--subtype\">\n    <h4 class=\"color__graph__name color__graph__name--subtype\">Subtype</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--subtype\">Applicable for 12/32 cards</h5>\n  </div>\n</div>\n";
+    + "</h3>\n    <h4 class=\"color__subhead\">32 cards</h4>\n  </header>\n  <div class=\"color__graph color__graph--cmc\" id=\"color__graph--cmc--"
+    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
+    + "\">\n    <h4 class=\"color__graph__head color__graph__name--cmc\">Mana cost</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--cmc\">Defined for TK cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--power\" id=\"color__graph--power--"
+    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
+    + "\">\n    <h4 class=\"color__graph__head color__graph__name--power\">Power</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--power\">Defined for TK cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--toughness\" id=\"color__graph--toughness--"
+    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
+    + "\">\n    <h4 class=\"color__graph__head color__graph__name--toughness\">Toughness</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--toughness\">Defined for TK cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--rarity\" id=\"color__graph--rarity--"
+    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
+    + "\">\n    <h4 class=\"color__graph__head color__graph__name--rarity\">Rarity</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--rarity\">Defined for TK cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--type\" id=\"color__graph--type--"
+    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
+    + "\">\n    <h4 class=\"color__graph__head color__graph__name--type\">Type</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--type\">Defined for TK cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--subtype\" id=\"color__graph--subtype--"
+    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
+    + "\">\n    <h4 class=\"color__graph__head color__graph__name--subtype\">Subtype</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--subtype\">Defined for TK cards</h5>\n  </div>\n</div>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":16}],7:[function(require,module,exports){
@@ -327,13 +343,16 @@ var blueMap = {
 };
 
 // from http://stackoverflow.com/questions/14636536/how-to-check-if-a-variable-is-an-integer-in-javascript
-var isInt = function(value) {
-  if ( isNaN( value ) ) {
-    return false;
-  }
-  var x = parseFloat( value );
-  return ( x | 0 ) === x;
-}
+// var isInt = function(value) {
+//   if ( isNaN( value ) ) {
+//     return false;
+//   }
+//   var x = parseFloat( value );
+//   return ( x | 0 ) === x;
+// }
+
+// from http://stackoverflow.com/questions/3885817/how-to-check-if-a-number-is-float-or-integer
+var isInt = function(n) { return parseInt(n) === n };
 
 exports.querySelector = querySelector;
 exports.isInt = isInt;
