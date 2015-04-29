@@ -16,6 +16,7 @@
 	margin-right: $baseSpace / 2;
 	&:last-child {
 		margin-right: 0;
+		border-right: 0px solid transparent;
 	}
 	&:not(:first-child) .color__graph__header {
 		padding-top: 2.4rem;
@@ -96,7 +97,7 @@
 }
 
 .bubble__label {
-	fill: $colorBlueGrey700;
+	fill: $colorBlueGrey500;
 	text-anchor: middle;
 }
 
