@@ -290,6 +290,9 @@ function rollupByDimensionCategorical( color, dimension ) {
       .key( function( d ) {
         if ( _.isArray( d[ dimension ] ) ) {
           return d[ dimension ].join('/');
+        } else if ( !d[ dimension ] ) {
+          rollups[ color ][ dimension ].undefined += 1;
+          return 'undefined';
         } else {
           return d[ dimension ];
         }
@@ -335,6 +338,7 @@ function updateCardTotals() {
 
 function updateDefinedTotals( color, dimension ) {
   if ( rollups[ color ][ dimension ].undefined ) {
+    // debugger;
     document.querySelector( '#card__undefined--' + dimension + '--' + color ).innerHTML = rollups[ color ][ dimension ].undefined;
   } else {
     // TK hide function

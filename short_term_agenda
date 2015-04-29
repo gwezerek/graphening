@@ -1,7 +1,6 @@
 Goals for tomorrow:
 
-Replace commas with slashes
-Fix sorting when arrays are involved
+Remove undefined from categorical
 Convert to table
 Add header and filters
 Add rarity union-ing

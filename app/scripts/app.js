@@ -337,6 +337,9 @@ function rollupByDimensionCategorical( color, dimension ) {
       .key( function( d ) {
         if ( _.isArray( d[ dimension ] ) ) {
           return d[ dimension ].join('/');
+        } else if ( !d[ dimension ] ) {
+          rollups[ color ][ dimension ].undefined += 1;
+          return 'undefined';
         } else {
           return d[ dimension ];
         }
@@ -382,6 +385,7 @@ function updateCardTotals() {
 
 function updateDefinedTotals( color, dimension ) {
   if ( rollups[ color ][ dimension ].undefined ) {
+    // debugger;
     document.querySelector( '#card__undefined--' + dimension + '--' + color ).innerHTML = rollups[ color ][ dimension ].undefined;
   } else {
     // TK hide function
@@ -497,7 +501,9 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
     + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(12, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "</h4>\n        </header>\n        <ol class=\"color__graph__list\" id=\"color__graph__ol--subtypes--"
     + alias2(alias1(depth0, depth0))
-    + "\"></ol>\n      </div>\n    </div>\n  </div>\n";
+    + "\"></ol>\n      </div>\n      <aside class=\"color__graph__aside\">\n        <h5 class=\"color__graph__subhead color__graph__subhead--subtypes\">Undefined for <span id=\"card__undefined--subtypes--"
+    + alias2(alias1(depth0, depth0))
+    + "\">0</span> cards</h5>\n      </aside>\n    </div>\n  </div>\n";
 },"2":function(depth0,helpers,partials,data) {
     return "Mana cost";
 },"4":function(depth0,helpers,partials,data) {
