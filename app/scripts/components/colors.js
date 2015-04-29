@@ -10,21 +10,20 @@ var d3 = require( 'd3' );
 var _ = require( 'underscore' );
 var utils = require( '../utils' );
 var templateColors = require( '../templates/colors.hbs' );
+var templateColorsInventory = require( '../templates/colors-inventory.hbs' );
 
 var columnColors = [ 'white', 'blue' , 'black', 'red', 'green', 'multicolor', 'colorless' ];
 var dimensions = [ 'cmc', 'power', 'toughness', 'rarity', 'types', 'subtypes' ];
 
 // Compile the template
-_.each( columnColors, function( color ) {
-  document.querySelector( '#colors' ).innerHTML += templateColors( { 'color': color } );
-});
+document.querySelector( '#colors' ).innerHTML += templateColors( { 'color': columnColors } );
 
-var margin = { top: 20, right: 0, bottom: 15, left: 0 };
-var parentEls = document.querySelector( '.color__column' );
-var width = parentEls.offsetWidth - margin.left - margin.right;
+var margin = { top: 15, right: 0, bottom: 15, left: 0 };
+var graphEl = document.querySelector( '.color__graph__wrap' );
+var width = graphEl.clientWidth - margin.left - margin.right;
 var height = 100 - margin.top - margin.bottom;
 var barDomain = [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9+', '*' ];
-var yMaxes = {};
+var valueMaxes = {};
 var rollups = {};
 var groupedByColor = {};
 var data = {};
@@ -40,6 +39,18 @@ var xAxis = d3.svg.axis()
     .scale( xScale )
     .outerTickSize( 0 )
     .orient( 'bottom' );
+
+// Bubble chart vars
+var bubbleDomain = [ 'Common', 'Uncommon', 'Rare', 'Mythic Rare', 'Basic Land'  ]
+
+var bubbleScale = d3.scale.ordinal()
+    .domain( bubbleDomain )
+    .rangeRoundBands( [ 0, ( width / 2 + 35 ) * bubbleDomain.length ], .5, 0 );
+
+console.log( width, bubbleScale.rangeBand() )
+
+var rScale = d3.scale.sqrt()
+    .range( [ 0, width / 4 ] );
 
 function updateViz() {
 
@@ -57,7 +68,7 @@ function updateViz() {
   getAllRollups();
 
   // set the y maxes across colors
-  getYMaxes();
+  getValueMaxes();
 
   // update all viz
   updateAllViz();
@@ -68,7 +79,7 @@ function updateAllViz() {
   // for each color, loop through the dimensions and create the bar graph
   _.each( columnColors, function( color ) {
     _.each( dimensions, function( dimension ) {
-      setYDomain( dimension );
+      setValueDomains( dimension );
       updateDefinedTotals( color, dimension );
       vizDispatch( color, dimension );
     });
@@ -88,6 +99,7 @@ function vizDispatch( color, dimension ) {
 }
 
 function drawBar( color, dimension ) {
+
   var svg = d3.select( '#color__graph--' + dimension + '--' + color ).append( 'svg' )
       .attr( 'width', width + margin.left + margin.right )
       .attr( 'height', height + margin.top + margin.bottom );
@@ -144,36 +156,79 @@ function drawBar( color, dimension ) {
       .text( function( d ) { return d.values; })
       .attr({
         x: xScale.rangeBand() / 2,
-        y: -3,
+        y: -4,
         class: 'bar__label'
       });
-
-
-
-
-
-
-  // var bars = chart.selectAll('rect')
-  //   .data( rollups[ color ][ dimension ].rollup );
-
-  // bars.enter().append( 'rect' );
-
-  // bars.transition()
-  //     .attr({
-  //       height: function( d ) { return height - yScale( d.values ); },
-  //       width: xScale.rangeBand(),
-  //       x: function( d ) { return xScale( d.key ); },
-  //       y: function( d ) { return yScale( d.values ); },
-  //       class: 'bar__rect'
-  //     });
 }
 
 function drawBubbles( color, dimension ) {
 
+  var height = ( width / 2 + 24 ) * bubbleDomain.length;
+  var marginTop = width / 4 + 20;
+  var marginBottom = width / 4;
+
+  var svg = d3.select( '#color__graph--' + dimension + '--' + color ).append( 'svg' )
+      .attr( 'width', width )
+      .attr( 'height', height + marginTop + marginBottom );
+
+  var chart = svg.append( 'g' )
+      .attr( 'width', width )
+      .attr( 'height', height )
+      .attr( 'transform', 'translate( 0,' + marginTop + ')' );
+
+  // Update bar groups
+  var bubbleWrap = chart.selectAll( 'g' )
+      .data( rollups[ color ][ dimension ].rollup );
+
+  var bubbleEnter = bubbleWrap.enter().append( 'g' );
+
+  bubbleWrap.transition()
+      .attr({
+        class: 'bar__wrap',
+        transform: function( d ) { return 'translate(' + width / 2 + ', ' + bubbleScale( d.key ) + ')'; }
+      });
+
+  bubbleWrap.exit()
+      .remove();
+
+  // Update bubbles
+  bubbleEnter.append( 'circle' );
+
+  var bubbles = bubbleWrap.selectAll( 'circle' )
+      .data( function( d ) { return [ d ]; } );
+
+  bubbles.attr({
+        r: function( d ) { return rScale( d.values ); },
+        class: 'bubble__circle'
+      });
+
+  // Update value labels
+  bubbleEnter.append( 'text' )
+    .attr( 'class', 'bubble__label bubble__label--value' );
+
+  var valueLabels = bubbleWrap.selectAll( '.bubble__label--value' )
+      .text( function( d ) { return d.values; } )
+      .attr( 'y', 3 );
+
+  // Update key labels
+  bubbleEnter.append( 'text' )
+      .attr( 'class', 'bubble__label bubble__label--key' );
+
+  var keyLabels = bubbleWrap.selectAll( '.bubble__label--key' )
+      .text( function( d ) { return d.key; } )
+      .attr( 'y', -width / 4 - 10 );
+
 }
 
 function compileInventory( color, dimension ) {
+  var inventoryStr = '';
+  var ol = document.querySelector( '#color__graph__ol--' + dimension + '--' + color );
 
+  _.each( rollups[ color ][ dimension ].rollup, function( key ) {
+    inventoryStr += templateColorsInventory( { 'key': key.key, 'value': key.values } );
+  });
+
+  ol.innerHTML = inventoryStr;
 }
 
 function groupByColor() {
@@ -226,6 +281,7 @@ function rollupByDimensionQuantitative( color, dimension ) {
         }
       })
       .rollup( function( cards ) { return cards.length; } )
+      .sortValues( d3.descending )
       .entries( groupedByColor[ color ] );
 
   return rollup;
@@ -240,24 +296,25 @@ function rollupByDimensionCategorical( color, dimension ) {
   return rollup;
 }
 
-function getYMaxes() {
+function getValueMaxes() {
   _.each( dimensions, function( dimension ) {
-    yMaxes[ dimension ] = 0;
+    valueMaxes[ dimension ] = 0;
 
-    var flatArrayY = [];
+    var flatArrayValues = [];
 
     _.each( rollups, function( color ) {
       var values = _.pluck( color[ dimension ].rollup, 'values' );
-      flatArrayY = _.union( flatArrayY, values );
+      flatArrayValues = _.union( flatArrayValues, values );
     });
 
     // get max
-    yMaxes[ dimension ] = d3.max( flatArrayY );
+    valueMaxes[ dimension ] = d3.max( flatArrayValues );
   });
 }
 
-function setYDomain( dimension ) {
-  yScale.domain( [ 0, yMaxes[ dimension ] ] );
+function setValueDomains( dimension ) {
+  yScale.domain( [ 0, valueMaxes[ dimension ] ] );
+  rScale.domain( [ 0, valueMaxes[ dimension ] ] );
 }
 
 function updateCardTotals() {
@@ -275,7 +332,7 @@ function updateDefinedTotals( color, dimension ) {
 }
 
 function getDragons() {
-	return _.findWhere( data, { name: "Born of the Gods" } );
+	return _.findWhere( data, { name: 'Dragons of Tarkir' } );
 }
 
 function init( loadedJSON ) {

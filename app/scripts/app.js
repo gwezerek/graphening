@@ -27,7 +27,7 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 	filter( data );
 });
 
-},{"./components/cards":2,"./components/colors":3,"./components/filter":5,"./components/filter-UI-enhancer":4,"./utils":7,"d3":8}],2:[function(require,module,exports){
+},{"./components/cards":2,"./components/colors":3,"./components/filter":5,"./components/filter-UI-enhancer":4,"./utils":8,"d3":9}],2:[function(require,module,exports){
 /**
 *
 * Cards
@@ -44,7 +44,7 @@ function init( loadedJSON ) {
 }
 
 module.exports = init;
-},{"../utils":7,"d3":8}],3:[function(require,module,exports){
+},{"../utils":8,"d3":9}],3:[function(require,module,exports){
 /**
 *
 * Colors
@@ -57,21 +57,20 @@ var d3 = require( 'd3' );
 var _ = require( 'underscore' );
 var utils = require( '../utils' );
 var templateColors = require( '../templates/colors.hbs' );
+var templateColorsInventory = require( '../templates/colors-inventory.hbs' );
 
 var columnColors = [ 'white', 'blue' , 'black', 'red', 'green', 'multicolor', 'colorless' ];
 var dimensions = [ 'cmc', 'power', 'toughness', 'rarity', 'types', 'subtypes' ];
 
 // Compile the template
-_.each( columnColors, function( color ) {
-  document.querySelector( '#colors' ).innerHTML += templateColors( { 'color': color } );
-});
+document.querySelector( '#colors' ).innerHTML += templateColors( { 'color': columnColors } );
 
-var margin = { top: 20, right: 0, bottom: 15, left: 0 };
-var parentEls = document.querySelector( '.color__column' );
-var width = parentEls.offsetWidth - margin.left - margin.right;
+var margin = { top: 15, right: 0, bottom: 15, left: 0 };
+var graphEl = document.querySelector( '.color__graph__wrap' );
+var width = graphEl.clientWidth - margin.left - margin.right;
 var height = 100 - margin.top - margin.bottom;
 var barDomain = [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9+', '*' ];
-var yMaxes = {};
+var valueMaxes = {};
 var rollups = {};
 var groupedByColor = {};
 var data = {};
@@ -87,6 +86,18 @@ var xAxis = d3.svg.axis()
     .scale( xScale )
     .outerTickSize( 0 )
     .orient( 'bottom' );
+
+// Bubble chart vars
+var bubbleDomain = [ 'Common', 'Uncommon', 'Rare', 'Mythic Rare', 'Basic Land'  ]
+
+var bubbleScale = d3.scale.ordinal()
+    .domain( bubbleDomain )
+    .rangeRoundBands( [ 0, ( width / 2 + 35 ) * bubbleDomain.length ], .5, 0 );
+
+console.log( width, bubbleScale.rangeBand() )
+
+var rScale = d3.scale.sqrt()
+    .range( [ 0, width / 4 ] );
 
 function updateViz() {
 
@@ -104,7 +115,7 @@ function updateViz() {
   getAllRollups();
 
   // set the y maxes across colors
-  getYMaxes();
+  getValueMaxes();
 
   // update all viz
   updateAllViz();
@@ -115,7 +126,7 @@ function updateAllViz() {
   // for each color, loop through the dimensions and create the bar graph
   _.each( columnColors, function( color ) {
     _.each( dimensions, function( dimension ) {
-      setYDomain( dimension );
+      setValueDomains( dimension );
       updateDefinedTotals( color, dimension );
       vizDispatch( color, dimension );
     });
@@ -135,6 +146,7 @@ function vizDispatch( color, dimension ) {
 }
 
 function drawBar( color, dimension ) {
+
   var svg = d3.select( '#color__graph--' + dimension + '--' + color ).append( 'svg' )
       .attr( 'width', width + margin.left + margin.right )
       .attr( 'height', height + margin.top + margin.bottom );
@@ -191,36 +203,79 @@ function drawBar( color, dimension ) {
       .text( function( d ) { return d.values; })
       .attr({
         x: xScale.rangeBand() / 2,
-        y: -3,
+        y: -4,
         class: 'bar__label'
       });
-
-
-
-
-
-
-  // var bars = chart.selectAll('rect')
-  //   .data( rollups[ color ][ dimension ].rollup );
-
-  // bars.enter().append( 'rect' );
-
-  // bars.transition()
-  //     .attr({
-  //       height: function( d ) { return height - yScale( d.values ); },
-  //       width: xScale.rangeBand(),
-  //       x: function( d ) { return xScale( d.key ); },
-  //       y: function( d ) { return yScale( d.values ); },
-  //       class: 'bar__rect'
-  //     });
 }
 
 function drawBubbles( color, dimension ) {
 
+  var height = ( width / 2 + 24 ) * bubbleDomain.length;
+  var marginTop = width / 4 + 20;
+  var marginBottom = width / 4;
+
+  var svg = d3.select( '#color__graph--' + dimension + '--' + color ).append( 'svg' )
+      .attr( 'width', width )
+      .attr( 'height', height + marginTop + marginBottom );
+
+  var chart = svg.append( 'g' )
+      .attr( 'width', width )
+      .attr( 'height', height )
+      .attr( 'transform', 'translate( 0,' + marginTop + ')' );
+
+  // Update bar groups
+  var bubbleWrap = chart.selectAll( 'g' )
+      .data( rollups[ color ][ dimension ].rollup );
+
+  var bubbleEnter = bubbleWrap.enter().append( 'g' );
+
+  bubbleWrap.transition()
+      .attr({
+        class: 'bar__wrap',
+        transform: function( d ) { return 'translate(' + width / 2 + ', ' + bubbleScale( d.key ) + ')'; }
+      });
+
+  bubbleWrap.exit()
+      .remove();
+
+  // Update bubbles
+  bubbleEnter.append( 'circle' );
+
+  var bubbles = bubbleWrap.selectAll( 'circle' )
+      .data( function( d ) { return [ d ]; } );
+
+  bubbles.attr({
+        r: function( d ) { return rScale( d.values ); },
+        class: 'bubble__circle'
+      });
+
+  // Update value labels
+  bubbleEnter.append( 'text' )
+    .attr( 'class', 'bubble__label bubble__label--value' );
+
+  var valueLabels = bubbleWrap.selectAll( '.bubble__label--value' )
+      .text( function( d ) { return d.values; } )
+      .attr( 'y', 3 );
+
+  // Update key labels
+  bubbleEnter.append( 'text' )
+      .attr( 'class', 'bubble__label bubble__label--key' );
+
+  var keyLabels = bubbleWrap.selectAll( '.bubble__label--key' )
+      .text( function( d ) { return d.key; } )
+      .attr( 'y', -width / 4 - 10 );
+
 }
 
 function compileInventory( color, dimension ) {
+  var inventoryStr = '';
+  var ol = document.querySelector( '#color__graph__ol--' + dimension + '--' + color );
 
+  _.each( rollups[ color ][ dimension ].rollup, function( key ) {
+    inventoryStr += templateColorsInventory( { 'key': key.key, 'value': key.values } );
+  });
+
+  ol.innerHTML = inventoryStr;
 }
 
 function groupByColor() {
@@ -273,6 +328,7 @@ function rollupByDimensionQuantitative( color, dimension ) {
         }
       })
       .rollup( function( cards ) { return cards.length; } )
+      .sortValues( d3.descending )
       .entries( groupedByColor[ color ] );
 
   return rollup;
@@ -287,24 +343,25 @@ function rollupByDimensionCategorical( color, dimension ) {
   return rollup;
 }
 
-function getYMaxes() {
+function getValueMaxes() {
   _.each( dimensions, function( dimension ) {
-    yMaxes[ dimension ] = 0;
+    valueMaxes[ dimension ] = 0;
 
-    var flatArrayY = [];
+    var flatArrayValues = [];
 
     _.each( rollups, function( color ) {
       var values = _.pluck( color[ dimension ].rollup, 'values' );
-      flatArrayY = _.union( flatArrayY, values );
+      flatArrayValues = _.union( flatArrayValues, values );
     });
 
     // get max
-    yMaxes[ dimension ] = d3.max( flatArrayY );
+    valueMaxes[ dimension ] = d3.max( flatArrayValues );
   });
 }
 
-function setYDomain( dimension ) {
-  yScale.domain( [ 0, yMaxes[ dimension ] ] );
+function setValueDomains( dimension ) {
+  yScale.domain( [ 0, valueMaxes[ dimension ] ] );
+  rScale.domain( [ 0, valueMaxes[ dimension ] ] );
 }
 
 function updateCardTotals() {
@@ -322,7 +379,7 @@ function updateDefinedTotals( color, dimension ) {
 }
 
 function getDragons() {
-	return _.findWhere( data, { name: "Born of the Gods" } );
+	return _.findWhere( data, { name: 'Dragons of Tarkir' } );
 }
 
 function init( loadedJSON ) {
@@ -333,7 +390,7 @@ function init( loadedJSON ) {
 module.exports = init;
 
 
-},{"../templates/colors.hbs":6,"../utils":7,"d3":8,"underscore":21}],4:[function(require,module,exports){
+},{"../templates/colors-inventory.hbs":6,"../templates/colors.hbs":7,"../utils":8,"d3":9,"underscore":22}],4:[function(require,module,exports){
 /**
 *
 * Filter
@@ -351,7 +408,7 @@ function init() {
 
 module.exports = init;
 
-},{"jquery":17,"selectize":18}],5:[function(require,module,exports){
+},{"jquery":18,"selectize":19}],5:[function(require,module,exports){
 /**
 *
 * Filter
@@ -369,48 +426,87 @@ function init( loadedJSON ) {
 
 module.exports = init;
 
-},{"../utils":7,"d3":8}],6:[function(require,module,exports){
+},{"../utils":8,"d3":9}],6:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "<div class=\"color__column color__column--"
-    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\" id=\"color__column--"
-    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">\n  <header class=\"color__column__header\">\n    <h3 class=\"color__head\">"
-    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "</h3>\n    <h4 class=\"color__subhead\"><span id=\"card__total--"
-    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">TK</span> cards</h4>\n  </header>\n  <div class=\"color__graph color__graph--cmc\" id=\"color__graph--cmc--"
-    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">\n    <h4 class=\"color__graph__head color__graph__name--cmc\">Mana cost</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--cmc\">Undefined for <span id=\"card__undefined--cmc--"
-    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">0</span> cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--power\" id=\"color__graph--power--"
-    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">\n    <h4 class=\"color__graph__head color__graph__name--power\">Power</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--power\">Undefined for <span id=\"card__undefined--power--"
-    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">0</span> cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--toughness\" id=\"color__graph--toughness--"
-    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">\n    <h4 class=\"color__graph__head color__graph__name--toughness\">Toughness</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--toughness\">Undefined for <span id=\"card__undefined--toughness--"
-    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">0</span> cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--rarity\" id=\"color__graph--rarity--"
-    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">\n    <h4 class=\"color__graph__head color__graph__name--rarity\">Rarity</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--rarity\">Undefined for <span id=\"card__undefined--rarity--"
-    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">0</span> cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--types\" id=\"color__graph--types--"
-    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">\n    <h4 class=\"color__graph__head color__graph__name--types\">Types</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--types\">Undefined for <span id=\"card__undefined--types--"
-    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">0</span> cards</h5>\n  </div>\n  <div class=\"color__graph color__graph--subtypes\" id=\"color__graph--subtypes--"
-    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">\n    <h4 class=\"color__graph__head color__graph__name--subtypes\">Subtypes</h4>\n    <h5 class=\"color__graph__subhead color__graph__subhead--subtypes\">Undefined for <span id=\"card__undefined--subtypes--"
-    + alias3(((helper = (helper = helpers.color || (depth0 != null ? depth0.color : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"color","hash":{},"data":data}) : helper)))
-    + "\">0</span> cards</h5>\n  </div>\n</div>\n";
+  return "<li class=\"color__graph__li\">"
+    + alias3(((helper = (helper = helpers.key || (depth0 != null ? depth0.key : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
+    + " x "
+    + alias3(((helper = (helper = helpers.value || (depth0 != null ? depth0.value : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"value","hash":{},"data":data}) : helper)))
+    + " </li>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":16}],7:[function(require,module,exports){
+},{"hbsfy/runtime":17}],7:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "  <div class=\"color__column color__column--"
+    + alias2(alias1(depth0, depth0))
+    + "\" id=\"color__column--"
+    + alias2(alias1(depth0, depth0))
+    + "\">\n    <header class=\"color__column__header\">\n        <h3 class=\"color__head\">"
+    + alias2(alias1(depth0, depth0))
+    + "</h3>\n        <h4 class=\"color__subhead\"><span id=\"card__total--"
+    + alias2(alias1(depth0, depth0))
+    + "\">TK</span> cards</h4>\n    </header>\n    <div class=\"color__graph color__graph--cmc\">\n      <div class=\"color__graph__wrap\">\n        <header class=\"color__graph__header\">\n          <h4 class=\"color__graph__head color__graph__name--cmc\">"
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</h4>\n        </header>\n        <div id=\"color__graph--cmc--"
+    + alias2(alias1(depth0, depth0))
+    + "\"></div>\n        <aside class=\"color__graph__aside\">\n          <h5 class=\"color__graph__subhead color__graph__subhead--cmc\">Undefined for <span id=\"card__undefined--cmc--"
+    + alias2(alias1(depth0, depth0))
+    + "\">0</span> cards</h5>\n        </aside>\n      </div>\n    </div>\n    <div class=\"color__graph color__graph--power\">\n      <div class=\"color__graph__wrap\">\n        <header class=\"color__graph__header\">\n          <h4 class=\"color__graph__head color__graph__name--power\">"
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</h4>\n        </header>\n        <div id=\"color__graph--power--"
+    + alias2(alias1(depth0, depth0))
+    + "\"></div>\n        <aside class=\"color__graph__aside\">\n          <h5 class=\"color__graph__subhead color__graph__subhead--power\">Undefined for <span id=\"card__undefined--power--"
+    + alias2(alias1(depth0, depth0))
+    + "\">0</span> cards</h5>\n        </aside>\n      </div>\n    </div>\n    <div class=\"color__graph color__graph--toughness\">\n      <div class=\"color__graph__wrap\">\n        <header class=\"color__graph__header\">\n          <h4 class=\"color__graph__head color__graph__name--toughness\">"
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</h4>\n        </header>\n        <div id=\"color__graph--toughness--"
+    + alias2(alias1(depth0, depth0))
+    + "\"></div>\n        <aside class=\"color__graph__aside\">\n          <h5 class=\"color__graph__subhead color__graph__subhead--toughness\">Undefined for <span id=\"card__undefined--toughness--"
+    + alias2(alias1(depth0, depth0))
+    + "\">0</span> cards</h5>\n        </aside>\n      </div>\n    </div>\n    <div class=\"color__graph color__graph--rarity\">\n      <div class=\"color__graph__wrap\">\n        <header class=\"color__graph__header\">\n          <h4 class=\"color__graph__head color__graph__name--rarity\">"
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(8, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</h4>\n        </header>\n        <div id=\"color__graph--rarity--"
+    + alias2(alias1(depth0, depth0))
+    + "\"></div>\n      </div>\n    </div>\n    <div class=\"color__graph color__graph--types\" id=\"color__graph--types--"
+    + alias2(alias1(depth0, depth0))
+    + "\">\n      <div class=\"color__graph__wrap\">\n        <header class=\"color__graph__header\">\n          <h4 class=\"color__graph__head color__graph__name--types\">"
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(10, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</h4>\n        </header>\n        <ol class=\"color__graph__list\" id=\"color__graph__ol--types--"
+    + alias2(alias1(depth0, depth0))
+    + "\"></ol>\n      </div>\n    </div>\n    <div class=\"color__graph color__graph--subtypes\" id=\"color__graph--subtypes--"
+    + alias2(alias1(depth0, depth0))
+    + "\">\n      <div class=\"color__graph__wrap\">\n        <header class=\"color__graph__header\">\n          <h4 class=\"color__graph__head color__graph__name--subtypes\">"
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(12, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</h4>\n        </header>\n        <ol class=\"color__graph__list\" id=\"color__graph__ol--subtypes--"
+    + alias2(alias1(depth0, depth0))
+    + "\"></ol>\n      </div>\n    </div>\n  </div>\n";
+},"2":function(depth0,helpers,partials,data) {
+    return "Mana cost";
+},"4":function(depth0,helpers,partials,data) {
+    return "Power";
+},"6":function(depth0,helpers,partials,data) {
+    return "Toughness";
+},"8":function(depth0,helpers,partials,data) {
+    return "Rarity";
+},"10":function(depth0,helpers,partials,data) {
+    return "Types";
+},"12":function(depth0,helpers,partials,data) {
+    return "Subtypes";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
+},"useData":true});
+
+},{"hbsfy/runtime":17}],8:[function(require,module,exports){
 /**
 *
 * Utils
@@ -449,7 +545,7 @@ exports.querySelector = querySelector;
 exports.isInt = isInt;
 exports.blueMap = blueMap;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.5"
@@ -9954,7 +10050,7 @@ exports.blueMap = blueMap;
   if (typeof define === "function" && define.amd) define(d3); else if (typeof module === "object" && module.exports) module.exports = d3;
   this.d3 = d3;
 }();
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -10024,7 +10120,7 @@ exports['default'] = Handlebars;
 module.exports = exports['default'];
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./handlebars/base":10,"./handlebars/exception":11,"./handlebars/runtime":12,"./handlebars/safe-string":13,"./handlebars/utils":14}],10:[function(require,module,exports){
+},{"./handlebars/base":11,"./handlebars/exception":12,"./handlebars/runtime":13,"./handlebars/safe-string":14,"./handlebars/utils":15}],11:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -10298,7 +10394,7 @@ function createFrame(object) {
 }
 
 /* [args, ]options */
-},{"./exception":11,"./utils":14}],11:[function(require,module,exports){
+},{"./exception":12,"./utils":15}],12:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -10337,7 +10433,7 @@ Exception.prototype = new Error();
 
 exports['default'] = Exception;
 module.exports = exports['default'];
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -10570,7 +10666,7 @@ function initData(context, data) {
   }
   return data;
 }
-},{"./base":10,"./exception":11,"./utils":14}],13:[function(require,module,exports){
+},{"./base":11,"./exception":12,"./utils":15}],14:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -10585,7 +10681,7 @@ SafeString.prototype.toString = SafeString.prototype.toHTML = function () {
 
 exports['default'] = SafeString;
 module.exports = exports['default'];
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -10701,15 +10797,15 @@ function blockParams(params, ids) {
 function appendContextPath(contextPath, id) {
   return (contextPath ? contextPath + '.' : '') + id;
 }
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":9}],16:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":10}],17:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":15}],17:[function(require,module,exports){
+},{"handlebars/runtime":16}],18:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -19916,7 +20012,7 @@ return jQuery;
 
 }));
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /**
  * selectize.js (v0.12.1)
  * Copyright (c) 2013–2015 Brian Reavis & contributors
@@ -22975,7 +23071,7 @@ return jQuery;
 
 	return Selectize;
 }));
-},{"jquery":17,"microplugin":19,"sifter":20}],19:[function(require,module,exports){
+},{"jquery":18,"microplugin":20,"sifter":21}],20:[function(require,module,exports){
 /**
  * microplugin.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -23111,7 +23207,7 @@ return jQuery;
 
 	return MicroPlugin;
 }));
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /**
  * sifter.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -23584,7 +23680,7 @@ return jQuery;
 }));
 
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors

@@ -1,30 +1,65 @@
-<div class="color__column color__column--{{ color }}" id="color__column--{{ color }}">
-  <header class="color__column__header">
-    <h3 class="color__head">{{ color }}</h3>
-    <h4 class="color__subhead"><span id="card__total--{{ color }}">TK</span> cards</h4>
-  </header>
-  <div class="color__graph color__graph--cmc" id="color__graph--cmc--{{ color }}">
-    <h4 class="color__graph__head color__graph__name--cmc">Mana cost</h4>
-    <h5 class="color__graph__subhead color__graph__subhead--cmc">Undefined for <span id="card__undefined--cmc--{{ color }}">0</span> cards</h5>
+{{#each color}}
+  <div class="color__column color__column--{{ this }}" id="color__column--{{ this }}">
+    <header class="color__column__header">
+        <h3 class="color__head">{{ this }}</h3>
+        <h4 class="color__subhead"><span id="card__total--{{ this }}">TK</span> cards</h4>
+    </header>
+    <div class="color__graph color__graph--cmc">
+      <div class="color__graph__wrap">
+        <header class="color__graph__header">
+          <h4 class="color__graph__head color__graph__name--cmc">{{#if @first}}Mana cost{{/if}}</h4>
+        </header>
+        <div id="color__graph--cmc--{{ this }}"></div>
+        <aside class="color__graph__aside">
+          <h5 class="color__graph__subhead color__graph__subhead--cmc">Undefined for <span id="card__undefined--cmc--{{ this }}">0</span> cards</h5>
+        </aside>
+      </div>
+    </div>
+    <div class="color__graph color__graph--power">
+      <div class="color__graph__wrap">
+        <header class="color__graph__header">
+          <h4 class="color__graph__head color__graph__name--power">{{#if @first}}Power{{/if}}</h4>
+        </header>
+        <div id="color__graph--power--{{ this }}"></div>
+        <aside class="color__graph__aside">
+          <h5 class="color__graph__subhead color__graph__subhead--power">Undefined for <span id="card__undefined--power--{{ this }}">0</span> cards</h5>
+        </aside>
+      </div>
+    </div>
+    <div class="color__graph color__graph--toughness">
+      <div class="color__graph__wrap">
+        <header class="color__graph__header">
+          <h4 class="color__graph__head color__graph__name--toughness">{{#if @first}}Toughness{{/if}}</h4>
+        </header>
+        <div id="color__graph--toughness--{{ this }}"></div>
+        <aside class="color__graph__aside">
+          <h5 class="color__graph__subhead color__graph__subhead--toughness">Undefined for <span id="card__undefined--toughness--{{ this }}">0</span> cards</h5>
+        </aside>
+      </div>
+    </div>
+    <div class="color__graph color__graph--rarity">
+      <div class="color__graph__wrap">
+        <header class="color__graph__header">
+          <h4 class="color__graph__head color__graph__name--rarity">{{#if @first}}Rarity{{/if}}</h4>
+        </header>
+        <div id="color__graph--rarity--{{ this }}"></div>
+      </div>
+    </div>
+    <div class="color__graph color__graph--types" id="color__graph--types--{{ this }}">
+      <div class="color__graph__wrap">
+        <header class="color__graph__header">
+          <h4 class="color__graph__head color__graph__name--types">{{#if @first}}Types{{/if}}</h4>
+        </header>
+        <ol class="color__graph__list" id="color__graph__ol--types--{{ this }}"></ol>
+      </div>
+    </div>
+    <div class="color__graph color__graph--subtypes" id="color__graph--subtypes--{{ this }}">
+      <div class="color__graph__wrap">
+        <header class="color__graph__header">
+          <h4 class="color__graph__head color__graph__name--subtypes">{{#if @first}}Subtypes{{/if}}</h4>
+        </header>
+        <ol class="color__graph__list" id="color__graph__ol--subtypes--{{ this }}"></ol>
+      </div>
+    </div>
   </div>
-  <div class="color__graph color__graph--power" id="color__graph--power--{{ color }}">
-    <h4 class="color__graph__head color__graph__name--power">Power</h4>
-    <h5 class="color__graph__subhead color__graph__subhead--power">Undefined for <span id="card__undefined--power--{{ color }}">0</span> cards</h5>
-  </div>
-  <div class="color__graph color__graph--toughness" id="color__graph--toughness--{{ color }}">
-    <h4 class="color__graph__head color__graph__name--toughness">Toughness</h4>
-    <h5 class="color__graph__subhead color__graph__subhead--toughness">Undefined for <span id="card__undefined--toughness--{{ color }}">0</span> cards</h5>
-  </div>
-  <div class="color__graph color__graph--rarity" id="color__graph--rarity--{{ color }}">
-    <h4 class="color__graph__head color__graph__name--rarity">Rarity</h4>
-    <h5 class="color__graph__subhead color__graph__subhead--rarity">Undefined for <span id="card__undefined--rarity--{{ color }}">0</span> cards</h5>
-  </div>
-  <div class="color__graph color__graph--types" id="color__graph--types--{{ color }}">
-    <h4 class="color__graph__head color__graph__name--types">Types</h4>
-    <h5 class="color__graph__subhead color__graph__subhead--types">Undefined for <span id="card__undefined--types--{{ color }}">0</span> cards</h5>
-  </div>
-  <div class="color__graph color__graph--subtypes" id="color__graph--subtypes--{{ color }}">
-    <h4 class="color__graph__head color__graph__name--subtypes">Subtypes</h4>
-    <h5 class="color__graph__subhead color__graph__subhead--subtypes">Undefined for <span id="card__undefined--subtypes--{{ color }}">0</span> cards</h5>
-  </div>
-</div>
+{{/each}}
