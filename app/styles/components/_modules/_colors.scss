@@ -5,36 +5,24 @@
 **/
 
 .colors {
-	display:flex;
-  flex-direction: row;
-}
-
-.color__column {
-	flex-grow: 1;
-	flex-basis: 0;
-	border-right: 1px dashed $colorBlueGrey700;
-	margin-right: $baseSpace / 2;
-	&:last-child {
-		margin-right: 0;
-		border-right: 0px solid transparent;
-	}
-	&:not(:first-child) .color__graph__header {
-		padding-top: 2.4rem;
-	}
+	margin: 0 -$baseSpace;
 }
 
 .color__column__header {
 	padding-bottom: $baseSpace / 2;
-	margin-bottom: $baseSpace;
 	border-bottom: 1px solid $colorBlueGrey50;
 	margin-right: $baseSpace / 2;
-	// background: $colorBlueGrey900;
+	text-align: left;
 }
 
-.color__icon {
-	margin-bottom: $baseSpace / 2;
+.color__table {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: $baseSpace $baseSpace/2;
 }
 
+
+// Header row
 .color__graph__header {
 	margin-bottom: $baseSpace / 2;
 }
@@ -43,7 +31,7 @@
 	color: $colorBlueGrey100;
 	font-size: $fontMedium;
 	text-transform: capitalize;
-  font-weight: 700;
+	font-weight: 700;
 }
 
 .color__subhead {
@@ -52,11 +40,13 @@
 	font-size: $fontSmall;
 }
 
+// Body rows
 .color__graph {
-	margin-bottom: $baseSpace / 2;
-	padding-bottom: $baseSpace / 2;
-	margin-right: $baseSpace / 2;
-	// border-bottom: 1px dashed $colorBlueGrey700;
+	padding-top: $baseSpace / 2;
+	vertical-align: top;
+	&:not(:first-child) .color__graph__wrap {
+		padding-top: $baseSpace;
+	}
 }
 
 .color__graph__head {
@@ -70,6 +60,8 @@
 	color: $colorBlueGrey500;
 }
 
+
+// Bar chart
 .bar__rect {
 	fill: $colorBlueGrey300;
 }
@@ -91,7 +83,6 @@
 
 
 // Bubble
-
 .bubble__circle {
 	fill: $colorBlueGrey300;
 }
@@ -106,7 +97,6 @@
 }
 
 // Inventories
-
 .color__graph__li {
 	font-size: $fontSmall;
 	color: $colorBlueGrey500;
