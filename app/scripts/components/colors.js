@@ -109,19 +109,63 @@ function drawBar( color, dimension ) {
   var xAxisPath = xAxisEl.selectAll( 'path' )
       .attr('class', 'axis__x__path');
 
-  var bars = chart.selectAll('rect')
-    .data( rollups[ color ][ dimension ].rollup );
 
-  bars.enter().append( 'rect' );
+  // Update bar groups
+  var barWrap = chart.selectAll( 'g' )
+      .data( rollups[ color ][ dimension ].rollup );
 
-  bars.transition()
+  var barEnter = barWrap.enter().append( 'g' );
+
+  barWrap.transition()
       .attr({
+        class: 'bar__wrap',
+        transform: function( d ) { return 'translate(' + xScale( d.key ) + ', ' + yScale( d.values ) + ')'; }
+      });
+
+  barWrap.exit()
+      .remove();
+
+  // Update bars
+  barEnter.append( 'rect' );
+
+  var bars = barWrap.selectAll( 'rect' )
+      .data( function( d ) { return [ d ]; } );
+
+  bars.attr({
         height: function( d ) { return height - yScale( d.values ); },
         width: xScale.rangeBand(),
-        x: function( d ) { return xScale( d.key ); },
-        y: function( d ) { return yScale( d.values ); },
         class: 'bar__rect'
       });
+
+  // Update labels
+  barEnter.append( 'text' );
+
+  var labels = barWrap.selectAll( 'text' )
+      .text( function( d ) { return d.values; })
+      .attr({
+        x: xScale.rangeBand() / 2,
+        y: -3,
+        class: 'bar__label'
+      });
+
+
+
+
+
+
+  // var bars = chart.selectAll('rect')
+  //   .data( rollups[ color ][ dimension ].rollup );
+
+  // bars.enter().append( 'rect' );
+
+  // bars.transition()
+  //     .attr({
+  //       height: function( d ) { return height - yScale( d.values ); },
+  //       width: xScale.rangeBand(),
+  //       x: function( d ) { return xScale( d.key ); },
+  //       y: function( d ) { return yScale( d.values ); },
+  //       class: 'bar__rect'
+  //     });
 }
 
 function drawBubbles( color, dimension ) {
@@ -231,7 +275,7 @@ function updateDefinedTotals( color, dimension ) {
 }
 
 function getDragons() {
-	return _.findWhere( data, { name: "Theros" } );
+	return _.findWhere( data, { name: "Born of the Gods" } );
 }
 
 function init( loadedJSON ) {
