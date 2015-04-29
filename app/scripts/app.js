@@ -94,8 +94,6 @@ var bubbleScale = d3.scale.ordinal()
     .domain( bubbleDomain )
     .rangeRoundBands( [ 0, ( width / 2 + 35 ) * bubbleDomain.length ], .5, 0 );
 
-console.log( width, bubbleScale.rangeBand() )
-
 var rScale = d3.scale.sqrt()
     .range( [ 0, width / 4 ] );
 
@@ -231,7 +229,7 @@ function drawBubbles( color, dimension ) {
 
   bubbleWrap.transition()
       .attr({
-        class: 'bar__wrap',
+        class: 'bubble__wrap',
         transform: function( d ) { return 'translate(' + width / 2 + ', ' + bubbleScale( d.key ) + ')'; }
       });
 
@@ -302,6 +300,7 @@ function getAllRollups() {
         rollups[ color ][ dimension ].rollup = rollupByDimensionQuantitative( color, dimension );
       } else {
         rollups[ color ][ dimension ].rollup = rollupByDimensionCategorical( color, dimension );
+        sortCategoricalNest( color, dimension );
       }
 
       // remove undefined
@@ -328,7 +327,6 @@ function rollupByDimensionQuantitative( color, dimension ) {
         }
       })
       .rollup( function( cards ) { return cards.length; } )
-      .sortValues( d3.descending )
       .entries( groupedByColor[ color ] );
 
   return rollup;
@@ -336,11 +334,23 @@ function rollupByDimensionQuantitative( color, dimension ) {
 
 function rollupByDimensionCategorical( color, dimension ) {
   var rollup = d3.nest()
-      .key( function( d ) { return d[ dimension ]; })
+      .key( function( d ) {
+        if ( _.isArray( d[ dimension ] ) ) {
+          return d[ dimension ].join('/');
+        } else {
+          return d[ dimension ];
+        }
+      }).sortValues( function( a, b ) { return a.length - b.length; } )
       .rollup( function( cards ) { return cards.length; } )
       .entries( groupedByColor[ color ] );
 
   return rollup;
+}
+
+function sortCategoricalNest( color, dimension ) {
+  rollups[color][dimension].rollup.sort( function( a, b ) {
+    return b.values - a.values;
+  });
 }
 
 function getValueMaxes() {
