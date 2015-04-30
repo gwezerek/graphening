@@ -13,11 +13,12 @@ var colors = require( './components/colors' );
 // var timeline = require( './components/colors' );
 var cards = require( './components/cards' );
 var filter = require( './components/filter' );
-var filterUIEnhancer = require( './components/filter-UI-enhancer' );
+var selectized = require( './components/selectized' );
 var compileFilters = require( './components/compile-filter' );
+var eventsDispatch = require( './components/events-dispatch' );
 
 // Upgrade form elements with Selectize
-// filterUIEnhancer();
+// selectized();
 
 d3.json( '../data/AllSets.json', function( error, data ) {
 
@@ -28,10 +29,12 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 	var allCards = compileFilters( data );
 
 	// Populate form elements with dimension ranges
-	filterUIEnhancer( allCards );
+	var selectizedEls = selectized.init( allCards );
 
 	// Populate color graph table
-  colors( allCards );
+	colors( allCards );
+
+	eventsDispatch( selectizedEls );
 
 	// timeline( data );
 	cards( data );

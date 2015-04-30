@@ -14,11 +14,12 @@ var colors = require( './components/colors' );
 // var timeline = require( './components/colors' );
 var cards = require( './components/cards' );
 var filter = require( './components/filter' );
-var filterUIEnhancer = require( './components/filter-UI-enhancer' );
+var selectized = require( './components/selectized' );
 var compileFilters = require( './components/compile-filter' );
+var eventsDispatch = require( './components/events-dispatch' );
 
 // Upgrade form elements with Selectize
-// filterUIEnhancer();
+// selectized();
 
 d3.json( '../data/AllSets.json', function( error, data ) {
 
@@ -29,17 +30,19 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 	var allCards = compileFilters( data );
 
 	// Populate form elements with dimension ranges
-	filterUIEnhancer( allCards );
+	var selectizedEls = selectized.init( allCards );
 
 	// Populate color graph table
-  colors( allCards );
+	colors( allCards );
+
+	eventsDispatch( selectizedEls );
 
 	// timeline( data );
 	cards( data );
 	filter( data );
 });
 
-},{"./components/cards":2,"./components/colors":3,"./components/compile-filter":4,"./components/filter":6,"./components/filter-UI-enhancer":5,"./utils":10,"d3":11}],2:[function(require,module,exports){
+},{"./components/cards":2,"./components/colors":3,"./components/compile-filter":4,"./components/events-dispatch":5,"./components/filter":6,"./components/selectized":7,"./utils":11,"d3":12}],2:[function(require,module,exports){
 /**
 *
 * Cards
@@ -56,7 +59,7 @@ function init( loadedJSON ) {
 }
 
 module.exports = init;
-},{"../utils":10,"d3":11}],3:[function(require,module,exports){
+},{"../utils":11,"d3":12}],3:[function(require,module,exports){
 /**
 *
 * Colors
@@ -407,7 +410,7 @@ function init( allCards ) {
 module.exports = init;
 
 
-},{"../templates/components/colors.hbs":7,"../templates/partials/colors-inventory.hbs":8,"../utils":10,"d3":11,"underscore":24}],4:[function(require,module,exports){
+},{"../templates/components/colors.hbs":8,"../templates/partials/colors-inventory.hbs":9,"../utils":11,"d3":12,"underscore":25}],4:[function(require,module,exports){
 /**
 *
 * Filter
@@ -478,25 +481,56 @@ function init( loadedJSON ) {
 
 module.exports = init;
 
-},{"../templates/partials/filter-options.hbs":9,"underscore":24}],5:[function(require,module,exports){
+},{"../templates/partials/filter-options.hbs":10,"underscore":25}],5:[function(require,module,exports){
 /**
 *
-* Filter
+* Events Dispatch
 *
 **/
 
 'use strict';
 
 var $ = require( 'jquery' );
-var selectize = require( 'selectize' );
+var _ = require( 'underscore' );
+var selectized = require( './selectized' );
 
-function init( flatArr ) {
-	$( '.filter__select--multi' ).selectize();
+var filters = [
+	{ 
+		'dimension': 'set',
+		'values': []
+	}, { 
+		'dimension': 'rarity',
+		'values': []
+	}, { 
+		'dimension': 'types',
+		'values': []
+	}, { 
+		'dimension': 'subtypes',
+		'values': []
+	}
+]
+
+function bindFilterListeners( selectizedEls ) {
+	// set up event listeners
+	selectizedEls.on( 'change', function() {
+		_.each( selectizedEls, function( el, i ) {
+			filters[ i ].values = el.selectize.getValue();
+		});
+		filterCards();
+	});
+}
+
+function filterCards() {
+	
+}
+
+function init( selectizedEls ) {
+	bindFilterListeners( selectizedEls );
 }
 
 module.exports = init;
 
-},{"jquery":20,"selectize":21}],6:[function(require,module,exports){
+},{"./selectized":7,"jquery":21,"underscore":25}],6:[function(require,module,exports){
 /**
 *
 * Filter
@@ -518,7 +552,24 @@ function init( loadedJSON ) {
 
 module.exports = init;
 
-},{"../utils":10,"d3":11}],7:[function(require,module,exports){
+},{"../utils":11,"d3":12}],7:[function(require,module,exports){
+/**
+*
+* Selectized
+*
+**/
+
+'use strict';
+
+var $ = require( 'jquery' );
+var selectize = require( 'selectize' );
+
+var init = function( flatArr ) {
+	return $( '.filter__select--multi' ).selectize();
+};
+
+exports.init = init;
+},{"jquery":21,"selectize":22}],8:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
@@ -621,7 +672,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
     + "    </tr>\n  </tbody>\n</table>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":19}],8:[function(require,module,exports){
+},{"hbsfy/runtime":20}],9:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -634,7 +685,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + " </li>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":19}],9:[function(require,module,exports){
+},{"hbsfy/runtime":20}],10:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
@@ -651,7 +702,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.dimension_value : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"useData":true});
 
-},{"hbsfy/runtime":19}],10:[function(require,module,exports){
+},{"hbsfy/runtime":20}],11:[function(require,module,exports){
 /**
 *
 * Utils
@@ -674,15 +725,6 @@ var blueMap = {
 	900: '#263238'
 };
 
-// from http://stackoverflow.com/questions/14636536/how-to-check-if-a-variable-is-an-integer-in-javascript
-// var isInt = function(value) {
-//   if ( isNaN( value ) ) {
-//     return false;
-//   }
-//   var x = parseFloat( value );
-//   return ( x | 0 ) === x;
-// }
-
 // from http://stackoverflow.com/questions/3885817/how-to-check-if-a-number-is-float-or-integer
 var isInt = function(n) { return parseInt(n) === n };
 
@@ -690,7 +732,7 @@ exports.querySelector = querySelector;
 exports.isInt = isInt;
 exports.blueMap = blueMap;
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.5"
@@ -10195,7 +10237,7 @@ exports.blueMap = blueMap;
   if (typeof define === "function" && define.amd) define(d3); else if (typeof module === "object" && module.exports) module.exports = d3;
   this.d3 = d3;
 }();
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -10265,7 +10307,7 @@ exports['default'] = Handlebars;
 module.exports = exports['default'];
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./handlebars/base":13,"./handlebars/exception":14,"./handlebars/runtime":15,"./handlebars/safe-string":16,"./handlebars/utils":17}],13:[function(require,module,exports){
+},{"./handlebars/base":14,"./handlebars/exception":15,"./handlebars/runtime":16,"./handlebars/safe-string":17,"./handlebars/utils":18}],14:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -10539,7 +10581,7 @@ function createFrame(object) {
 }
 
 /* [args, ]options */
-},{"./exception":14,"./utils":17}],14:[function(require,module,exports){
+},{"./exception":15,"./utils":18}],15:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -10578,7 +10620,7 @@ Exception.prototype = new Error();
 
 exports['default'] = Exception;
 module.exports = exports['default'];
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -10811,7 +10853,7 @@ function initData(context, data) {
   }
   return data;
 }
-},{"./base":13,"./exception":14,"./utils":17}],16:[function(require,module,exports){
+},{"./base":14,"./exception":15,"./utils":18}],17:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -10826,7 +10868,7 @@ SafeString.prototype.toString = SafeString.prototype.toHTML = function () {
 
 exports['default'] = SafeString;
 module.exports = exports['default'];
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -10942,15 +10984,15 @@ function blockParams(params, ids) {
 function appendContextPath(contextPath, id) {
   return (contextPath ? contextPath + '.' : '') + id;
 }
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":12}],19:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":13}],20:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":18}],20:[function(require,module,exports){
+},{"handlebars/runtime":19}],21:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -20157,7 +20199,7 @@ return jQuery;
 
 }));
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /**
  * selectize.js (v0.12.1)
  * Copyright (c) 2013–2015 Brian Reavis & contributors
@@ -23216,7 +23258,7 @@ return jQuery;
 
 	return Selectize;
 }));
-},{"jquery":20,"microplugin":22,"sifter":23}],22:[function(require,module,exports){
+},{"jquery":21,"microplugin":23,"sifter":24}],23:[function(require,module,exports){
 /**
  * microplugin.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -23352,7 +23394,7 @@ return jQuery;
 
 	return MicroPlugin;
 }));
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /**
  * sifter.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -23825,7 +23867,7 @@ return jQuery;
 }));
 
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
