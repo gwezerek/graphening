@@ -5,13 +5,15 @@
 **/
 
 .site__header {
-
+	background: $colorBlueGrey900;
+	padding: $baseSpace;
+	margin-bottom: $baseSpace;
 }
 
 .site__head {
 	color: white;
 	font-size: $fontXXLarge;
-	margin-bottom: $baseSpace * 2;
+	margin-bottom: $baseSpace;
 	font-weight: 700;
 	letter-spacing: -2px;
 }

@@ -1,0 +1,22 @@
+/**
+*
+* Filters
+*
+**/
+
+.filter {
+	display: flex;
+}
+
+.filter__fieldset {
+	flex-grow: 1;
+	margin-right: $baseSpace;
+	&:last-of-type {
+		margin-right: 0;
+	}
+}
+
+.filter__head {
+	font-size: $fontBase;
+	color: white;
+}

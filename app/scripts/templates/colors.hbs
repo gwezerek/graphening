@@ -1,5 +1,5 @@
 <table class="color__table">
-  <tbody>
+  <thead>
     <tr class="color__table__row color__table__row--header">
       {{#each color}}
       <th class="color__column__header">
@@ -8,6 +8,8 @@
       </th>
       {{/each}}
     </tr>
+  </thead>
+  <tbody>
     <tr class="color__table__row color__table__row--body">
       {{#each color}}
         <td class="color__graph color__graph--cmc">

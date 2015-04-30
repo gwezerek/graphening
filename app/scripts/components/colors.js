@@ -338,10 +338,7 @@ function updateCardTotals() {
 
 function updateDefinedTotals( color, dimension ) {
   if ( rollups[ color ][ dimension ].undefined ) {
-    // debugger;
     document.querySelector( '#card__undefined--' + dimension + '--' + color ).innerHTML = rollups[ color ][ dimension ].undefined;
-  } else {
-    // TK hide function
   }
 }
 

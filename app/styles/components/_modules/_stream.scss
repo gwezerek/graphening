@@ -4,6 +4,10 @@
 *
 **/
 
+.stream {
+	padding: $baseSpace;
+}
+
 .stream__head {
 	font-size: $fontMedium;
 	color: white;

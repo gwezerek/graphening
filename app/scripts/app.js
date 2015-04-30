@@ -385,10 +385,7 @@ function updateCardTotals() {
 
 function updateDefinedTotals( color, dimension ) {
   if ( rollups[ color ][ dimension ].undefined ) {
-    // debugger;
     document.querySelector( '#card__undefined--' + dimension + '--' + color ).innerHTML = rollups[ color ][ dimension ].undefined;
-  } else {
-    // TK hide function
   }
 }
 
@@ -539,9 +536,9 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<table class=\"color__table\">\n  <tbody>\n    <tr class=\"color__table__row color__table__row--header\">\n"
+  return "<table class=\"color__table\">\n  <thead>\n    <tr class=\"color__table__row color__table__row--header\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "    </tr>\n    <tr class=\"color__table__row color__table__row--body\">\n"
+    + "    </tr>\n  </thead>\n  <tbody>\n    <tr class=\"color__table__row color__table__row--body\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </tr>\n    <tr class=\"color__table__row color__table__row--body\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
