@@ -2,6 +2,9 @@ Goals:
 
 Add filter
 	Build via html
+	Populate with values
+	Receive events
+	Change set
 Debug transitions
 Refactor
 Add cards

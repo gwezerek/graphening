@@ -9,8 +9,8 @@
 var d3 = require( 'd3' );
 var _ = require( 'underscore' );
 var utils = require( '../utils' );
-var templateColors = require( '../templates/colors.hbs' );
-var templateColorsInventory = require( '../templates/colors-inventory.hbs' );
+var templateColors = require( '../templates/components/colors.hbs' );
+var templateColorsInventory = require( '../templates/partials/colors-inventory.hbs' );
 
 var columnColors = [ 'white', 'blue' , 'black', 'red', 'green', 'multicolor', 'colorless' ];
 var dimensions = [ 'cmc', 'power', 'toughness', 'rarity', 'types', 'subtypes' ];
@@ -289,6 +289,7 @@ function rollupByDimensionCategorical( color, dimension ) {
   var rollup = d3.nest()
       .key( function( d ) {
         if ( _.isArray( d[ dimension ] ) ) {
+          // console.log('me');
           return d[ dimension ].join('/');
         } else if ( !d[ dimension ] ) {
           rollups[ color ][ dimension ].undefined += 1;
