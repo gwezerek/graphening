@@ -9,7 +9,7 @@
 var $ = require( 'jquery' );
 var selectize = require( 'selectize' );
 
-function init() {
+function init( flatArr ) {
 	$( '.filter__select--multi' ).selectize();
 }
 

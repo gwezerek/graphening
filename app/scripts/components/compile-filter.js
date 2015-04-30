@@ -18,35 +18,36 @@ var ranges = {
 // flatten array of cards
 function flattenCards( data ) {
 
-	var flatArr = _.each( data, function( set ) {
+	var allCards = _.each( data, function( set ) {
 		_.each( set.cards, function( card ) {
 			card.set = set.name;
+
+			// while we're at it...
+			if ( _.isArray( card.types ) ) {
+				card.types = card.types.join('/');
+			}
+			if ( _.isArray( card.subtypes ) ) {
+				card.subtypes = card.subtypes.join('/');
+			}
 		});
 	});
 
-	flatArr = _.chain( flatArr )
+	allCards = _.chain( allCards )
 			.pluck( 'cards' )
 			.flatten( true )
 			.value();
 
-	setRanges( flatArr );
+	return allCards;
 }
 
 // get keys for each of the four filters
-function setRanges( flatArr ) {
+function setRanges( allCards ) {
 	_.each( _.keys( ranges ), function( dimension ) {
-		ranges[ dimension ] = _.chain( flatArr)
-			.map( function( card ) {
-				if ( _.isArray( card[ dimension ] ) ) {
-				  return card[ dimension ].join('/');
-				}
-				return card[ dimension ];
-			})
+		ranges[ dimension ] = _.chain( allCards)
+			.pluck( dimension )
 			.uniq()
 			.value();
 	});
-
-	compileOptions();
 }
 
 // compile template for each and insert that html
@@ -58,7 +59,11 @@ function compileOptions() {
 
 function init( loadedJSON ) {
 	var data = loadedJSON;
-	flattenCards( data );
+	var allCards = flattenCards( data );
+	setRanges( allCards );
+	compileOptions();
+
+	return allCards;
 }
 
 module.exports = init;

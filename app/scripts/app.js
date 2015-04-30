@@ -17,16 +17,22 @@ var filter = require( './components/filter' );
 var filterUIEnhancer = require( './components/filter-UI-enhancer' );
 var compileFilters = require( './components/compile-filter' );
 
+// Upgrade form elements with Selectize
+// filterUIEnhancer();
 
 d3.json( '../data/AllSets.json', function( error, data ) {
-	// Populate filters with full range of values
-	compileFilters( data );
 
-	// Upgrade form elements with Selectize
-	filterUIEnhancer();
+	// Save this?
+	var baseData = data;
+
+	// Populate filters with full range of values, returns flattened array
+	var allCards = compileFilters( data );
+
+	// Populate form elements with dimension ranges
+	filterUIEnhancer( allCards );
 
 	// Populate color graph table
-  colors( data );
+  colors( allCards );
 
 	// timeline( data );
 	cards( data );
@@ -104,10 +110,6 @@ var rScale = d3.scale.sqrt()
     .range( [ 0, width / 4 ] );
 
 function updateViz() {
-
-  // Assume we start with a flat list of all the selected cards
-  // This will happen in a different file eventually
-  data = getDragons().cards;
 
   // group the cards by color
   groupByColor();
@@ -341,10 +343,7 @@ function rollupByDimensionQuantitative( color, dimension ) {
 function rollupByDimensionCategorical( color, dimension ) {
   var rollup = d3.nest()
       .key( function( d ) {
-        if ( _.isArray( d[ dimension ] ) ) {
-          // console.log('me');
-          return d[ dimension ].join('/');
-        } else if ( !d[ dimension ] ) {
+        if ( !d[ dimension ] ) {
           rollups[ color ][ dimension ].undefined += 1;
           return 'undefined';
         } else {
@@ -396,12 +395,12 @@ function updateDefinedTotals( color, dimension ) {
   }
 }
 
-function getDragons() {
-	return _.findWhere( data, { name: 'Dragons of Tarkir' } );
+function getDragons( allCards ) {
+	return _.where( allCards, { set: 'Dragons of Tarkir' } );
 }
 
-function init( loadedJSON ) {
-  data = _.toArray( loadedJSON );
+function init( allCards ) {
+  data = getDragons( allCards );
   updateViz();
 }
 
@@ -429,35 +428,36 @@ var ranges = {
 // flatten array of cards
 function flattenCards( data ) {
 
-	var flatArr = _.each( data, function( set ) {
+	var allCards = _.each( data, function( set ) {
 		_.each( set.cards, function( card ) {
 			card.set = set.name;
+
+			// while we're at it...
+			if ( _.isArray( card.types ) ) {
+				card.types = card.types.join('/');
+			}
+			if ( _.isArray( card.subtypes ) ) {
+				card.subtypes = card.subtypes.join('/');
+			}
 		});
 	});
 
-	flatArr = _.chain( flatArr )
+	allCards = _.chain( allCards )
 			.pluck( 'cards' )
 			.flatten( true )
 			.value();
 
-	setRanges( flatArr );
+	return allCards;
 }
 
 // get keys for each of the four filters
-function setRanges( flatArr ) {
+function setRanges( allCards ) {
 	_.each( _.keys( ranges ), function( dimension ) {
-		ranges[ dimension ] = _.chain( flatArr)
-			.map( function( card ) {
-				if ( _.isArray( card[ dimension ] ) ) {
-				  return card[ dimension ].join('/');
-				}
-				return card[ dimension ];
-			})
+		ranges[ dimension ] = _.chain( allCards)
+			.pluck( dimension )
 			.uniq()
 			.value();
 	});
-
-	compileOptions();
 }
 
 // compile template for each and insert that html
@@ -469,7 +469,11 @@ function compileOptions() {
 
 function init( loadedJSON ) {
 	var data = loadedJSON;
-	flattenCards( data );
+	var allCards = flattenCards( data );
+	setRanges( allCards );
+	compileOptions();
+
+	return allCards;
 }
 
 module.exports = init;
@@ -486,7 +490,7 @@ module.exports = init;
 var $ = require( 'jquery' );
 var selectize = require( 'selectize' );
 
-function init() {
+function init( flatArr ) {
 	$( '.filter__select--multi' ).selectize();
 }
 

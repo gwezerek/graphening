@@ -52,10 +52,6 @@ var rScale = d3.scale.sqrt()
 
 function updateViz() {
 
-  // Assume we start with a flat list of all the selected cards
-  // This will happen in a different file eventually
-  data = getDragons().cards;
-
   // group the cards by color
   groupByColor();
 
@@ -288,10 +284,7 @@ function rollupByDimensionQuantitative( color, dimension ) {
 function rollupByDimensionCategorical( color, dimension ) {
   var rollup = d3.nest()
       .key( function( d ) {
-        if ( _.isArray( d[ dimension ] ) ) {
-          // console.log('me');
-          return d[ dimension ].join('/');
-        } else if ( !d[ dimension ] ) {
+        if ( !d[ dimension ] ) {
           rollups[ color ][ dimension ].undefined += 1;
           return 'undefined';
         } else {
@@ -343,12 +336,12 @@ function updateDefinedTotals( color, dimension ) {
   }
 }
 
-function getDragons() {
-	return _.findWhere( data, { name: 'Dragons of Tarkir' } );
+function getDragons( allCards ) {
+	return _.where( allCards, { set: 'Dragons of Tarkir' } );
 }
 
-function init( loadedJSON ) {
-  data = _.toArray( loadedJSON );
+function init( allCards ) {
+  data = getDragons( allCards );
   updateViz();
 }
 
