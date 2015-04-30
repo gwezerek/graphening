@@ -1,16 +1,27 @@
-Goals:
-
-Add filter
-	Build via html
-	Populate with values
-	Receive events
-	Change set
+BEFORE LAUNCH
+Feature - filter
+	React to change events
+	Update data
+	Update graphs
 Debug transitions
+QA with different filter combos/sets
 Refactor
-Add cards
-Add timeline
+Add card images
 Refactor
+Write footer copy
 
-Test alpha
+ICEBOX
+Make filter bar stick on scroll
+Add timeline
 Add rarity union-ing
-Add 0s and labels
+Add 0s and labels where rarity rollup = 0
+Restyle selectize inputs to match app
+Sort type and subtype filter options by name
+Reverse sort set filter options by release date
+Visually filter filter options based on already selected filters
+Implement caching for images to reduce requests
+Switch from static JSON dump to API
+Stage selectize styling to style first, populate later
+Stage JSON load from all sets to just the most recent set
+Add brushing to bars as filter
+Add brushing to bubbles as filter
