@@ -5,7 +5,9 @@
 **/
 
 .colors {
-	margin: 0 -$baseSpace/2;
+	margin-left: -$baseSpace/2;
+	margin-right: -$baseSpace/2;
+	margin-bottom: $baseSpace;
 }
 
 .color__table {
