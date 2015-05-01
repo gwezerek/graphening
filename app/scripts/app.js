@@ -44,8 +44,8 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 
 'use strict';
 
-var allCards = {};
-var currentCards = {};
+var allCards = [];
+var currentCards = [];
 var filterEls = [];
 var filters = [
 	{
@@ -67,7 +67,7 @@ var filters = [
 exports.allCards = allCards;
 exports.currentCards = currentCards;
 exports.filterEls = filterEls;
-exports.filter = filters;
+exports.filters = filters;
 
 },{}],3:[function(require,module,exports){
 /**
@@ -185,19 +185,28 @@ var appState = require( '../app-state' );
 var _ = require( 'underscore' );
 
 function init( firstLoad ) {
-	var filterProperties = getFilterProperties();
-	appState.currentCards = filterCards( filterProperties );
+	appState.currentCards = filterCards();
 }
 
-function getFilterProperties() {
-	// Take appState.filters and break it into properties
+function filterCards() {
+	var filteredCards = appState.allCards;
+
+	// Progressively filter all cards
+	_.each( appState.filters, function( filter ) {
+		var dimensionUnion = [];
+		if ( filter.values.length ) {
+			_.each( filter.values, function( value ) {
+				var propertyPair = {};
+				propertyPair[ filter.dimension ] = value;
+
+				dimensionUnion.push.apply( dimensionUnion, _.where( filteredCards, propertyPair ) );
+			});
+
+			filteredCards = dimensionUnion;
+		}
+	});
+
 	debugger;
-}
-
-function filterCards( filterProperties ) {
-	var filteredCards = {};
-
-	// TK code here
 
 	return filteredCards;
 }

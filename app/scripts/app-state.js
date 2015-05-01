@@ -6,8 +6,8 @@
 
 'use strict';
 
-var allCards = {};
-var currentCards = {};
+var allCards = [];
+var currentCards = [];
 var filterEls = [];
 var filters = [
 	{
@@ -29,4 +29,4 @@ var filters = [
 exports.allCards = allCards;
 exports.currentCards = currentCards;
 exports.filterEls = filterEls;
-exports.filter = filters;
+exports.filters = filters;
