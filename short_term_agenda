@@ -1,12 +1,9 @@
 BEFORE LAUNCH
 
 QA with different filter combos/sets
-	- Not all filters update
-	- 0 card scenario
 	- Refactor initViz for graphs
-	- Handle card sets with missing colors
 	- Make domains bubble range dynamic
-	- Reset the undefined count/fix undefined bug
+	- undefined heights for some d3 calls
 
 Show Dragons of Tarkir in select on load
 Stage selectize styling to style first, populate later

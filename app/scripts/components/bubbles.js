@@ -10,24 +10,24 @@ var d3 = require( 'd3' );
 var _ = require( 'underscore' );
 var appState = require( '../app-state' );
 
-var bubbleDomain = [ 'Common', 'Uncommon', 'Rare', 'Mythic Rare', 'Basic Land'  ];
-
-var bubbleScale = d3.scale.ordinal()
-    .domain( bubbleDomain );
-
+// Scales
+var bubbleScale = d3.scale.ordinal();
 var rScale = d3.scale.sqrt();
+
 
 var initViz = function( color, dimension ) {
 
-  // Set domains now that template is populated and we have data
-  bubbleScale.rangeRoundBands( [ 0, ( appState.vizWidth / 2 + 35 ) * bubbleDomain.length ], .5, 0 );
-  rScale.range( [ 0, appState.vizWidth / 4 ] )
-      .domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
-
+  var domain = appState.domains[ dimension ];
   var width = appState.vizWidth;
-  var height = ( width / 2 + 24 ) * bubbleDomain.length;
+  var height = ( width / 2 + 20 ) * domain.length;
   var margin = { top: width / 4 + 20, bottom: width / 4 };
 
+  // Set domains now that template is populated and we have data
+  bubbleScale.domain( appState.domains.rarity )
+      .rangeRoundBands( [ 0, height ], .75, 0 );
+
+  rScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] )
+      .range( [ 0, width / 4 ] );
 
   var svg = d3.select( '#color__graph--' + dimension + '--' + color ).append( 'svg' )
       .attr( 'width', width )
@@ -84,13 +84,17 @@ var initViz = function( color, dimension ) {
 
 var updateViz = function( color, dimension ) {
 
+  var domain = appState.domains[ dimension ];
+
   // Set domains now that template is populated and we have data
-  bubbleScale.rangeRoundBands( [ 0, ( appState.vizWidth / 2 + 35 ) * bubbleDomain.length ], .5, 0 );
-  rScale.range( [ 0, appState.vizWidth / 4 ] )
-      .domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
+  bubbleScale.domain( appState.domains.rarity )
+      .rangeRoundBands( [ 0, ( appState.vizWidth / 2 + 35 ) * domain.length ], .5, 0 );
+
+  rScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] )
+      .range( [ 0, appState.vizWidth / 4 ] );
 
   var width = appState.vizWidth;
-  var height = ( width / 2 + 24 ) * bubbleDomain.length;
+  var height = ( width / 2 + 24 ) * domain.length;
   var margin = { top: width / 4 + 20, bottom: width / 4 };
 
   // Update bar groups

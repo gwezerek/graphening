@@ -47,6 +47,7 @@ var allCards = [];
 var currentCards = [];
 var currentRollups = [];
 var dimensionMaxima = {};
+var domains = {};
 var vizWidth = 0;
 var colors = [ 'white', 'blue' , 'black', 'red', 'green', 'multicolor', 'colorless' ];
 var dimensions = [ 'cmc', 'power', 'toughness', 'rarity', 'types', 'subtypes' ];
@@ -72,6 +73,7 @@ exports.allCards = allCards;
 exports.currentCards = currentCards;
 exports.currentRollups = currentRollups;
 exports.dimensionMaxima = dimensionMaxima;
+exports.domains = domains;
 exports.vizWidth = vizWidth;
 exports.colors = colors;
 exports.dimensions = dimensions;
@@ -278,24 +280,24 @@ var d3 = require( 'd3' );
 var _ = require( 'underscore' );
 var appState = require( '../app-state' );
 
-var bubbleDomain = [ 'Common', 'Uncommon', 'Rare', 'Mythic Rare', 'Basic Land'  ];
-
-var bubbleScale = d3.scale.ordinal()
-    .domain( bubbleDomain );
-
+// Scales
+var bubbleScale = d3.scale.ordinal();
 var rScale = d3.scale.sqrt();
+
 
 var initViz = function( color, dimension ) {
 
-  // Set domains now that template is populated and we have data
-  bubbleScale.rangeRoundBands( [ 0, ( appState.vizWidth / 2 + 35 ) * bubbleDomain.length ], .5, 0 );
-  rScale.range( [ 0, appState.vizWidth / 4 ] )
-      .domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
-
+  var domain = appState.domains[ dimension ];
   var width = appState.vizWidth;
-  var height = ( width / 2 + 24 ) * bubbleDomain.length;
+  var height = ( width / 2 + 20 ) * domain.length;
   var margin = { top: width / 4 + 20, bottom: width / 4 };
 
+  // Set domains now that template is populated and we have data
+  bubbleScale.domain( appState.domains.rarity )
+      .rangeRoundBands( [ 0, height ], .75, 0 );
+
+  rScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] )
+      .range( [ 0, width / 4 ] );
 
   var svg = d3.select( '#color__graph--' + dimension + '--' + color ).append( 'svg' )
       .attr( 'width', width )
@@ -352,13 +354,17 @@ var initViz = function( color, dimension ) {
 
 var updateViz = function( color, dimension ) {
 
+  var domain = appState.domains[ dimension ];
+
   // Set domains now that template is populated and we have data
-  bubbleScale.rangeRoundBands( [ 0, ( appState.vizWidth / 2 + 35 ) * bubbleDomain.length ], .5, 0 );
-  rScale.range( [ 0, appState.vizWidth / 4 ] )
-      .domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
+  bubbleScale.domain( appState.domains.rarity )
+      .rangeRoundBands( [ 0, ( appState.vizWidth / 2 + 35 ) * domain.length ], .5, 0 );
+
+  rScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] )
+      .range( [ 0, appState.vizWidth / 4 ] );
 
   var width = appState.vizWidth;
-  var height = ( width / 2 + 24 ) * bubbleDomain.length;
+  var height = ( width / 2 + 24 ) * domain.length;
   var margin = { top: width / 4 + 20, bottom: width / 4 };
 
   // Update bar groups
@@ -440,6 +446,9 @@ var prepData = function() {
 
   // set the y maxima across colors
   getDimensionMaxima();
+
+  // set the dimension domains across colors
+  getDimensionDomains();
 
 }
 
@@ -568,6 +577,23 @@ function getDimensionMaxima() {
     appState.dimensionMaxima[ dimension ] = d3.max( flatArrayValues );
   });
 }
+
+function getDimensionDomains() {
+  _.each( appState.dimensions, function( dimension ) {
+    var flatArrayValues = [];
+
+    _.each( appState.currentRollups, function( color ) {
+      var values = _.pluck( color[ dimension ].rollup, 'key' );
+      flatArrayValues = _.union( flatArrayValues, values );
+    });
+
+    // debugger;
+
+    // set dimension domain
+    appState.domains[ dimension ] = flatArrayValues;
+  });
+}
+
 
 function updateUndefinedTotals( color, dimension ) {
   var undefinedEl = document.querySelector( '#card__undefined--' + dimension + '--' + color );

@@ -28,6 +28,9 @@ var prepData = function() {
   // set the y maxima across colors
   getDimensionMaxima();
 
+  // set the dimension domains across colors
+  getDimensionDomains();
+
 }
 
 var updateViews = function( init ) {
@@ -155,6 +158,23 @@ function getDimensionMaxima() {
     appState.dimensionMaxima[ dimension ] = d3.max( flatArrayValues );
   });
 }
+
+function getDimensionDomains() {
+  _.each( appState.dimensions, function( dimension ) {
+    var flatArrayValues = [];
+
+    _.each( appState.currentRollups, function( color ) {
+      var values = _.pluck( color[ dimension ].rollup, 'key' );
+      flatArrayValues = _.union( flatArrayValues, values );
+    });
+
+    // debugger;
+
+    // set dimension domain
+    appState.domains[ dimension ] = flatArrayValues;
+  });
+}
+
 
 function updateUndefinedTotals( color, dimension ) {
   var undefinedEl = document.querySelector( '#card__undefined--' + dimension + '--' + color );
