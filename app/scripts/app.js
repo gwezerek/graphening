@@ -34,7 +34,7 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 
 });
 
-},{"./components/bind-listeners":4,"./components/compile-page":6,"./components/filter-cards":7,"./components/selectized":9,"./components/update-views":10,"d3":15}],2:[function(require,module,exports){
+},{"./components/bind-listeners":4,"./components/compile-page":7,"./components/filter-cards":8,"./components/selectized":10,"./components/update-views":11,"d3":16}],2:[function(require,module,exports){
 /**
 *
 * App State
@@ -81,7 +81,7 @@ exports.filters = filters;
 },{}],3:[function(require,module,exports){
 /**
 *
-* Colors
+* Bars
 *
 **/
 
@@ -232,7 +232,7 @@ var updateViz = function( color, dimension ) {
 exports.initViz = initViz;
 exports.updateViz = updateViz;
 
-},{"../app-state":2,"d3":15,"underscore":28}],4:[function(require,module,exports){
+},{"../app-state":2,"d3":16,"underscore":29}],4:[function(require,module,exports){
 /**
 *
 * Bind Listeners
@@ -265,7 +265,100 @@ function bindFilterListeners( selectizedEls ) {
 
 module.exports = init;
 
-},{"../app-state":2,"./filter-cards":7,"./selectized":9,"./update-views":10,"jquery":24,"underscore":28}],5:[function(require,module,exports){
+},{"../app-state":2,"./filter-cards":8,"./selectized":10,"./update-views":11,"jquery":25,"underscore":29}],5:[function(require,module,exports){
+/**
+*
+* Colors
+*
+**/
+
+'use strict';
+
+var d3 = require( 'd3' );
+var _ = require( 'underscore' );
+var appState = require( '../app-state' );
+
+var bubbleDomain = [ 'Common', 'Uncommon', 'Rare', 'Mythic Rare', 'Basic Land'  ]
+
+var bubbleScale = d3.scale.ordinal()
+    .domain( bubbleDomain );
+
+var rScale = d3.scale.sqrt();
+
+var initViz = function( color, dimension ) {
+
+  // Set domains now that template is populated and we have data
+  bubbleScale.rangeRoundBands( [ 0, ( appState.vizWidth / 2 + 35 ) * bubbleDomain.length ], .5, 0 );
+  rScale.range( [ 0, appState.vizWidth / 4 ] )
+      .domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
+
+  var width = appState.vizWidth;
+  var height = ( width / 2 + 24 ) * bubbleDomain.length;
+  var margin = { top: width / 4 + 20, bottom: width / 4 };
+
+
+  var svg = d3.select( '#color__graph--' + dimension + '--' + color ).append( 'svg' )
+      .attr( 'width', width )
+      .attr( 'height', height + margin.top + margin.bottom );
+
+  var chart = svg.append( 'g' )
+      .attr( 'width', width )
+      .attr( 'height', height )
+      .attr( 'transform', 'translate( 0,' + margin.top + ')' );
+
+  // Update bar groups
+  var bubbleWrap = chart.selectAll( 'g' )
+      .data( appState.currentRollups[ color ][ dimension ].rollup );
+
+  var bubbleEnter = bubbleWrap.enter().append( 'g' );
+
+  bubbleWrap.transition()
+      .attr({
+        class: 'bubble__wrap',
+        transform: function( d ) { return 'translate(' + width / 2 + ', ' + bubbleScale( d.key ) + ')'; }
+      });
+
+  bubbleWrap.exit()
+      .remove();
+
+  // Update bubbles
+  bubbleEnter.append( 'circle' );
+
+  var bubbles = bubbleWrap.selectAll( 'circle' )
+      .data( function( d ) { return [ d ]; } );
+
+  bubbles.attr({
+        r: function( d ) { return rScale( d.values ); },
+        class: 'bubble__circle'
+      });
+
+  // Update value labels
+  bubbleEnter.append( 'text' )
+    .attr( 'class', 'bubble__label bubble__label--value' );
+
+  var valueLabels = bubbleWrap.selectAll( '.bubble__label--value' )
+      .text( function( d ) { return d.values; } )
+      .attr( 'y', 3 );
+
+  // Update key labels
+  bubbleEnter.append( 'text' )
+      .attr( 'class', 'bubble__label bubble__label--key' );
+
+  var keyLabels = bubbleWrap.selectAll( '.bubble__label--key' )
+      .text( function( d ) { return d.key; } )
+      .attr( 'y', -width / 4 - 10 );
+}
+
+var updateViz = function( color, dimension ) {
+
+  // Set domains now that template is populated and we have data
+  rScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
+}
+
+exports.initViz = initViz;
+exports.updateViz = updateViz;
+
+},{"../app-state":2,"d3":16,"underscore":29}],6:[function(require,module,exports){
 /**
 *
 * Colors
@@ -279,7 +372,7 @@ var _ = require( 'underscore' );
 var utils = require( '../utils' );
 var appState = require( '../app-state' );
 var bars = require( './bars' );
-// var bubbles = require( './bubbles' );
+var bubbles = require( './bubbles' );
 var inventory = require( './inventory' );
 
 // Local vars
@@ -430,11 +523,11 @@ function vizDispatch( color, dimension, init ) {
       bars.updateViz( color, dimension );
     }
   } else if ( dimension === 'rarity' ) {
-    // if ( init ) {
-    //   bubbles.initViz( color, dimension );
-    // } else {
-    //   bubbles.updateViz( color, dimension );
-    // }
+    if ( init ) {
+      bubbles.initViz( color, dimension );
+    } else {
+      bubbles.updateViz( color, dimension );
+    }
   } else {
     inventory.updateInventory( color, dimension );
   }
@@ -574,7 +667,7 @@ exports.updateViews = updateViews;
 
 
 
-},{"../app-state":2,"../utils":14,"./bars":3,"./inventory":8,"d3":15,"underscore":28}],6:[function(require,module,exports){
+},{"../app-state":2,"../utils":15,"./bars":3,"./bubbles":5,"./inventory":9,"d3":16,"underscore":29}],7:[function(require,module,exports){
 /**
 *
 * Filter
@@ -656,7 +749,7 @@ function setVizWidth() {
 
 module.exports = init;
 
-},{"../app-state":2,"../templates/components/colors.hbs":11,"../templates/partials/filter-options.hbs":13,"underscore":28}],7:[function(require,module,exports){
+},{"../app-state":2,"../templates/components/colors.hbs":12,"../templates/partials/filter-options.hbs":14,"underscore":29}],8:[function(require,module,exports){
 /**
 *
 * Filter Cards
@@ -695,7 +788,7 @@ function filterCards() {
 
 module.exports = init;
 
-},{"../app-state":2,"underscore":28}],8:[function(require,module,exports){
+},{"../app-state":2,"underscore":29}],9:[function(require,module,exports){
 /**
 *
 * Colors
@@ -723,7 +816,7 @@ var updateInventory = function( color, dimension ) {
 
 exports.updateInventory = updateInventory;
 
-},{"../app-state":2,"../templates/partials/colors-inventory.hbs":12,"underscore":28}],9:[function(require,module,exports){
+},{"../app-state":2,"../templates/partials/colors-inventory.hbs":13,"underscore":29}],10:[function(require,module,exports){
 /**
 *
 * Selectized
@@ -742,7 +835,7 @@ var init = function() {
 
 module.exports = init;
 
-},{"../app-state":2,"jquery":24,"selectize":25}],10:[function(require,module,exports){
+},{"../app-state":2,"jquery":25,"selectize":26}],11:[function(require,module,exports){
 /**
 *
 * Update views
@@ -760,7 +853,7 @@ var updateViews = function( init ) {
 
 module.exports = updateViews;
 
-},{"./colors":5}],11:[function(require,module,exports){
+},{"./colors":6}],12:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
@@ -863,7 +956,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
     + "    </tr>\n  </tbody>\n</table>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":23}],12:[function(require,module,exports){
+},{"hbsfy/runtime":24}],13:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -876,7 +969,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + "</li>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":23}],13:[function(require,module,exports){
+},{"hbsfy/runtime":24}],14:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
@@ -893,7 +986,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.dimension_value : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"useData":true});
 
-},{"hbsfy/runtime":23}],14:[function(require,module,exports){
+},{"hbsfy/runtime":24}],15:[function(require,module,exports){
 /**
 *
 * Utils
@@ -907,7 +1000,7 @@ var isInt = function(n) { return parseInt(n) === n };
 
 exports.isInt = isInt;
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.5"
@@ -10412,7 +10505,7 @@ exports.isInt = isInt;
   if (typeof define === "function" && define.amd) define(d3); else if (typeof module === "object" && module.exports) module.exports = d3;
   this.d3 = d3;
 }();
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -10482,7 +10575,7 @@ exports['default'] = Handlebars;
 module.exports = exports['default'];
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./handlebars/base":17,"./handlebars/exception":18,"./handlebars/runtime":19,"./handlebars/safe-string":20,"./handlebars/utils":21}],17:[function(require,module,exports){
+},{"./handlebars/base":18,"./handlebars/exception":19,"./handlebars/runtime":20,"./handlebars/safe-string":21,"./handlebars/utils":22}],18:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -10756,7 +10849,7 @@ function createFrame(object) {
 }
 
 /* [args, ]options */
-},{"./exception":18,"./utils":21}],18:[function(require,module,exports){
+},{"./exception":19,"./utils":22}],19:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -10795,7 +10888,7 @@ Exception.prototype = new Error();
 
 exports['default'] = Exception;
 module.exports = exports['default'];
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -11028,7 +11121,7 @@ function initData(context, data) {
   }
   return data;
 }
-},{"./base":17,"./exception":18,"./utils":21}],20:[function(require,module,exports){
+},{"./base":18,"./exception":19,"./utils":22}],21:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11043,7 +11136,7 @@ SafeString.prototype.toString = SafeString.prototype.toHTML = function () {
 
 exports['default'] = SafeString;
 module.exports = exports['default'];
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11159,15 +11252,15 @@ function blockParams(params, ids) {
 function appendContextPath(contextPath, id) {
   return (contextPath ? contextPath + '.' : '') + id;
 }
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":16}],23:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":17}],24:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":22}],24:[function(require,module,exports){
+},{"handlebars/runtime":23}],25:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -20374,7 +20467,7 @@ return jQuery;
 
 }));
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /**
  * selectize.js (v0.12.1)
  * Copyright (c) 2013–2015 Brian Reavis & contributors
@@ -23433,7 +23526,7 @@ return jQuery;
 
 	return Selectize;
 }));
-},{"jquery":24,"microplugin":26,"sifter":27}],26:[function(require,module,exports){
+},{"jquery":25,"microplugin":27,"sifter":28}],27:[function(require,module,exports){
 /**
  * microplugin.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -23569,7 +23662,7 @@ return jQuery;
 
 	return MicroPlugin;
 }));
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /**
  * sifter.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -24042,7 +24135,7 @@ return jQuery;
 }));
 
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors

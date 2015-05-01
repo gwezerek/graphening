@@ -11,7 +11,7 @@ var _ = require( 'underscore' );
 var utils = require( '../utils' );
 var appState = require( '../app-state' );
 var bars = require( './bars' );
-// var bubbles = require( './bubbles' );
+var bubbles = require( './bubbles' );
 var inventory = require( './inventory' );
 
 // Local vars
@@ -162,11 +162,11 @@ function vizDispatch( color, dimension, init ) {
       bars.updateViz( color, dimension );
     }
   } else if ( dimension === 'rarity' ) {
-    // if ( init ) {
-    //   bubbles.initViz( color, dimension );
-    // } else {
-    //   bubbles.updateViz( color, dimension );
-    // }
+    if ( init ) {
+      bubbles.initViz( color, dimension );
+    } else {
+      bubbles.updateViz( color, dimension );
+    }
   } else {
     inventory.updateInventory( color, dimension );
   }
