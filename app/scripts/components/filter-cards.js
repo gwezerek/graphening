@@ -31,8 +31,6 @@ function filterCards() {
 		}
 	});
 
-	debugger;
-
 	return filteredCards;
 }
 

@@ -9,7 +9,7 @@
 
 var d3 = require( 'd3' );
 
-var compileFilters = require( './components/compile-filter' );
+var compilePage = require( './components/compile-page' );
 var filterCards = require( './components/filter-cards' );
 var updateViews = require( './components/update-views' );
 var selectized = require( './components/selectized' );
@@ -18,14 +18,13 @@ var bindListeners = require( './components/bind-listeners' );
 d3.json( '../data/AllSets.json', function( error, data ) {
 
 	// Populate filters
-	compileFilters( data );
+	compilePage( data );
 
 	// Filter cards with default options
 	filterCards();
 
-	// Update views
-	updateViews();
-	// colors( allCards );
+	// Init views
+	updateViews.updateViews( true );
 
 	// Add filter chrome
 	selectized();
@@ -35,7 +34,7 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 
 });
 
-},{"./components/bind-listeners":3,"./components/compile-filter":4,"./components/filter-cards":5,"./components/selectized":6,"./components/update-views":7,"d3":9}],2:[function(require,module,exports){
+},{"./components/bind-listeners":3,"./components/compile-page":5,"./components/filter-cards":6,"./components/selectized":8,"./components/update-views":9,"d3":14}],2:[function(require,module,exports){
 /**
 *
 * App State
@@ -46,6 +45,10 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 
 var allCards = [];
 var currentCards = [];
+var currentRollups = [];
+var dimensionMaxes = {};
+var colors = [ 'white', 'blue' , 'black', 'red', 'green', 'multicolor', 'colorless' ];
+var dimensions = [ 'cmc', 'power', 'toughness', 'rarity', 'types', 'subtypes' ];
 var filterEls = [];
 var filters = [
 	{
@@ -66,6 +69,10 @@ var filters = [
 
 exports.allCards = allCards;
 exports.currentCards = currentCards;
+exports.currentRollups = currentRollups;
+exports.dimensionMaxes = dimensionMaxes;
+exports.colors = colors;
+exports.dimensions = dimensions;
 exports.filterEls = filterEls;
 exports.filters = filters;
 
@@ -96,13 +103,323 @@ function bindFilterListeners( selectizedEls ) {
 		});
 
 		filterCards();
-		updateViews();
+		updateViews.updateViews();
 	});
 }
 
 module.exports = init;
 
-},{"../app-state":2,"./filter-cards":5,"./selectized":6,"./update-views":7,"jquery":18,"underscore":22}],4:[function(require,module,exports){
+},{"../app-state":2,"./filter-cards":6,"./selectized":8,"./update-views":9,"jquery":23,"underscore":27}],4:[function(require,module,exports){
+/**
+*
+* Colors
+*
+**/
+
+'use strict';
+
+var d3 = require( 'd3' );
+var _ = require( 'underscore' );
+var utils = require( '../utils' );
+var appState = require( '../app-state' );
+var inventory = require( './inventory' );
+
+// Local vars
+var groupedByColor = {};
+
+var prepData = function() {
+
+  // group the cards by color
+  groupByColor();
+
+  // get rollups for each dimension
+  appState.currentRollups = getAllRollups();
+
+  // set the y maxes across colors
+  getDimensionMaxes();
+
+}
+
+var updateViews = function( init ) {
+  updateCardTotals();
+
+  _.each( appState.colors, function( color ) {
+    _.each( appState.dimensions, function( dimension ) {
+      updateUndefinedTotals( color, dimension );
+      vizDispatch( color, dimension, init );
+    });
+  });
+}
+
+
+function groupByColor() {
+  groupedByColor = _.groupBy( appState.currentCards, function( card ) {
+    if ( card.colors && _.contains( appState.colors, card.colors.toString().toLowerCase() ) ) {
+      return card.colors.toString().toLowerCase();
+    } else if ( _.isUndefined( card.colors ) ) {
+      return 'colorless';
+    } else {
+      return 'multicolor';
+    }
+  });
+}
+
+function updateCardTotals() {
+  _.each( groupedByColor, function( color, key ) {
+    document.querySelector( '#card__total--' + key ).innerHTML = groupedByColor[ key ].length;
+  });
+}
+
+function getAllRollups() {
+
+  var rollups = {};
+
+  _.each( appState.colors, function( color ) {
+    rollups[ color ] = {};
+    _.each( appState.dimensions, function( dimension ) {
+      rollups[ color ][ dimension ] = {};
+      rollups[ color ][ dimension ].undefined = 0;
+
+      // get the rollup values
+      if ( dimension === 'cmc' || dimension === 'power' || dimension === 'toughness' ) {
+        rollups[ color ][ dimension ].rollup = rollupByDimensionQuantitative( color, dimension, rollups );
+      } else {
+        rollups[ color ][ dimension ].rollup = rollupByDimensionCategorical( color, dimension, rollups );
+        rollups = sortCategoricalNest( color, dimension, rollups );
+      }
+
+      // remove undefined
+      if ( rollups[ color ][ dimension ].undefined ) {
+        rollups[ color ][ dimension ].rollup = _.reject( rollups[ color ][ dimension ].rollup, function( agg ){ return agg.key === 'undefined'; } )
+      }
+
+    });
+  });
+
+  return rollups;
+}
+
+function rollupByDimensionQuantitative( color, dimension, rollups ) {
+
+  var rollup = d3.nest()
+      .key( function( d ) {
+        if ( !d[ dimension ] ) {
+          rollups[ color ][ dimension ].undefined += 1;
+          return 'undefined';
+        } else if ( _.isNaN( +d[ dimension ] ) || !utils.isInt( +d[ dimension ] ) ) {
+          return '*';
+        } else if ( +d[ dimension ] >= 9 ) {
+          return '9+';
+        } else {
+          return d[ dimension ];
+        }
+      })
+      .rollup( function( cards ) { return cards.length; } )
+      .entries( groupedByColor[ color ] );
+
+  return rollup;
+}
+
+function rollupByDimensionCategorical( color, dimension, rollups ) {
+  var rollup = d3.nest()
+      .key( function( d ) {
+        if ( !d[ dimension ] ) {
+          rollups[ color ][ dimension ].undefined += 1;
+          return 'undefined';
+        } else {
+          return d[ dimension ];
+        }
+      }).sortValues( function( a, b ) { return a.length - b.length; } )
+      .rollup( function( cards ) { return cards.length; } )
+      .entries( groupedByColor[ color ] );
+
+  return rollup;
+}
+
+function sortCategoricalNest( color, dimension, rollups ) {
+  rollups[color][dimension].rollup.sort( function( a, b ) {
+    return b.values - a.values;
+  });
+
+  return rollups;
+}
+
+function getDimensionMaxes() {
+  _.each( appState.dimensions, function( dimension ) {
+    // REVISIT: Is this necessary?
+    appState.dimensionMaxes[ dimension ] = 0;
+
+    var flatArrayValues = [];
+
+    _.each( appState.currentRollups, function( color ) {
+      var values = _.pluck( color[ dimension ].rollup, 'values' );
+      flatArrayValues = _.union( flatArrayValues, values );
+    });
+
+    // get max
+    appState.dimensionMaxes[ dimension ] = d3.max( flatArrayValues );
+  });
+}
+
+function updateUndefinedTotals( color, dimension ) {
+  if ( appState.currentRollups[ color ][ dimension ].undefined ) {
+    document.querySelector( '#card__undefined--' + dimension + '--' + color ).innerHTML = appState.currentRollups[ color ][ dimension ].undefined;
+  }
+}
+
+function vizDispatch( color, dimension, init ) {
+  if ( dimension === 'cmc' || dimension === 'power' || dimension === 'toughness' ) {
+    // if ( init ) {
+    //   bars.initViz();
+    // } else {
+    //   bars.updateViz();
+    // }
+  } else if ( dimension === 'rarity' ) {
+    // if ( init ) {
+    //   bubbles.initViz();
+    // } else {
+    //   bubbles.updateViz();
+    // }
+  } else {
+    inventory.updateInventory( color, dimension );
+  }
+}
+
+exports.prepData = prepData;
+exports.updateViews = updateViews;
+
+// function setValueDomains( dimension ) {
+//   yScale.domain( [ 0, appState.dimensionMaxes[ dimension ] ] );
+//   rScale.domain( [ 0, appState.dimensionMaxes[ dimension ] ] );
+// }
+
+// function drawBar( color, dimension ) {
+
+//   var svg = d3.select( '#color__graph--' + dimension + '--' + color ).append( 'svg' )
+//       .attr( 'width', width + margin.left + margin.right )
+//       .attr( 'height', height + margin.top + margin.bottom );
+
+//   var chart = svg.append( 'g' )
+//       .attr( 'width', width )
+//       .attr( 'height', height )
+//       .attr( 'transform', 'translate( ' + margin.left + ',' + margin.top +' )' );
+
+//   var xAxisEl = svg.append( 'g' )
+//       .attr( 'class', 'axis axis__x' )
+//       .attr( 'transform', 'translate( 0,' + ( height + margin.top ) +' )' )
+//       .call( xAxis );
+
+//   var xAxisLabels = xAxisEl.selectAll( 'text' )
+//       .attr( 'y', 5 )
+//       .attr( 'class', 'axis__x__label');
+
+//   var xAxisPath = xAxisEl.selectAll( 'path' )
+//       .attr('class', 'axis__x__path');
+
+
+//   // Update bar groups
+//   var barWrap = chart.selectAll( 'g' )
+//       .data( rollups[ color ][ dimension ].rollup );
+
+//   var barEnter = barWrap.enter().append( 'g' );
+
+//   barWrap.transition()
+//       .attr({
+//         class: 'bar__wrap',
+//         transform: function( d ) { return 'translate(' + xScale( d.key ) + ', ' + yScale( d.values ) + ')'; }
+//       });
+
+//   barWrap.exit()
+//       .remove();
+
+//   // Update bars
+//   barEnter.append( 'rect' );
+
+//   var bars = barWrap.selectAll( 'rect' )
+//       .data( function( d ) { return [ d ]; } );
+
+//   bars.attr({
+//         height: function( d ) { return height - yScale( d.values ); },
+//         width: xScale.rangeBand(),
+//         class: 'bar__rect'
+//       });
+
+//   // Update labels
+//   barEnter.append( 'text' );
+
+//   var labels = barWrap.selectAll( 'text' )
+//       .text( function( d ) { return d.values; })
+//       .attr({
+//         x: xScale.rangeBand() / 2,
+//         y: -4,
+//         class: 'bar__label'
+//       });
+// }
+
+// function drawBubbles( color, dimension ) {
+
+//   var height = ( width / 2 + 24 ) * bubbleDomain.length;
+//   var marginTop = width / 4 + 20;
+//   var marginBottom = width / 4;
+
+//   var svg = d3.select( '#color__graph--' + dimension + '--' + color ).append( 'svg' )
+//       .attr( 'width', width )
+//       .attr( 'height', height + marginTop + marginBottom );
+
+//   var chart = svg.append( 'g' )
+//       .attr( 'width', width )
+//       .attr( 'height', height )
+//       .attr( 'transform', 'translate( 0,' + marginTop + ')' );
+
+//   // Update bar groups
+//   var bubbleWrap = chart.selectAll( 'g' )
+//       .data( rollups[ color ][ dimension ].rollup );
+
+//   var bubbleEnter = bubbleWrap.enter().append( 'g' );
+
+//   bubbleWrap.transition()
+//       .attr({
+//         class: 'bubble__wrap',
+//         transform: function( d ) { return 'translate(' + width / 2 + ', ' + bubbleScale( d.key ) + ')'; }
+//       });
+
+//   bubbleWrap.exit()
+//       .remove();
+
+//   // Update bubbles
+//   bubbleEnter.append( 'circle' );
+
+//   var bubbles = bubbleWrap.selectAll( 'circle' )
+//       .data( function( d ) { return [ d ]; } );
+
+//   bubbles.attr({
+//         r: function( d ) { return rScale( d.values ); },
+//         class: 'bubble__circle'
+//       });
+
+//   // Update value labels
+//   bubbleEnter.append( 'text' )
+//     .attr( 'class', 'bubble__label bubble__label--value' );
+
+//   var valueLabels = bubbleWrap.selectAll( '.bubble__label--value' )
+//       .text( function( d ) { return d.values; } )
+//       .attr( 'y', 3 );
+
+//   // Update key labels
+//   bubbleEnter.append( 'text' )
+//       .attr( 'class', 'bubble__label bubble__label--key' );
+
+//   var keyLabels = bubbleWrap.selectAll( '.bubble__label--key' )
+//       .text( function( d ) { return d.key; } )
+//       .attr( 'y', -width / 4 - 10 );
+
+// }
+
+
+
+
+
+},{"../app-state":2,"../utils":13,"./inventory":7,"d3":14,"underscore":27}],5:[function(require,module,exports){
 /**
 *
 * Filter
@@ -113,7 +430,9 @@ module.exports = init;
 
 var _ = require( 'underscore' );
 var appState = require( '../app-state' );
+
 var templateFilterOptions = require( '../templates/partials/filter-options.hbs' );
+var templateColors = require( '../templates/components/colors.hbs' );
 
 var ranges = {
 	'set': [],
@@ -125,6 +444,7 @@ function init( data ) {
 	appState.allCards = flattenCards( data );
 	getRanges();
 	compileOptions();
+	compileColumns();
 }
 
 // flatten array of cards
@@ -170,9 +490,13 @@ function compileOptions() {
 	});
 }
 
+function compileColumns() {
+	document.querySelector( '#colors' ).innerHTML += templateColors( { 'color': appState.colors } );
+}
+
 module.exports = init;
 
-},{"../app-state":2,"../templates/partials/filter-options.hbs":8,"underscore":22}],5:[function(require,module,exports){
+},{"../app-state":2,"../templates/components/colors.hbs":10,"../templates/partials/filter-options.hbs":12,"underscore":27}],6:[function(require,module,exports){
 /**
 *
 * Filter Cards
@@ -206,14 +530,42 @@ function filterCards() {
 		}
 	});
 
-	debugger;
-
 	return filteredCards;
 }
 
 module.exports = init;
 
-},{"../app-state":2,"underscore":22}],6:[function(require,module,exports){
+},{"../app-state":2,"underscore":27}],7:[function(require,module,exports){
+/**
+*
+* Colors
+*
+**/
+
+'use strict';
+
+var _ = require( 'underscore' );
+var appState = require( '../app-state' );
+
+// Templates
+var templateColorsInventory = require( '../templates/partials/colors-inventory.hbs' );
+
+var updateInventory = function( color, dimension ) {
+  var inventoryStr = '';
+  var ol = document.querySelector( '#color__graph__ol--' + dimension + '--' + color );
+
+  debugger;
+
+  _.each( appState.currentRollups[ color ][ dimension ].rollup, function( key ) {
+    inventoryStr += templateColorsInventory( { 'key': key.key, 'value': key.values } );
+  });
+
+  ol.innerHTML = inventoryStr;
+};
+
+exports.updateInventory = updateInventory;
+
+},{"../app-state":2,"../templates/partials/colors-inventory.hbs":11,"underscore":27}],8:[function(require,module,exports){
 /**
 *
 * Selectized
@@ -232,7 +584,7 @@ var init = function() {
 
 module.exports = init;
 
-},{"../app-state":2,"jquery":18,"selectize":19}],7:[function(require,module,exports){
+},{"../app-state":2,"jquery":23,"selectize":24}],9:[function(require,module,exports){
 /**
 *
 * Update views
@@ -241,13 +593,139 @@ module.exports = init;
 
 'use strict';
 
-function init() {
+var colors = require( './colors' );
 
+
+var initViews = function() {
+	colors.prepData();
+	colors.initViews();
 }
 
-module.exports = init;
+var updateViews = function() {
+	colors.prepData();
+	colors.updateViews();
+}
 
-},{}],8:[function(require,module,exports){
+exports.initViews = initViews;
+exports.updateViews = updateViews;
+
+},{"./colors":4}],10:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
+    var alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "      <th class=\"color__column__header\">\n        <h3 class=\"color__head\">"
+    + alias2(alias1(depth0, depth0))
+    + "</h3>\n        <h4 class=\"color__subhead\"><span id=\"card__total--"
+    + alias2(alias1(depth0, depth0))
+    + "\">TK</span> cards</h4>\n      </th>\n";
+},"3":function(depth0,helpers,partials,data) {
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "        <td class=\"color__graph color__graph--cmc\">\n          <div class=\"color__graph__wrap\">\n            <header class=\"color__graph__header\">\n              <h4 class=\"color__graph__head color__graph__name--cmc\">"
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</h4>\n            </header>\n            <div id=\"color__graph--cmc--"
+    + alias2(alias1(depth0, depth0))
+    + "\"></div>\n            <aside class=\"color__graph__aside\">\n              <h5 class=\"color__graph__subhead color__graph__subhead--cmc\">Undefined for <span id=\"card__undefined--cmc--"
+    + alias2(alias1(depth0, depth0))
+    + "\">0</span> cards</h5>\n            </aside>\n          </div>\n        </td>\n";
+},"4":function(depth0,helpers,partials,data) {
+    return "Mana cost";
+},"6":function(depth0,helpers,partials,data) {
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "        <td class=\"color__graph color__graph--power\">\n          <div class=\"color__graph__wrap\">\n            <header class=\"color__graph__header\">\n              <h4 class=\"color__graph__head color__graph__name--power\">"
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(7, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</h4>\n            </header>\n            <div id=\"color__graph--power--"
+    + alias2(alias1(depth0, depth0))
+    + "\"></div>\n            <aside class=\"color__graph__aside\">\n              <h5 class=\"color__graph__subhead color__graph__subhead--power\">Undefined for <span id=\"card__undefined--power--"
+    + alias2(alias1(depth0, depth0))
+    + "\">0</span> cards</h5>\n            </aside>\n          </div>\n        </td>\n";
+},"7":function(depth0,helpers,partials,data) {
+    return "Power";
+},"9":function(depth0,helpers,partials,data) {
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "        <td class=\"color__graph color__graph--toughness\">\n          <div class=\"color__graph__wrap\">\n            <header class=\"color__graph__header\">\n              <h4 class=\"color__graph__head color__graph__name--toughness\">"
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(10, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</h4>\n            </header>\n            <div id=\"color__graph--toughness--"
+    + alias2(alias1(depth0, depth0))
+    + "\"></div>\n            <aside class=\"color__graph__aside\">\n              <h5 class=\"color__graph__subhead color__graph__subhead--toughness\">Undefined for <span id=\"card__undefined--toughness--"
+    + alias2(alias1(depth0, depth0))
+    + "\">0</span> cards</h5>\n            </aside>\n          </div>\n        </td>\n";
+},"10":function(depth0,helpers,partials,data) {
+    return "Toughness";
+},"12":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "        <td class=\"color__graph color__graph--rarity\">\n          <div class=\"color__graph__wrap\">\n            <header class=\"color__graph__header\">\n              <h4 class=\"color__graph__head color__graph__name--rarity\">"
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(13, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</h4>\n            </header>\n            <div id=\"color__graph--rarity--"
+    + this.escapeExpression(this.lambda(depth0, depth0))
+    + "\"></div>\n          </div>\n        </td>\n";
+},"13":function(depth0,helpers,partials,data) {
+    return "Rarity";
+},"15":function(depth0,helpers,partials,data) {
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "        <td class=\"color__graph color__graph--types\" id=\"color__graph--types--"
+    + alias2(alias1(depth0, depth0))
+    + "\">\n          <div class=\"color__graph__wrap\">\n            <header class=\"color__graph__header\">\n              <h4 class=\"color__graph__head color__graph__name--types\">"
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(16, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</h4>\n            </header>\n            <ol class=\"color__graph__list\" id=\"color__graph__ol--types--"
+    + alias2(alias1(depth0, depth0))
+    + "\"></ol>\n          </div>\n        </td>\n";
+},"16":function(depth0,helpers,partials,data) {
+    return "Types";
+},"18":function(depth0,helpers,partials,data) {
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "        <td class=\"color__graph color__graph--subtypes\" id=\"color__graph--subtypes--"
+    + alias2(alias1(depth0, depth0))
+    + "\">\n          <div class=\"color__graph__wrap\">\n            <header class=\"color__graph__header\">\n              <h4 class=\"color__graph__head color__graph__name--subtypes\">"
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(19, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</h4>\n            </header>\n            <ol class=\"color__graph__list\" id=\"color__graph__ol--subtypes--"
+    + alias2(alias1(depth0, depth0))
+    + "\"></ol>\n          </div>\n          <aside class=\"color__graph__aside\">\n            <h5 class=\"color__graph__subhead color__graph__subhead--subtypes\">Undefined for <span id=\"card__undefined--subtypes--"
+    + alias2(alias1(depth0, depth0))
+    + "\">0</span> cards</h5>\n          </aside>\n        </td>\n";
+},"19":function(depth0,helpers,partials,data) {
+    return "Subtypes";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "<table class=\"color__table\">\n  <thead>\n    <tr class=\"color__table__row color__table__row--header\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "    </tr>\n  </thead>\n  <tbody>\n    <tr class=\"color__table__row color__table__row--body\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "    </tr>\n    <tr class=\"color__table__row color__table__row--body\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "    </tr>\n    <tr class=\"color__table__row color__table__row--body\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(9, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "    </tr>\n    <tr class=\"color__table__row color__table__row--body\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(12, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "    </tr>\n    <tr class=\"color__table__row color__table__row--body\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(15, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "    </tr>\n    <tr class=\"color__table__row color__table__row--body\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(18, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "    </tr>\n  </tbody>\n</table>\n";
+},"useData":true});
+
+},{"hbsfy/runtime":22}],11:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "<li class=\"color__graph__li\">"
+    + alias3(((helper = (helper = helpers.key || (depth0 != null ? depth0.key : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
+    + " x "
+    + alias3(((helper = (helper = helpers.value || (depth0 != null ? depth0.value : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"value","hash":{},"data":data}) : helper)))
+    + " </li>\n";
+},"useData":true});
+
+},{"hbsfy/runtime":22}],12:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
@@ -264,7 +742,21 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.dimension_value : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"useData":true});
 
-},{"hbsfy/runtime":17}],9:[function(require,module,exports){
+},{"hbsfy/runtime":22}],13:[function(require,module,exports){
+/**
+*
+* Utils
+*
+**/
+
+'use strict';
+
+// from http://stackoverflow.com/questions/3885817/how-to-check-if-a-number-is-float-or-integer
+var isInt = function(n) { return parseInt(n) === n };
+
+exports.isInt = isInt;
+
+},{}],14:[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.5"
@@ -9769,7 +10261,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   if (typeof define === "function" && define.amd) define(d3); else if (typeof module === "object" && module.exports) module.exports = d3;
   this.d3 = d3;
 }();
-},{}],10:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -9839,7 +10331,7 @@ exports['default'] = Handlebars;
 module.exports = exports['default'];
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./handlebars/base":11,"./handlebars/exception":12,"./handlebars/runtime":13,"./handlebars/safe-string":14,"./handlebars/utils":15}],11:[function(require,module,exports){
+},{"./handlebars/base":16,"./handlebars/exception":17,"./handlebars/runtime":18,"./handlebars/safe-string":19,"./handlebars/utils":20}],16:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -10113,7 +10605,7 @@ function createFrame(object) {
 }
 
 /* [args, ]options */
-},{"./exception":12,"./utils":15}],12:[function(require,module,exports){
+},{"./exception":17,"./utils":20}],17:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -10152,7 +10644,7 @@ Exception.prototype = new Error();
 
 exports['default'] = Exception;
 module.exports = exports['default'];
-},{}],13:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -10385,7 +10877,7 @@ function initData(context, data) {
   }
   return data;
 }
-},{"./base":11,"./exception":12,"./utils":15}],14:[function(require,module,exports){
+},{"./base":16,"./exception":17,"./utils":20}],19:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -10400,7 +10892,7 @@ SafeString.prototype.toString = SafeString.prototype.toHTML = function () {
 
 exports['default'] = SafeString;
 module.exports = exports['default'];
-},{}],15:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -10516,15 +11008,15 @@ function blockParams(params, ids) {
 function appendContextPath(contextPath, id) {
   return (contextPath ? contextPath + '.' : '') + id;
 }
-},{}],16:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":10}],17:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":15}],22:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":16}],18:[function(require,module,exports){
+},{"handlebars/runtime":21}],23:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -19731,7 +20223,7 @@ return jQuery;
 
 }));
 
-},{}],19:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /**
  * selectize.js (v0.12.1)
  * Copyright (c) 2013–2015 Brian Reavis & contributors
@@ -22790,7 +23282,7 @@ return jQuery;
 
 	return Selectize;
 }));
-},{"jquery":18,"microplugin":20,"sifter":21}],20:[function(require,module,exports){
+},{"jquery":23,"microplugin":25,"sifter":26}],25:[function(require,module,exports){
 /**
  * microplugin.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -22926,7 +23418,7 @@ return jQuery;
 
 	return MicroPlugin;
 }));
-},{}],21:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /**
  * sifter.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -23399,7 +23891,7 @@ return jQuery;
 }));
 
 
-},{}],22:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors

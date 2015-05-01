@@ -6,8 +6,18 @@
 
 'use strict';
 
-function init() {
+var colors = require( './colors' );
 
+
+var initViews = function() {
+	colors.prepData();
+	colors.initViews();
 }
 
-module.exports = init;
+var updateViews = function() {
+	colors.prepData();
+	colors.updateViews();
+}
+
+exports.initViews = initViews;
+exports.updateViews = updateViews;

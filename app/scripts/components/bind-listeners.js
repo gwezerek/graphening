@@ -24,7 +24,7 @@ function bindFilterListeners( selectizedEls ) {
 		});
 
 		filterCards();
-		updateViews();
+		updateViews.updateViews();
 	});
 }
 

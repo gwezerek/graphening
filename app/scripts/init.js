@@ -8,7 +8,7 @@
 
 var d3 = require( 'd3' );
 
-var compileFilters = require( './components/compile-filter' );
+var compilePage = require( './components/compile-page' );
 var filterCards = require( './components/filter-cards' );
 var updateViews = require( './components/update-views' );
 var selectized = require( './components/selectized' );
@@ -17,14 +17,13 @@ var bindListeners = require( './components/bind-listeners' );
 d3.json( '../data/AllSets.json', function( error, data ) {
 
 	// Populate filters
-	compileFilters( data );
+	compilePage( data );
 
 	// Filter cards with default options
 	filterCards();
 
-	// Update views
-	updateViews();
-	// colors( allCards );
+	// Init views
+	updateViews.updateViews( true );
 
 	// Add filter chrome
 	selectized();

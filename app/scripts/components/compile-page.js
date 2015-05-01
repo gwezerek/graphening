@@ -8,7 +8,9 @@
 
 var _ = require( 'underscore' );
 var appState = require( '../app-state' );
+
 var templateFilterOptions = require( '../templates/partials/filter-options.hbs' );
+var templateColors = require( '../templates/components/colors.hbs' );
 
 var ranges = {
 	'set': [],
@@ -20,6 +22,7 @@ function init( data ) {
 	appState.allCards = flattenCards( data );
 	getRanges();
 	compileOptions();
+	compileColumns();
 }
 
 // flatten array of cards
@@ -63,6 +66,10 @@ function compileOptions() {
 	_.each( _.keys( ranges ), function( dimension ) {
 		document.querySelector( '#filter__select--multi--' + dimension ).innerHTML = templateFilterOptions( { 'dimension_value': ranges[ dimension ] } );
 	});
+}
+
+function compileColumns() {
+	document.querySelector( '#colors' ).innerHTML += templateColors( { 'color': appState.colors } );
 }
 
 module.exports = init;
