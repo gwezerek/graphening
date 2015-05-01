@@ -1,14 +1,19 @@
 BEFORE LAUNCH
-Feature - filter
-	React to change events
-	Update data
-	Update graphs
-Debug transitions
+
 QA with different filter combos/sets
-Refactor
-Add card images
-Refactor
+	- Not all filters update
+	- 0 card scenario
+	- Refactor initViz for graphs
+	- Handle card sets with missing colors
+	- Make domains bubble range dynamic
+
+Show Dragons of Tarkir in select on load
+Stage selectize styling to style first, populate later
+Add color icons
+Make filter bar sticky
 Write footer copy
+Add card images
+JSLint everything
 
 ICEBOX
 Make filter bar stick on scroll
@@ -21,7 +26,8 @@ Reverse sort set filter options by release date
 Visually filter filter options based on already selected filters
 Implement caching for images to reduce requests
 Switch from static JSON dump to API
-Stage selectize styling to style first, populate later
 Stage JSON load from all sets to just the most recent set
 Add brushing to bars as filter
 Add brushing to bubbles as filter
+Add set descriptions
+Add icons, release date and optGrouping by block to set options
