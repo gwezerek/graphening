@@ -6,6 +6,7 @@ QA with different filter combos/sets
 	- Refactor initViz for graphs
 	- Handle card sets with missing colors
 	- Make domains bubble range dynamic
+	- Reset the undefined count/fix undefined bug
 
 Show Dragons of Tarkir in select on load
 Stage selectize styling to style first, populate later
