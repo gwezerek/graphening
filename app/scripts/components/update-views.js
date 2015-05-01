@@ -1,6 +1,6 @@
 /**
 *
-* Timeline
+* Update views
 *
 **/
 

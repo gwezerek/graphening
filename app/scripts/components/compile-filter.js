@@ -7,12 +7,19 @@
 'use strict';
 
 var _ = require( 'underscore' );
+var appState = require( '../app-state' );
 var templateFilterOptions = require( '../templates/partials/filter-options.hbs' );
 
 var ranges = {
 	'set': [],
 	'types': [],
 	'subtypes': []
+}
+
+function init( data ) {
+	appState.allCards = flattenCards( data );
+	getRanges();
+	compileOptions();
 }
 
 // flatten array of cards
@@ -41,9 +48,9 @@ function flattenCards( data ) {
 }
 
 // get keys for each of the four filters
-function setRanges( allCards ) {
+function getRanges() {
 	_.each( _.keys( ranges ), function( dimension ) {
-		ranges[ dimension ] = _.chain( allCards)
+		ranges[ dimension ] = _.chain( appState.allCards )
 			.pluck( dimension )
 			.uniq()
 			.value();
@@ -51,19 +58,11 @@ function setRanges( allCards ) {
 }
 
 // compile template for each and insert that html
+// refactor to use native selectize update
 function compileOptions() {
 	_.each( _.keys( ranges ), function( dimension ) {
 		document.querySelector( '#filter__select--multi--' + dimension ).innerHTML = templateFilterOptions( { 'dimension_value': ranges[ dimension ] } );
 	});
-}
-
-function init( loadedJSON ) {
-	var data = loadedJSON;
-	var allCards = flattenCards( data );
-	setRanges( allCards );
-	compileOptions();
-
-	return allCards;
 }
 
 module.exports = init;

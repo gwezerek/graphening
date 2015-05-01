@@ -8,9 +8,10 @@
 
 var $ = require( 'jquery' );
 var selectize = require( 'selectize' );
+var appState = require( '../app-state' );
 
-var init = function( flatArr ) {
-	return $( '.filter__select--multi' ).selectize();
+var init = function() {
+	appState.filterEls =  $( '.filter__select--multi' ).selectize();
 };
 
-exports.init = init;
+module.exports = init;
