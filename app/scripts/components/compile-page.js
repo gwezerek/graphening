@@ -23,6 +23,7 @@ function init( data ) {
 	getRanges();
 	compileOptions();
 	compileColumns();
+	setVizWidth();
 }
 
 // flatten array of cards
@@ -70,6 +71,10 @@ function compileOptions() {
 
 function compileColumns() {
 	document.querySelector( '#colors' ).innerHTML += templateColors( { 'color': appState.colors } );
+}
+
+function setVizWidth() {
+	appState.vizWidth = document.querySelector( '.color__graph__wrap' ).clientWidth;
 }
 
 module.exports = init;

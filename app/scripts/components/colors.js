@@ -10,6 +10,8 @@ var d3 = require( 'd3' );
 var _ = require( 'underscore' );
 var utils = require( '../utils' );
 var appState = require( '../app-state' );
+var bars = require( './bars' );
+// var bubbles = require( './bubbles' );
 var inventory = require( './inventory' );
 
 // Local vars
@@ -23,8 +25,8 @@ var prepData = function() {
   // get rollups for each dimension
   appState.currentRollups = getAllRollups();
 
-  // set the y maxes across colors
-  getDimensionMaxes();
+  // set the y maxima across colors
+  getDimensionMaxima();
 
 }
 
@@ -132,11 +134,8 @@ function sortCategoricalNest( color, dimension, rollups ) {
   return rollups;
 }
 
-function getDimensionMaxes() {
+function getDimensionMaxima() {
   _.each( appState.dimensions, function( dimension ) {
-    // REVISIT: Is this necessary?
-    appState.dimensionMaxes[ dimension ] = 0;
-
     var flatArrayValues = [];
 
     _.each( appState.currentRollups, function( color ) {
@@ -145,7 +144,7 @@ function getDimensionMaxes() {
     });
 
     // get max
-    appState.dimensionMaxes[ dimension ] = d3.max( flatArrayValues );
+    appState.dimensionMaxima[ dimension ] = d3.max( flatArrayValues );
   });
 }
 
@@ -157,16 +156,16 @@ function updateUndefinedTotals( color, dimension ) {
 
 function vizDispatch( color, dimension, init ) {
   if ( dimension === 'cmc' || dimension === 'power' || dimension === 'toughness' ) {
-    // if ( init ) {
-    //   bars.initViz();
-    // } else {
-    //   bars.updateViz();
-    // }
+    if ( init ) {
+      bars.initViz( color, dimension );
+    } else {
+      bars.updateViz( color, dimension );
+    }
   } else if ( dimension === 'rarity' ) {
     // if ( init ) {
-    //   bubbles.initViz();
+    //   bubbles.initViz( color, dimension );
     // } else {
-    //   bubbles.updateViz();
+    //   bubbles.updateViz( color, dimension );
     // }
   } else {
     inventory.updateInventory( color, dimension );
@@ -177,8 +176,8 @@ exports.prepData = prepData;
 exports.updateViews = updateViews;
 
 // function setValueDomains( dimension ) {
-//   yScale.domain( [ 0, appState.dimensionMaxes[ dimension ] ] );
-//   rScale.domain( [ 0, appState.dimensionMaxes[ dimension ] ] );
+//   yScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
+//   rScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
 // }
 
 // function drawBar( color, dimension ) {

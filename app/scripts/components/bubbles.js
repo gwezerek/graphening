@@ -10,12 +10,15 @@ var d3 = require( 'd3' );
 var _ = require( 'underscore' );
 var appState = require( '../app-state' );
 
-var margin = { top: 15, bottom: 15 };
+var margin = { top: 15, right: 0, bottom: 15, left: 0 };
+var graphEl = document.querySelector( '.color__graph__wrap' );
+var width = graphEl.clientWidth - margin.left - margin.right;
 var height = 100 - margin.top - margin.bottom;
 var barDomain = [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9+', '*' ];
 
 var xScale = d3.scale.ordinal()
-    .domain( barDomain );
+    .domain( barDomain )
+    .rangeRoundBands( [ 0, width ], 0.33, 0 );
 
 var yScale = d3.scale.linear()
     .range( [ height, 0 ] );
@@ -27,20 +30,17 @@ var xAxis = d3.svg.axis()
 
 var initViz = function( color, dimension ) {
 
-  // debugger;
-
-  // Set domains now that template is populated and we have data
-  yScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
-  xScale.rangeRoundBands( [ 0, appState.vizWidth ], 0.33, 0 );
+  // Set current yScale domain
+  yScale.domain( [ 0, appState.valueMaxima[ dimension ] ] );
 
   var svg = d3.select( '#color__graph--' + dimension + '--' + color ).append( 'svg' )
-      .attr( 'width', appState.vizWidth )
+      .attr( 'width', width + margin.left + margin.right )
       .attr( 'height', height + margin.top + margin.bottom );
 
   var chart = svg.append( 'g' )
-      .attr( 'width', appState.vizWidth )
+      .attr( 'width', width )
       .attr( 'height', height )
-      .attr( 'transform', 'translate( 0,' + margin.top +' )' );
+      .attr( 'transform', 'translate( ' + margin.left + ',' + margin.top +' )' );
 
   var xAxisEl = svg.append( 'g' )
       .attr( 'class', 'axis axis__x' )
@@ -57,7 +57,7 @@ var initViz = function( color, dimension ) {
 
   // Update bar groups
   var barWrap = chart.selectAll( 'g' )
-      .data( appState.currentRollups[ color ][ dimension ].rollup );
+      .data( rollups[ color ][ dimension ].rollup );
 
   var barEnter = barWrap.enter().append( 'g' );
 

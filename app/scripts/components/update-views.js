@@ -8,16 +8,9 @@
 
 var colors = require( './colors' );
 
-
-var initViews = function() {
+var updateViews = function( init ) {
 	colors.prepData();
-	colors.initViews();
+	colors.updateViews( init );
 }
 
-var updateViews = function() {
-	colors.prepData();
-	colors.updateViews();
-}
-
-exports.initViews = initViews;
-exports.updateViews = updateViews;
+module.exports = updateViews;

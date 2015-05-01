@@ -24,7 +24,7 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 	filterCards();
 
 	// Init views
-	updateViews.updateViews( true );
+	updateViews( true );
 
 	// Add filter chrome
 	selectized();
@@ -34,7 +34,7 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 
 });
 
-},{"./components/bind-listeners":3,"./components/compile-page":5,"./components/filter-cards":6,"./components/selectized":8,"./components/update-views":9,"d3":14}],2:[function(require,module,exports){
+},{"./components/bind-listeners":4,"./components/compile-page":6,"./components/filter-cards":7,"./components/selectized":9,"./components/update-views":10,"d3":15}],2:[function(require,module,exports){
 /**
 *
 * App State
@@ -46,7 +46,8 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 var allCards = [];
 var currentCards = [];
 var currentRollups = [];
-var dimensionMaxes = {};
+var dimensionMaxima = {};
+var vizWidth = 0;
 var colors = [ 'white', 'blue' , 'black', 'red', 'green', 'multicolor', 'colorless' ];
 var dimensions = [ 'cmc', 'power', 'toughness', 'rarity', 'types', 'subtypes' ];
 var filterEls = [];
@@ -70,13 +71,118 @@ var filters = [
 exports.allCards = allCards;
 exports.currentCards = currentCards;
 exports.currentRollups = currentRollups;
-exports.dimensionMaxes = dimensionMaxes;
+exports.dimensionMaxima = dimensionMaxima;
+exports.vizWidth = vizWidth;
 exports.colors = colors;
 exports.dimensions = dimensions;
 exports.filterEls = filterEls;
 exports.filters = filters;
 
 },{}],3:[function(require,module,exports){
+/**
+*
+* Colors
+*
+**/
+
+'use strict';
+
+var d3 = require( 'd3' );
+var _ = require( 'underscore' );
+var appState = require( '../app-state' );
+
+var margin = { top: 15, bottom: 15 };
+var height = 100 - margin.top - margin.bottom;
+var barDomain = [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9+', '*' ];
+
+var xScale = d3.scale.ordinal()
+    .domain( barDomain );
+
+var yScale = d3.scale.linear()
+    .range( [ height, 0 ] );
+
+var xAxis = d3.svg.axis()
+    .scale( xScale )
+    .outerTickSize( 0 )
+    .orient( 'bottom' );
+
+var initViz = function( color, dimension ) {
+
+  // debugger;
+
+  // Set domains now that template is populated and we have data
+  yScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
+  xScale.rangeRoundBands( [ 0, appState.vizWidth ], 0.33, 0 );
+
+  var svg = d3.select( '#color__graph--' + dimension + '--' + color ).append( 'svg' )
+      .attr( 'width', appState.vizWidth )
+      .attr( 'height', height + margin.top + margin.bottom );
+
+  var chart = svg.append( 'g' )
+      .attr( 'width', appState.vizWidth )
+      .attr( 'height', height )
+      .attr( 'transform', 'translate( 0,' + margin.top +' )' );
+
+  var xAxisEl = svg.append( 'g' )
+      .attr( 'class', 'axis axis__x' )
+      .attr( 'transform', 'translate( 0,' + ( height + margin.top ) +' )' )
+      .call( xAxis );
+
+  var xAxisLabels = xAxisEl.selectAll( 'text' )
+      .attr( 'y', 5 )
+      .attr( 'class', 'axis__x__label');
+
+  var xAxisPath = xAxisEl.selectAll( 'path' )
+      .attr('class', 'axis__x__path');
+
+
+  // Update bar groups
+  var barWrap = chart.selectAll( 'g' )
+      .data( appState.currentRollups[ color ][ dimension ].rollup );
+
+  var barEnter = barWrap.enter().append( 'g' );
+
+  barWrap.transition()
+      .attr({
+        class: 'bar__wrap',
+        transform: function( d ) { return 'translate(' + xScale( d.key ) + ', ' + yScale( d.values ) + ')'; }
+      });
+
+  barWrap.exit()
+      .remove();
+
+  // Update bars
+  barEnter.append( 'rect' );
+
+  var bars = barWrap.selectAll( 'rect' )
+      .data( function( d ) { return [ d ]; } );
+
+  bars.attr({
+        height: function( d ) { return height - yScale( d.values ); },
+        width: xScale.rangeBand(),
+        class: 'bar__rect'
+      });
+
+  // Update labels
+  barEnter.append( 'text' );
+
+  var labels = barWrap.selectAll( 'text' )
+      .text( function( d ) { return d.values; })
+      .attr({
+        x: xScale.rangeBand() / 2,
+        y: -4,
+        class: 'bar__label'
+      });
+}
+
+var updateViz = function( color, dimension ) {
+
+}
+
+exports.initViz = initViz;
+exports.updateViz = updateViz;
+
+},{"../app-state":2,"d3":15,"underscore":28}],4:[function(require,module,exports){
 /**
 *
 * Bind Listeners
@@ -109,7 +215,7 @@ function bindFilterListeners( selectizedEls ) {
 
 module.exports = init;
 
-},{"../app-state":2,"./filter-cards":6,"./selectized":8,"./update-views":9,"jquery":23,"underscore":27}],4:[function(require,module,exports){
+},{"../app-state":2,"./filter-cards":7,"./selectized":9,"./update-views":10,"jquery":24,"underscore":28}],5:[function(require,module,exports){
 /**
 *
 * Colors
@@ -122,6 +228,8 @@ var d3 = require( 'd3' );
 var _ = require( 'underscore' );
 var utils = require( '../utils' );
 var appState = require( '../app-state' );
+var bars = require( './bars' );
+// var bubbles = require( './bubbles' );
 var inventory = require( './inventory' );
 
 // Local vars
@@ -135,8 +243,8 @@ var prepData = function() {
   // get rollups for each dimension
   appState.currentRollups = getAllRollups();
 
-  // set the y maxes across colors
-  getDimensionMaxes();
+  // set the y maxima across colors
+  getDimensionMaxima();
 
 }
 
@@ -244,11 +352,8 @@ function sortCategoricalNest( color, dimension, rollups ) {
   return rollups;
 }
 
-function getDimensionMaxes() {
+function getDimensionMaxima() {
   _.each( appState.dimensions, function( dimension ) {
-    // REVISIT: Is this necessary?
-    appState.dimensionMaxes[ dimension ] = 0;
-
     var flatArrayValues = [];
 
     _.each( appState.currentRollups, function( color ) {
@@ -257,7 +362,7 @@ function getDimensionMaxes() {
     });
 
     // get max
-    appState.dimensionMaxes[ dimension ] = d3.max( flatArrayValues );
+    appState.dimensionMaxima[ dimension ] = d3.max( flatArrayValues );
   });
 }
 
@@ -269,16 +374,16 @@ function updateUndefinedTotals( color, dimension ) {
 
 function vizDispatch( color, dimension, init ) {
   if ( dimension === 'cmc' || dimension === 'power' || dimension === 'toughness' ) {
-    // if ( init ) {
-    //   bars.initViz();
-    // } else {
-    //   bars.updateViz();
-    // }
+    if ( init ) {
+      bars.initViz( color, dimension );
+    } else {
+      bars.updateViz( color, dimension );
+    }
   } else if ( dimension === 'rarity' ) {
     // if ( init ) {
-    //   bubbles.initViz();
+    //   bubbles.initViz( color, dimension );
     // } else {
-    //   bubbles.updateViz();
+    //   bubbles.updateViz( color, dimension );
     // }
   } else {
     inventory.updateInventory( color, dimension );
@@ -289,8 +394,8 @@ exports.prepData = prepData;
 exports.updateViews = updateViews;
 
 // function setValueDomains( dimension ) {
-//   yScale.domain( [ 0, appState.dimensionMaxes[ dimension ] ] );
-//   rScale.domain( [ 0, appState.dimensionMaxes[ dimension ] ] );
+//   yScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
+//   rScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
 // }
 
 // function drawBar( color, dimension ) {
@@ -419,7 +524,7 @@ exports.updateViews = updateViews;
 
 
 
-},{"../app-state":2,"../utils":13,"./inventory":7,"d3":14,"underscore":27}],5:[function(require,module,exports){
+},{"../app-state":2,"../utils":14,"./bars":3,"./inventory":8,"d3":15,"underscore":28}],6:[function(require,module,exports){
 /**
 *
 * Filter
@@ -445,6 +550,7 @@ function init( data ) {
 	getRanges();
 	compileOptions();
 	compileColumns();
+	setVizWidth();
 }
 
 // flatten array of cards
@@ -494,9 +600,13 @@ function compileColumns() {
 	document.querySelector( '#colors' ).innerHTML += templateColors( { 'color': appState.colors } );
 }
 
+function setVizWidth() {
+	appState.vizWidth = document.querySelector( '.color__graph__wrap' ).clientWidth;
+}
+
 module.exports = init;
 
-},{"../app-state":2,"../templates/components/colors.hbs":10,"../templates/partials/filter-options.hbs":12,"underscore":27}],6:[function(require,module,exports){
+},{"../app-state":2,"../templates/components/colors.hbs":11,"../templates/partials/filter-options.hbs":13,"underscore":28}],7:[function(require,module,exports){
 /**
 *
 * Filter Cards
@@ -535,7 +645,7 @@ function filterCards() {
 
 module.exports = init;
 
-},{"../app-state":2,"underscore":27}],7:[function(require,module,exports){
+},{"../app-state":2,"underscore":28}],8:[function(require,module,exports){
 /**
 *
 * Colors
@@ -554,8 +664,6 @@ var updateInventory = function( color, dimension ) {
   var inventoryStr = '';
   var ol = document.querySelector( '#color__graph__ol--' + dimension + '--' + color );
 
-  debugger;
-
   _.each( appState.currentRollups[ color ][ dimension ].rollup, function( key ) {
     inventoryStr += templateColorsInventory( { 'key': key.key, 'value': key.values } );
   });
@@ -565,7 +673,7 @@ var updateInventory = function( color, dimension ) {
 
 exports.updateInventory = updateInventory;
 
-},{"../app-state":2,"../templates/partials/colors-inventory.hbs":11,"underscore":27}],8:[function(require,module,exports){
+},{"../app-state":2,"../templates/partials/colors-inventory.hbs":12,"underscore":28}],9:[function(require,module,exports){
 /**
 *
 * Selectized
@@ -584,7 +692,7 @@ var init = function() {
 
 module.exports = init;
 
-},{"../app-state":2,"jquery":23,"selectize":24}],9:[function(require,module,exports){
+},{"../app-state":2,"jquery":24,"selectize":25}],10:[function(require,module,exports){
 /**
 *
 * Update views
@@ -595,21 +703,14 @@ module.exports = init;
 
 var colors = require( './colors' );
 
-
-var initViews = function() {
+var updateViews = function( init ) {
 	colors.prepData();
-	colors.initViews();
+	colors.updateViews( init );
 }
 
-var updateViews = function() {
-	colors.prepData();
-	colors.updateViews();
-}
+module.exports = updateViews;
 
-exports.initViews = initViews;
-exports.updateViews = updateViews;
-
-},{"./colors":4}],10:[function(require,module,exports){
+},{"./colors":5}],11:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
@@ -712,7 +813,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
     + "    </tr>\n  </tbody>\n</table>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":22}],11:[function(require,module,exports){
+},{"hbsfy/runtime":23}],12:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -725,7 +826,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + " </li>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":22}],12:[function(require,module,exports){
+},{"hbsfy/runtime":23}],13:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
@@ -742,7 +843,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.dimension_value : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"useData":true});
 
-},{"hbsfy/runtime":22}],13:[function(require,module,exports){
+},{"hbsfy/runtime":23}],14:[function(require,module,exports){
 /**
 *
 * Utils
@@ -756,7 +857,7 @@ var isInt = function(n) { return parseInt(n) === n };
 
 exports.isInt = isInt;
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.5"
@@ -10261,7 +10362,7 @@ exports.isInt = isInt;
   if (typeof define === "function" && define.amd) define(d3); else if (typeof module === "object" && module.exports) module.exports = d3;
   this.d3 = d3;
 }();
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -10331,7 +10432,7 @@ exports['default'] = Handlebars;
 module.exports = exports['default'];
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./handlebars/base":16,"./handlebars/exception":17,"./handlebars/runtime":18,"./handlebars/safe-string":19,"./handlebars/utils":20}],16:[function(require,module,exports){
+},{"./handlebars/base":17,"./handlebars/exception":18,"./handlebars/runtime":19,"./handlebars/safe-string":20,"./handlebars/utils":21}],17:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -10605,7 +10706,7 @@ function createFrame(object) {
 }
 
 /* [args, ]options */
-},{"./exception":17,"./utils":20}],17:[function(require,module,exports){
+},{"./exception":18,"./utils":21}],18:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -10644,7 +10745,7 @@ Exception.prototype = new Error();
 
 exports['default'] = Exception;
 module.exports = exports['default'];
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -10877,7 +10978,7 @@ function initData(context, data) {
   }
   return data;
 }
-},{"./base":16,"./exception":17,"./utils":20}],19:[function(require,module,exports){
+},{"./base":17,"./exception":18,"./utils":21}],20:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -10892,7 +10993,7 @@ SafeString.prototype.toString = SafeString.prototype.toHTML = function () {
 
 exports['default'] = SafeString;
 module.exports = exports['default'];
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11008,15 +11109,15 @@ function blockParams(params, ids) {
 function appendContextPath(contextPath, id) {
   return (contextPath ? contextPath + '.' : '') + id;
 }
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":15}],22:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":16}],23:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":21}],23:[function(require,module,exports){
+},{"handlebars/runtime":22}],24:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -20223,7 +20324,7 @@ return jQuery;
 
 }));
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /**
  * selectize.js (v0.12.1)
  * Copyright (c) 2013–2015 Brian Reavis & contributors
@@ -23282,7 +23383,7 @@ return jQuery;
 
 	return Selectize;
 }));
-},{"jquery":23,"microplugin":25,"sifter":26}],25:[function(require,module,exports){
+},{"jquery":24,"microplugin":26,"sifter":27}],26:[function(require,module,exports){
 /**
  * microplugin.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -23418,7 +23519,7 @@ return jQuery;
 
 	return MicroPlugin;
 }));
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /**
  * sifter.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -23891,7 +23992,7 @@ return jQuery;
 }));
 
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors

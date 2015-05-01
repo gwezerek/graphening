@@ -23,7 +23,7 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 	filterCards();
 
 	// Init views
-	updateViews.updateViews( true );
+	updateViews( true );
 
 	// Add filter chrome
 	selectized();
