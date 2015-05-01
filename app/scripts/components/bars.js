@@ -40,6 +40,7 @@ var initViz = function( color, dimension ) {
   var chart = svg.append( 'g' )
       .attr( 'width', appState.vizWidth )
       .attr( 'height', height )
+      .attr( 'class', 'chart' )
       .attr( 'transform', 'translate( 0,' + margin.top +' )' );
 
   var xAxisEl = svg.append( 'g' )
@@ -86,7 +87,7 @@ var initViz = function( color, dimension ) {
   barEnter.append( 'text' );
 
   var labels = barWrap.selectAll( 'text' )
-      .text( function( d ) { return d.values; })
+      .text( function( d ) { return d.values; } )
       .attr({
         x: xScale.rangeBand() / 2,
         y: -4,
@@ -96,6 +97,74 @@ var initViz = function( color, dimension ) {
 
 var updateViz = function( color, dimension ) {
 
+  // Set domains now that template is populated and we have data
+  yScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
+  xScale.rangeRoundBands( [ 0, appState.vizWidth ], 0.33, 0 );
+
+  // var svg = d3.select( '#color__graph--' + dimension + '--' + color +  ).append( 'svg' )
+  //     .attr( 'width', appState.vizWidth )
+  //     .attr( 'height', height + margin.top + margin.bottom );
+
+  // var chart = svg.append( 'g' )
+  //     .attr( 'width', appState.vizWidth )
+  //     .attr( 'height', height )
+  //     .attr( 'transform', 'translate( 0,' + margin.top +' )' );
+
+
+
+  // var xAxisEl = svg.append( 'g' )
+  //     .attr( 'class', 'axis axis__x' )
+  //     .attr( 'transform', 'translate( 0,' + ( height + margin.top ) +' )' )
+  //     .call( xAxis );
+
+  // var xAxisLabels = xAxisEl.selectAll( 'text' )
+  //     .attr( 'y', 5 )
+  //     .attr( 'class', 'axis__x__label');
+
+  // var xAxisPath = xAxisEl.selectAll( 'path' )
+  //     .attr('class', 'axis__x__path');
+
+
+
+  // Need to update axis, axis labels, bars and bar labels
+
+  // Update bar groups
+  var barWrap = d3.selectAll( '#color__graph--' + dimension + '--' + color + ' .chart'  ).selectAll( 'g' )
+      .data( appState.currentRollups[ color ][ dimension ].rollup );
+
+  var barEnter = barWrap.enter().append( 'g' );
+
+  barWrap.transition()
+      .attr({
+        class: 'bar__wrap',
+        transform: function( d ) { return 'translate(' + xScale( d.key ) + ', ' + yScale( d.values ) + ')'; }
+      });
+
+  barWrap.exit()
+      .remove();
+
+  // Update bars
+  barEnter.append( 'rect' );
+
+  var bars = barWrap.selectAll( 'rect' )
+      .data( function( d ) { return [ d ]; } );
+
+  bars.attr({
+        height: function( d ) { return height - yScale( d.values ); },
+        width: xScale.rangeBand(),
+        class: 'bar__rect'
+      });
+
+  // Update labels
+  barEnter.append( 'text' );
+
+  var labels = barWrap.selectAll( 'text' )
+      .text( function( d ) { return d.values; } )
+      .attr({
+        x: xScale.rangeBand() / 2,
+        y: -4,
+        class: 'bar__label'
+      });
 }
 
 exports.initViz = initViz;
