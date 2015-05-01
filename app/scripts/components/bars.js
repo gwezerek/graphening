@@ -18,7 +18,7 @@ var xScale = d3.scale.ordinal()
     .domain( barDomain );
 
 var yScale = d3.scale.linear()
-    .range( [ height, 0 ] );
+    .range( [ 0, height ] );
 
 var xAxis = d3.svg.axis()
     .scale( xScale )
@@ -65,7 +65,7 @@ var initViz = function( color, dimension ) {
   barWrap.transition()
       .attr({
         class: 'bar__wrap',
-        transform: function( d ) { return 'translate(' + xScale( d.key ) + ', ' + yScale( d.values ) + ')'; }
+        transform: function( d ) { return 'translate(' + xScale( d.key ) + ', 0)' }
       });
 
   barWrap.exit()
@@ -78,7 +78,8 @@ var initViz = function( color, dimension ) {
       .data( function( d ) { return [ d ]; } );
 
   bars.attr({
-        height: function( d ) { return height - yScale( d.values ); },
+        y: function ( d ) { return height - yScale( d.values ); },
+        height: function( d ) { return yScale( d.values ); },
         width: xScale.rangeBand(),
         class: 'bar__rect'
       });
@@ -90,7 +91,7 @@ var initViz = function( color, dimension ) {
       .text( function( d ) { return d.values; } )
       .attr({
         x: xScale.rangeBand() / 2,
-        y: -4,
+        y: function ( d ) { return height - yScale( d.values ) - 4; },
         class: 'bar__label'
       });
 }
@@ -101,32 +102,8 @@ var updateViz = function( color, dimension ) {
   yScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
   xScale.rangeRoundBands( [ 0, appState.vizWidth ], 0.33, 0 );
 
-  // var svg = d3.select( '#color__graph--' + dimension + '--' + color +  ).append( 'svg' )
-  //     .attr( 'width', appState.vizWidth )
-  //     .attr( 'height', height + margin.top + margin.bottom );
-
-  // var chart = svg.append( 'g' )
-  //     .attr( 'width', appState.vizWidth )
-  //     .attr( 'height', height )
-  //     .attr( 'transform', 'translate( 0,' + margin.top +' )' );
-
-
-
-  // var xAxisEl = svg.append( 'g' )
-  //     .attr( 'class', 'axis axis__x' )
-  //     .attr( 'transform', 'translate( 0,' + ( height + margin.top ) +' )' )
-  //     .call( xAxis );
-
-  // var xAxisLabels = xAxisEl.selectAll( 'text' )
-  //     .attr( 'y', 5 )
-  //     .attr( 'class', 'axis__x__label');
-
-  // var xAxisPath = xAxisEl.selectAll( 'path' )
-  //     .attr('class', 'axis__x__path');
-
-
-
   // Need to update axis, axis labels, bars and bar labels
+  // TK AXIS, AXIS LABELS
 
   // Update bar groups
   var barWrap = d3.selectAll( '#color__graph--' + dimension + '--' + color + ' .chart'  ).selectAll( 'g' )
@@ -137,7 +114,7 @@ var updateViz = function( color, dimension ) {
   barWrap.transition()
       .attr({
         class: 'bar__wrap',
-        transform: function( d ) { return 'translate(' + xScale( d.key ) + ', ' + yScale( d.values ) + ')'; }
+        transform: function( d ) { return 'translate(' + xScale( d.key ) + ', 0 )'; }
       });
 
   barWrap.exit()
@@ -149,8 +126,10 @@ var updateViz = function( color, dimension ) {
   var bars = barWrap.selectAll( 'rect' )
       .data( function( d ) { return [ d ]; } );
 
-  bars.attr({
-        height: function( d ) { return height - yScale( d.values ); },
+  bars.transition()
+      .attr({
+        y: function ( d ) { return height - yScale( d.values ); },
+        height: function( d ) { return yScale( d.values ); },
         width: xScale.rangeBand(),
         class: 'bar__rect'
       });
@@ -159,10 +138,12 @@ var updateViz = function( color, dimension ) {
   barEnter.append( 'text' );
 
   var labels = barWrap.selectAll( 'text' )
+      .data( function( d ) { return [ d ]; } )
       .text( function( d ) { return d.values; } )
+      .transition()
       .attr({
         x: xScale.rangeBand() / 2,
-        y: -4,
+        y: function ( d ) { return ( height - yScale( d.values ) - 4 ); },
         class: 'bar__label'
       });
 }
