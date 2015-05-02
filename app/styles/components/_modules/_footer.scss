@@ -5,7 +5,7 @@
 **/
 
 .footer {
-	padding: 20px;
+	padding: $baseSpace $baseSpace $baseSpace*5;
 	background: $colorBlueGrey600;
 	text-align: center;
 }
