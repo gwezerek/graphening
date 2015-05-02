@@ -3,9 +3,11 @@
     <tr class="color__table__row color__table__row--header">
       {{#each color}}
       <th class="color__column__header">
-        <img class="color__column__icon" src="/images/icons/mana_{{ this }}.svg">
-        <h3 class="color__head">{{ this }}</h3>
-        <h4 class="color__subhead"><span id="card__total--{{ this }}">TK</span> cards</h4>
+        {{#if this }}
+          <img class="color__column__icon" src="/images/icons/mana_{{ @key }}.svg">
+        {{/if}}
+        <h3 class="color__head">{{ @key }}</h3>
+        <h4 class="color__subhead"><span id="card__total--{{ @key }}">TK</span> cards</h4>
       </th>
       {{/each}}
     </tr>
@@ -18,9 +20,9 @@
             <header class="color__graph__header">
               <h4 class="color__graph__head color__graph__name--cmc">{{#if @first}}Mana cost{{/if}}</h4>
             </header>
-            <div id="color__graph--cmc--{{ this }}"></div>
+            <div id="color__graph--cmc--{{ @key }}"></div>
             <aside class="color__graph__aside">
-              <h5 class="color__graph__subhead color__graph__subhead--cmc">Undefined for <span id="card__undefined--cmc--{{ this }}">0</span> cards</h5>
+              <h5 class="color__graph__subhead color__graph__subhead--cmc">Undefined for <span id="card__undefined--cmc--{{ @key }}">0</span> cards</h5>
             </aside>
           </div>
         </td>
@@ -33,9 +35,9 @@
             <header class="color__graph__header">
               <h4 class="color__graph__head color__graph__name--power">{{#if @first}}Power{{/if}}</h4>
             </header>
-            <div id="color__graph--power--{{ this }}"></div>
+            <div id="color__graph--power--{{ @key }}"></div>
             <aside class="color__graph__aside">
-              <h5 class="color__graph__subhead color__graph__subhead--power">Undefined for <span id="card__undefined--power--{{ this }}">0</span> cards</h5>
+              <h5 class="color__graph__subhead color__graph__subhead--power">Undefined for <span id="card__undefined--power--{{ @key }}">0</span> cards</h5>
             </aside>
           </div>
         </td>
@@ -48,9 +50,9 @@
             <header class="color__graph__header">
               <h4 class="color__graph__head color__graph__name--toughness">{{#if @first}}Toughness{{/if}}</h4>
             </header>
-            <div id="color__graph--toughness--{{ this }}"></div>
+            <div id="color__graph--toughness--{{ @key }}"></div>
             <aside class="color__graph__aside">
-              <h5 class="color__graph__subhead color__graph__subhead--toughness">Undefined for <span id="card__undefined--toughness--{{ this }}">0</span> cards</h5>
+              <h5 class="color__graph__subhead color__graph__subhead--toughness">Undefined for <span id="card__undefined--toughness--{{ @key }}">0</span> cards</h5>
             </aside>
           </div>
         </td>
@@ -63,34 +65,34 @@
             <header class="color__graph__header">
               <h4 class="color__graph__head color__graph__name--rarity">{{#if @first}}Rarity{{/if}}</h4>
             </header>
-            <div id="color__graph--rarity--{{ this }}"></div>
+            <div id="color__graph--rarity--{{ @key }}"></div>
           </div>
         </td>
       {{/each}}
     </tr>
     <tr class="color__table__row color__table__row--body">
       {{#each color}}
-        <td class="color__graph color__graph--types" id="color__graph--types--{{ this }}">
+        <td class="color__graph color__graph--types" id="color__graph--types--{{ @key }}">
           <div class="color__graph__wrap">
             <header class="color__graph__header">
               <h4 class="color__graph__head color__graph__name--types">{{#if @first}}Types{{/if}}</h4>
             </header>
-            <ol class="color__graph__list" id="color__graph__ol--types--{{ this }}"></ol>
+            <ol class="color__graph__list" id="color__graph__ol--types--{{ @key }}"></ol>
           </div>
         </td>
       {{/each}}
     </tr>
     <tr class="color__table__row color__table__row--body">
       {{#each color}}
-        <td class="color__graph color__graph--subtypes" id="color__graph--subtypes--{{ this }}">
+        <td class="color__graph color__graph--subtypes" id="color__graph--subtypes--{{ @key }}">
           <div class="color__graph__wrap">
             <header class="color__graph__header">
               <h4 class="color__graph__head color__graph__name--subtypes">{{#if @first}}Subtypes{{/if}}</h4>
             </header>
-            <ol class="color__graph__list" id="color__graph__ol--subtypes--{{ this }}"></ol>
+            <ol class="color__graph__list" id="color__graph__ol--subtypes--{{ @key }}"></ol>
           </div>
           <aside class="color__graph__aside">
-            <h5 class="color__graph__subhead color__graph__subhead--subtypes">Undefined for <span id="card__undefined--subtypes--{{ this }}">0</span> cards</h5>
+            <h5 class="color__graph__subhead color__graph__subhead--subtypes">Undefined for <span id="card__undefined--subtypes--{{ @key }}">0</span> cards</h5>
           </aside>
         </td>
       {{/each}}

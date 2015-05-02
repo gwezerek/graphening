@@ -26,12 +26,6 @@
 	&:last-child {
 		padding-right: 0;
 		border-right-width: 0px;
-		.color__column__icon {
-			display: none;
-		}
-	}
-	&:nth-of-type(6) .color__column__icon {
-		display: none;
 	}
 }
 

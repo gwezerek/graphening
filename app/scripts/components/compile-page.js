@@ -43,7 +43,8 @@ function flattenCards( data ) {
 }
 
 function compileColumns() {
-	document.querySelector( '#colors' ).innerHTML += templateColors( { 'color': appState.colors } );
+	var colorObj = _.object( appState.colors, [ true, true , true, true, true, false, false ] );
+	document.querySelector( '#colors' ).innerHTML += templateColors( { 'color': colorObj } );
 }
 
 function setVizWidth() {
