@@ -252,7 +252,7 @@ var updateViews = require( './update-views' );
 
 function init() {
 	bindFilterListeners();
-	bindStickyListener();
+	// bindStickyListener();
 }
 
 function bindFilterListeners() {
@@ -455,13 +455,25 @@ exports.updateViz = updateViz;
 var _ = require( 'underscore' );
 var appState = require( '../app-state' );
 
-function updateSelected() {
+var cards = require( '../templates/components/cards.hbs' );
+
+function update() {
+	updateImages();
+	updateText();
+}
+
+function updateText() {
 	document.querySelector( '.cards__selected' ).innerHTML = appState.currentCards.length;
 }
 
-exports.updateSelected = updateSelected;
+function updateImages() {
+	console.log( appState.currentCards.slice( 0, 6) );
+	document.querySelector( '.cards' ).innerHTML = cards( { cards: appState.currentCards.slice( 0, 6) } );
+}
 
-},{"../app-state":2,"underscore":33}],7:[function(require,module,exports){
+exports.update = update;
+
+},{"../app-state":2,"../templates/components/cards.hbs":13,"underscore":33}],7:[function(require,module,exports){
 /**
 *
 * Colors
@@ -713,7 +725,8 @@ function flattenCards( data ) {
 	var allCards = _.each( data, function( set ) {
 		_.each( set.cards, function( card ) {
 			card.set = set.name;
-
+			card.magicCardsInfoCode = set.magicCardsInfoCode;
+			
 			// while we're at it...
 			if ( _.isArray( card.types ) ) {
 				card.types = card.types.join(' ');
@@ -755,6 +768,15 @@ module.exports = init;
 var appState = require( '../app-state' );
 var _ = require( 'underscore' );
 
+var rank = {
+	"Mythic Rare" : 2,
+	"Special" : 1,
+	"Rare" :3,
+	"Uncommon" :4,
+	"Common" :5,
+	"Basic Land" :6
+};
+
 function init() {
 	appState.currentCards = filterCards();
 }
@@ -777,7 +799,17 @@ function filterCards() {
 		}
 	});
 
+	filteredCards = sortCardsByRarity( filteredCards );
+	
 	return filteredCards;
+}
+
+function sortCardsByRarity( filteredCards ) {
+	var sortedArr = _.sortBy( filteredCards, function( card ) {
+		return rank[ card.rarity ];
+	});
+
+	return sortedArr;
 }
 
 module.exports = init;
@@ -895,7 +927,7 @@ var cards = require( './cards' );
 var updateViews = function( init ) {
 	colors.prepData();
 	colors.updateViews( init );
-	cards.updateSelected();
+	cards.update();
 };
 
 module.exports = updateViews;
@@ -903,8 +935,16 @@ module.exports = updateViews;
 },{"./cards":6,"./colors":7}],13:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
-module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<button class=\"cards__btn--reveal cards__btn--reveal--is-closed\">▲</button>\n<ul class=\"cards__grid\">\n  <li class=\"cards__item\">\n    <h2 class=\"cards__head\"><span class=\"cards__selected\">128</span> cards selected</h2>\n  </li>\n  <li class=\"cards__item\">\n    <a href=\"\" class=\"card__link\">\n      <img class=\"cards__img\" src=\"/images/dummy/card--blue-1.png\" width=\"223\" height=\"311\">\n    </a>\n  </li>\n  <li class=\"cards__item\">\n    <a href=\"\" class=\"card__link\">\n      <img class=\"cards__img\" src=\"/images/dummy/card--blue-1.png\" width=\"223\" height=\"311\">\n    </a>\n  </li>\n  <li class=\"cards__item\">\n    <a href=\"\" class=\"card__link\">\n      <img class=\"cards__img\" src=\"/images/dummy/card--blue-1.png\" width=\"223\" height=\"311\">\n    </a>\n  </li>\n  <li class=\"cards__item\">\n    <a href=\"\" class=\"card__link\">\n      <img class=\"cards__img\" src=\"/images/dummy/card--blue-1.png\" width=\"223\" height=\"311\">\n    </a>\n  </li>\n  <li class=\"cards__item\">\n    <a href=\"\" class=\"card__link\">\n      <img class=\"cards__img\" src=\"/images/dummy/card--blue-1.png\" width=\"223\" height=\"311\">\n    </a>\n  </li>\n  <li class=\"cards__item\">\n    <a href=\"\" class=\"card__link\">\n      <img class=\"cards__img\" src=\"/images/dummy/card--blue-1.png\" width=\"223\" height=\"311\">\n    </a>\n  </li>\n</ul>";
+module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
+    return "  <li class=\"cards__item\">\n    <a href=\"\" class=\"card__link\">\n      <img class=\"cards__img\" src=\"/images/dummy/card--blue-1.png\" alt=\""
+    + this.escapeExpression(this.lambda((depth0 != null ? depth0.name : depth0), depth0))
+    + "\">\n    </a>\n  </li>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "<button class=\"cards__btn--reveal cards__btn--reveal--is-closed\">▲</button>\n<ul class=\"cards__grid\">\n  <li class=\"cards__item\">\n    <h2 class=\"cards__head\"><span class=\"cards__selected\">128</span> cards selected</h2>\n  </li>\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.cards : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</ul>";
 },"useData":true});
 
 },{"hbsfy/runtime":28}],14:[function(require,module,exports){
@@ -1040,9 +1080,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 
   return "<main class=\"main\">\n  <header class=\"site__header\">\n    <h1 class=\"site__head\">Magic: The Graphening</h1>\n    <h3 class=\"site__subhead\">What color will you play?</h3>\n"
     + ((stack1 = this.invokePartial(partials.filter,depth0,{"name":"filter","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
-    + "  </header>\n\n  <article class=\"stream\">\n    <section class=\"colors\" id=\"colors\"> \n      <!-- Color grid renders here when data is ready -->\n    </section>\n  </article>\n  <aside class=\"cards\">"
-    + ((stack1 = this.invokePartial(partials.cards,depth0,{"name":"cards","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "")
-    + "</aside>\n</main>\n\n"
+    + "  </header>\n\n  <article class=\"stream\">\n    <section class=\"colors\" id=\"colors\"> \n      <!-- Color grid renders here when data is ready -->\n    </section>\n  </article>\n  <aside class=\"cards\">\n  </aside>\n</main>\n\n"
     + ((stack1 = this.invokePartial(partials.footer,depth0,{"name":"footer","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "");
 },"usePartial":true,"useData":true});
 

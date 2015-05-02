@@ -3,34 +3,21 @@
   <li class="cards__item">
     <h2 class="cards__head"><span class="cards__selected">128</span> cards selected</h2>
   </li>
+  {{#each cards}}
+{{!--   <li class="cards__item">
+    <a href="" class="card__link">
+      <img class="cards__img" src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{ this.multiverseid }}&type=card" alt="{{ this.name }}">
+    </a>
+  </li> --}}
+{{!--   <li class="cards__item">
+    <a href="" class="card__link">
+      <img class="cards__img" src="http://magiccards.info/scans/en/{{ this.magicCardsInfoCode }}/{{ this.number }}.jpg" alt="{{ this.name }}">
+    </a>
+  </li> --}}
   <li class="cards__item">
     <a href="" class="card__link">
-      <img class="cards__img" src="/images/dummy/card--blue-1.png" width="223" height="311">
+      <img class="cards__img" src="/images/dummy/card--blue-1.png" alt="{{ this.name }}">
     </a>
   </li>
-  <li class="cards__item">
-    <a href="" class="card__link">
-      <img class="cards__img" src="/images/dummy/card--blue-1.png" width="223" height="311">
-    </a>
-  </li>
-  <li class="cards__item">
-    <a href="" class="card__link">
-      <img class="cards__img" src="/images/dummy/card--blue-1.png" width="223" height="311">
-    </a>
-  </li>
-  <li class="cards__item">
-    <a href="" class="card__link">
-      <img class="cards__img" src="/images/dummy/card--blue-1.png" width="223" height="311">
-    </a>
-  </li>
-  <li class="cards__item">
-    <a href="" class="card__link">
-      <img class="cards__img" src="/images/dummy/card--blue-1.png" width="223" height="311">
-    </a>
-  </li>
-  <li class="cards__item">
-    <a href="" class="card__link">
-      <img class="cards__img" src="/images/dummy/card--blue-1.png" width="223" height="311">
-    </a>
-  </li>
+  {{/each}}
 </ul>

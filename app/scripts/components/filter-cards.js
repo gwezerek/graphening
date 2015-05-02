@@ -9,6 +9,15 @@
 var appState = require( '../app-state' );
 var _ = require( 'underscore' );
 
+var rank = {
+	"Mythic Rare" : 2,
+	"Special" : 1,
+	"Rare" :3,
+	"Uncommon" :4,
+	"Common" :5,
+	"Basic Land" :6
+};
+
 function init() {
 	appState.currentCards = filterCards();
 }
@@ -31,7 +40,17 @@ function filterCards() {
 		}
 	});
 
+	filteredCards = sortCardsByRarity( filteredCards );
+	
 	return filteredCards;
+}
+
+function sortCardsByRarity( filteredCards ) {
+	var sortedArr = _.sortBy( filteredCards, function( card ) {
+		return rank[ card.rarity ];
+	});
+
+	return sortedArr;
 }
 
 module.exports = init;

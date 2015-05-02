@@ -10,6 +10,7 @@
 	height: $baseSpace * 4;
 	background: $colorBlueGrey900;
 	padding: $baseSpace $baseSpace 0 0;
+	width: 100%;
 }
 
 .cards__btn--reveal {
@@ -42,9 +43,11 @@
 	flex: 1;
 	padding: $baseSpace 0 0 $baseSpace;
 	text-align: left;
+	max-width: 14.285714286%;
 }
 
 .cards__img {
 	max-width: 100%;
 	height: auto;
+	border-radius: 0.4rem;
 }

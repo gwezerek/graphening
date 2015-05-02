@@ -9,8 +9,20 @@
 var _ = require( 'underscore' );
 var appState = require( '../app-state' );
 
-function updateSelected() {
+var cards = require( '../templates/components/cards.hbs' );
+
+function update() {
+	updateImages();
+	updateText();
+}
+
+function updateText() {
 	document.querySelector( '.cards__selected' ).innerHTML = appState.currentCards.length;
 }
 
-exports.updateSelected = updateSelected;
+function updateImages() {
+	console.log( appState.currentCards.slice( 0, 6) );
+	document.querySelector( '.cards' ).innerHTML = cards( { cards: appState.currentCards.slice( 0, 6) } );
+}
+
+exports.update = update;

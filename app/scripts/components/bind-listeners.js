@@ -14,7 +14,7 @@ var updateViews = require( './update-views' );
 
 function init() {
 	bindFilterListeners();
-	bindStickyListener();
+	// bindStickyListener();
 }
 
 function bindFilterListeners() {

@@ -12,7 +12,7 @@ var cards = require( './cards' );
 var updateViews = function( init ) {
 	colors.prepData();
 	colors.updateViews( init );
-	cards.updateSelected();
+	cards.update();
 };
 
 module.exports = updateViews;

@@ -1,10 +1,8 @@
 BEFORE LAUNCH
 
-Add subhead
 Add card images
 	// Scaffold drawer with dummy cards
-	// Add total selected text
-	// While rolling up, add card
+	// Sort cards by rarity
 Add brushing to bars as filter
 	// While rolling up, add cards: [ id1, id2 ] property to the [color][dimension]
 Add brushing to bubbles as filter

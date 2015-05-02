@@ -41,7 +41,8 @@ function flattenCards( data ) {
 	var allCards = _.each( data, function( set ) {
 		_.each( set.cards, function( card ) {
 			card.set = set.name;
-
+			card.magicCardsInfoCode = set.magicCardsInfoCode;
+			
 			// while we're at it...
 			if ( _.isArray( card.types ) ) {
 				card.types = card.types.join(' ');
