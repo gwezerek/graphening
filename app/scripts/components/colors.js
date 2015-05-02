@@ -31,7 +31,7 @@ var prepData = function() {
   // set the dimension domains across colors
   getDimensionDomains();
 
-}
+};
 
 var updateViews = function( init ) {
   _.each( appState.colors, function( color ) {
@@ -41,7 +41,7 @@ var updateViews = function( init ) {
       vizDispatch( color, dimension, init );
     });
   });
-}
+};
 
 
 function groupByColor() {
@@ -84,7 +84,7 @@ function getAllRollups() {
 
       // remove undefined
       if ( rollups[ color ][ dimension ].undefined ) {
-        rollups[ color ][ dimension ].rollup = _.reject( rollups[ color ][ dimension ].rollup, function( agg ){ return agg.key === 'undefined'; } )
+        rollups[ color ][ dimension ].rollup = _.reject( rollups[ color ][ dimension ].rollup, function( agg ){ return agg.key === 'undefined'; } );
       }
 
     });
@@ -102,7 +102,7 @@ function rollupByDimensionQuantitative( color, dimension, rollups ) {
           if ( !d[ dimension ] ) {
             rollups[ color ][ dimension ].undefined += 1;
             return 'undefined';
-          } else if ( _.isNaN( +d[ dimension ] ) || !utils.isInt( +d[ dimension ] ) ) {
+          } else if ( _.isNaN( +d[ dimension ] ) || !utils.isInt( +d[ dimension ] ) || +d[ dimension ] < 0 ) {
             return '*';
           } else if ( +d[ dimension ] >= 9 ) {
             return '9+';

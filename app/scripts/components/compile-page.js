@@ -16,7 +16,7 @@ var ranges = {
 	'set': [],
 	'types': [],
 	'subtypes': []
-}
+};
 
 function init( data ) {
 	appState.allCards = flattenCards( data );
@@ -35,10 +35,10 @@ function flattenCards( data ) {
 
 			// while we're at it...
 			if ( _.isArray( card.types ) ) {
-				card.types = card.types.join('/');
+				card.types = card.types.join(' ');
 			}
 			if ( _.isArray( card.subtypes ) ) {
-				card.subtypes = card.subtypes.join('/');
+				card.subtypes = card.subtypes.join(' ');
 			}
 		});
 	});

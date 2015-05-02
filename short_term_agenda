@@ -2,8 +2,8 @@ BEFORE LAUNCH
 
 QA with different filter combos/sets
 	- Refactor initViz for graphs
-	- Make domains bubble range dynamic
-	- undefined heights for some d3 calls
+	- Make bubble domain dynamic
+	- Make bar domain dynamic
 
 Show Dragons of Tarkir in select on load
 Stage selectize styling to style first, populate later

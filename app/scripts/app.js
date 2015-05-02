@@ -90,7 +90,6 @@ exports.filters = filters;
 'use strict';
 
 var d3 = require( 'd3' );
-var _ = require( 'underscore' );
 var appState = require( '../app-state' );
 
 var margin = { top: 15, bottom: 15 };
@@ -131,11 +130,11 @@ var initViz = function( color, dimension ) {
       .attr( 'transform', 'translate( 0,' + ( height + margin.top ) +' )' )
       .call( xAxis );
 
-  var xAxisLabels = xAxisEl.selectAll( 'text' )
+  xAxisEl.selectAll( 'text' )
       .attr( 'y', 5 )
       .attr( 'class', 'axis__x__label');
 
-  var xAxisPath = xAxisEl.selectAll( 'path' )
+  xAxisEl.selectAll( 'path' )
       .attr('class', 'axis__x__path');
 
 
@@ -148,7 +147,7 @@ var initViz = function( color, dimension ) {
   barWrap.transition()
       .attr({
         class: 'bar__wrap',
-        transform: function( d ) { return 'translate(' + xScale( d.key ) + ', 0)' }
+        transform: function( d ) { return 'translate(' + xScale( d.key ) + ', 0)'; }
       });
 
   barWrap.exit()
@@ -170,14 +169,14 @@ var initViz = function( color, dimension ) {
   // Update labels
   barEnter.append( 'text' );
 
-  var labels = barWrap.selectAll( 'text' )
+  barWrap.selectAll( 'text' )
       .text( function( d ) { return d.values; } )
       .attr({
         x: xScale.rangeBand() / 2,
         y: function ( d ) { return height - yScale( d.values ) - 4; },
         class: 'bar__label'
       });
-}
+};
 
 var updateViz = function( color, dimension ) {
 
@@ -220,7 +219,7 @@ var updateViz = function( color, dimension ) {
   // Update labels
   barEnter.append( 'text' );
 
-  var labels = barWrap.selectAll( 'text' )
+  barWrap.selectAll( 'text' )
       .data( function( d ) { return [ d ]; } )
       .text( function( d ) { return d.values; } )
       .transition()
@@ -229,12 +228,12 @@ var updateViz = function( color, dimension ) {
         y: function ( d ) { return ( height - yScale( d.values ) - 4 ); },
         class: 'bar__label'
       });
-}
+};
 
 exports.initViz = initViz;
 exports.updateViz = updateViz;
 
-},{"../app-state":2,"d3":16,"underscore":29}],4:[function(require,module,exports){
+},{"../app-state":2,"d3":16}],4:[function(require,module,exports){
 /**
 *
 * Bind Listeners
@@ -245,7 +244,6 @@ exports.updateViz = updateViz;
 
 var $ = require( 'jquery' );
 var _ = require( 'underscore' );
-var selectized = require( './selectized' );
 var appState = require( '../app-state' );
 var filterCards = require( './filter-cards' );
 var updateViews = require( './update-views' );
@@ -254,7 +252,7 @@ function init() {
 	bindFilterListeners();
 }
 
-function bindFilterListeners( selectizedEls ) {
+function bindFilterListeners() {
 	appState.filterEls.on( 'change', function() {
 		_.each( appState.filterEls, function( el, i ) {
 			appState.filters[ i ].values = el.selectize.getValue();
@@ -267,7 +265,7 @@ function bindFilterListeners( selectizedEls ) {
 
 module.exports = init;
 
-},{"../app-state":2,"./filter-cards":8,"./selectized":10,"./update-views":11,"jquery":25,"underscore":29}],5:[function(require,module,exports){
+},{"../app-state":2,"./filter-cards":8,"./update-views":11,"jquery":25,"underscore":29}],5:[function(require,module,exports){
 /**
 *
 * Colors
@@ -277,7 +275,6 @@ module.exports = init;
 'use strict';
 
 var d3 = require( 'd3' );
-var _ = require( 'underscore' );
 var appState = require( '../app-state' );
 
 // Scales
@@ -294,14 +291,15 @@ var initViz = function( color, dimension ) {
 
   // Set domains now that template is populated and we have data
   bubbleScale.domain( appState.domains.rarity )
-      .rangeRoundBands( [ 0, height ], .75, 0 );
+      .rangeRoundBands( [ 0, height ], 0.75, 0 );
 
   rScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] )
       .range( [ 0, width / 4 ] );
 
   var svg = d3.select( '#color__graph--' + dimension + '--' + color ).append( 'svg' )
       .attr( 'width', width )
-      .attr( 'height', height + margin.top + margin.bottom );
+      .attr( 'height', height + margin.top + margin.bottom )
+      .attr( 'class', 'svg' );
 
   var chart = svg.append( 'g' )
       .attr( 'width', width )
@@ -339,7 +337,7 @@ var initViz = function( color, dimension ) {
   bubbleEnter.append( 'text' )
     .attr( 'class', 'bubble__label bubble__label--value' );
 
-  var valueLabels = bubbleWrap.selectAll( '.bubble__label--value' )
+  bubbleWrap.selectAll( '.bubble__label--value' )
       .text( function( d ) { return d.values; } )
       .attr( 'y', 3 );
 
@@ -347,25 +345,34 @@ var initViz = function( color, dimension ) {
   bubbleEnter.append( 'text' )
       .attr( 'class', 'bubble__label bubble__label--key' );
 
-  var keyLabels = bubbleWrap.selectAll( '.bubble__label--key' )
+  bubbleWrap.selectAll( '.bubble__label--key' )
       .text( function( d ) { return d.key; } )
       .attr( 'y', -width / 4 - 10 );
-}
+};
 
 var updateViz = function( color, dimension ) {
 
   var domain = appState.domains[ dimension ];
+  var width = appState.vizWidth;
+  var height = ( width / 2 + 20 ) * domain.length;
+  var margin = { top: width / 4 + 20, bottom: width / 4 };
 
   // Set domains now that template is populated and we have data
   bubbleScale.domain( appState.domains.rarity )
-      .rangeRoundBands( [ 0, ( appState.vizWidth / 2 + 35 ) * domain.length ], .5, 0 );
+      .rangeRoundBands( [ 0, height ], 0.75, 0 );
 
   rScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] )
-      .range( [ 0, appState.vizWidth / 4 ] );
+      .range( [ 0, width / 4 ] );
 
-  var width = appState.vizWidth;
-  var height = ( width / 2 + 24 ) * domain.length;
-  var margin = { top: width / 4 + 20, bottom: width / 4 };
+  // Update the viz height
+  var svg = d3.select( '#color__graph--' + dimension + '--' + color + ' .svg')
+      .transition()
+      .attr( 'height', height + margin.top + margin.bottom );
+
+  // Update the chart height
+  svg.select( '.chart' )
+      .transition()
+      .attr( 'height', height );
 
   // Update bar groups
   var bubbleWrap = d3.selectAll( '#color__graph--' + dimension + '--' + color + ' .chart'  ).selectAll( 'g' )
@@ -398,7 +405,7 @@ var updateViz = function( color, dimension ) {
   bubbleEnter.append( 'text' )
     .attr( 'class', 'bubble__label bubble__label--value' );
 
-  var valueLabels = bubbleWrap.selectAll( '.bubble__label--value' )
+  bubbleWrap.selectAll( '.bubble__label--value' )
       .data( function( d ) { return [ d ]; } )
       .text( function( d ) { return d.values; } )
       .attr( 'y', 3 );
@@ -407,16 +414,16 @@ var updateViz = function( color, dimension ) {
   bubbleEnter.append( 'text' )
       .attr( 'class', 'bubble__label bubble__label--key' );
 
-  var keyLabels = bubbleWrap.selectAll( '.bubble__label--key' )
+  bubbleWrap.selectAll( '.bubble__label--key' )
       .data( function( d ) { return [ d ]; } )
       .text( function( d ) { return d.key; } )
       .attr( 'y', -width / 4 - 10 );
-}
+};
 
 exports.initViz = initViz;
 exports.updateViz = updateViz;
 
-},{"../app-state":2,"d3":16,"underscore":29}],6:[function(require,module,exports){
+},{"../app-state":2,"d3":16}],6:[function(require,module,exports){
 /**
 *
 * Colors
@@ -450,7 +457,7 @@ var prepData = function() {
   // set the dimension domains across colors
   getDimensionDomains();
 
-}
+};
 
 var updateViews = function( init ) {
   _.each( appState.colors, function( color ) {
@@ -460,7 +467,7 @@ var updateViews = function( init ) {
       vizDispatch( color, dimension, init );
     });
   });
-}
+};
 
 
 function groupByColor() {
@@ -503,7 +510,7 @@ function getAllRollups() {
 
       // remove undefined
       if ( rollups[ color ][ dimension ].undefined ) {
-        rollups[ color ][ dimension ].rollup = _.reject( rollups[ color ][ dimension ].rollup, function( agg ){ return agg.key === 'undefined'; } )
+        rollups[ color ][ dimension ].rollup = _.reject( rollups[ color ][ dimension ].rollup, function( agg ){ return agg.key === 'undefined'; } );
       }
 
     });
@@ -521,7 +528,7 @@ function rollupByDimensionQuantitative( color, dimension, rollups ) {
           if ( !d[ dimension ] ) {
             rollups[ color ][ dimension ].undefined += 1;
             return 'undefined';
-          } else if ( _.isNaN( +d[ dimension ] ) || !utils.isInt( +d[ dimension ] ) ) {
+          } else if ( _.isNaN( +d[ dimension ] ) || !utils.isInt( +d[ dimension ] ) || +d[ dimension ] < 0 ) {
             return '*';
           } else if ( +d[ dimension ] >= 9 ) {
             return '9+';
@@ -643,7 +650,7 @@ var ranges = {
 	'set': [],
 	'types': [],
 	'subtypes': []
-}
+};
 
 function init( data ) {
 	appState.allCards = flattenCards( data );
@@ -662,10 +669,10 @@ function flattenCards( data ) {
 
 			// while we're at it...
 			if ( _.isArray( card.types ) ) {
-				card.types = card.types.join('/');
+				card.types = card.types.join(' ');
 			}
 			if ( _.isArray( card.subtypes ) ) {
-				card.subtypes = card.subtypes.join('/');
+				card.subtypes = card.subtypes.join(' ');
 			}
 		});
 	});
@@ -718,7 +725,7 @@ module.exports = init;
 var appState = require( '../app-state' );
 var _ = require( 'underscore' );
 
-function init( firstLoad ) {
+function init() {
 	appState.currentCards = filterCards();
 }
 
@@ -806,7 +813,7 @@ var colors = require( './colors' );
 var updateViews = function( init ) {
 	colors.prepData();
 	colors.updateViews( init );
-}
+};
 
 module.exports = updateViews;
 
@@ -953,7 +960,8 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 'use strict';
 
 // from http://stackoverflow.com/questions/3885817/how-to-check-if-a-number-is-float-or-integer
-var isInt = function(n) { return parseInt(n) === n };
+// Accepts positive ints, rejects negative, strings and floats
+var isInt = function(n) { return parseInt(n) === n; };
 
 exports.isInt = isInt;
 

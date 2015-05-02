@@ -9,7 +9,7 @@
 var appState = require( '../app-state' );
 var _ = require( 'underscore' );
 
-function init( firstLoad ) {
+function init() {
 	appState.currentCards = filterCards();
 }
 

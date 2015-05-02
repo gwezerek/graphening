@@ -7,7 +7,6 @@
 'use strict';
 
 var d3 = require( 'd3' );
-var _ = require( 'underscore' );
 var appState = require( '../app-state' );
 
 var margin = { top: 15, bottom: 15 };
@@ -48,11 +47,11 @@ var initViz = function( color, dimension ) {
       .attr( 'transform', 'translate( 0,' + ( height + margin.top ) +' )' )
       .call( xAxis );
 
-  var xAxisLabels = xAxisEl.selectAll( 'text' )
+  xAxisEl.selectAll( 'text' )
       .attr( 'y', 5 )
       .attr( 'class', 'axis__x__label');
 
-  var xAxisPath = xAxisEl.selectAll( 'path' )
+  xAxisEl.selectAll( 'path' )
       .attr('class', 'axis__x__path');
 
 
@@ -65,7 +64,7 @@ var initViz = function( color, dimension ) {
   barWrap.transition()
       .attr({
         class: 'bar__wrap',
-        transform: function( d ) { return 'translate(' + xScale( d.key ) + ', 0)' }
+        transform: function( d ) { return 'translate(' + xScale( d.key ) + ', 0)'; }
       });
 
   barWrap.exit()
@@ -87,14 +86,14 @@ var initViz = function( color, dimension ) {
   // Update labels
   barEnter.append( 'text' );
 
-  var labels = barWrap.selectAll( 'text' )
+  barWrap.selectAll( 'text' )
       .text( function( d ) { return d.values; } )
       .attr({
         x: xScale.rangeBand() / 2,
         y: function ( d ) { return height - yScale( d.values ) - 4; },
         class: 'bar__label'
       });
-}
+};
 
 var updateViz = function( color, dimension ) {
 
@@ -137,7 +136,7 @@ var updateViz = function( color, dimension ) {
   // Update labels
   barEnter.append( 'text' );
 
-  var labels = barWrap.selectAll( 'text' )
+  barWrap.selectAll( 'text' )
       .data( function( d ) { return [ d ]; } )
       .text( function( d ) { return d.values; } )
       .transition()
@@ -146,7 +145,7 @@ var updateViz = function( color, dimension ) {
         y: function ( d ) { return ( height - yScale( d.values ) - 4 ); },
         class: 'bar__label'
       });
-}
+};
 
 exports.initViz = initViz;
 exports.updateViz = updateViz;
