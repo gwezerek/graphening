@@ -22,10 +22,23 @@
 	padding-right: $baseSpace / 2;
 	border-right: 1px dashed $colorBlueGrey700;
 	text-align: left;
+	vertical-align: bottom;
 	&:last-child {
 		padding-right: 0;
 		border-right-width: 0px;
+		.color__column__icon {
+			display: none;
+		}
 	}
+	&:nth-of-type(6) .color__column__icon {
+		display: none;
+	}
+}
+
+.color__column__icon {
+	width: 50px;
+	margin: 0 $baseSpace/2 $baseSpace/2 0;
+	float: left;
 }
 
 .color__head {

@@ -14,6 +14,7 @@ var updateViews = require( './update-views' );
 
 function init() {
 	bindFilterListeners();
+	bindStickyListener();
 }
 
 function bindFilterListeners() {
@@ -25,6 +26,23 @@ function bindFilterListeners() {
 		filterCards();
 		updateViews();
 	});
+}
+
+function stickyNav() {     
+	if ( $( window ).scrollTop() > appState.stickyNavTop ) { 
+	    $( '.filter' ).addClass( 'filter--is--sticky' );
+		$( '.stream' ).addClass( 'stream--is--sticky' );
+	} else {
+	    $( '.filter' ).removeClass( 'filter--is--sticky' );
+		$( '.stream' ).removeClass( 'stream--is--sticky' ); 
+	}
+}
+
+function bindStickyListener() {
+	appState.stickyNavTop = $( '.filter' ).offset().top;
+	var throttled = _.throttle( stickyNav, 100 );
+	
+	$( window ).scroll( throttled );
 }
 
 module.exports = init;

@@ -52,6 +52,7 @@ var currentRollups = [];
 var dimensionMaxima = {};
 var domains = {};
 var vizWidth = 0;
+var stickyNavTop = 0;
 var colors = [ 'white', 'blue' , 'black', 'red', 'green', 'multicolor', 'colorless' ];
 var dimensions = [ 'cmc', 'power', 'toughness', 'rarity', 'types', 'subtypes' ];
 var filterEls = [];
@@ -78,6 +79,7 @@ exports.currentRollups = currentRollups;
 exports.dimensionMaxima = dimensionMaxima;
 exports.domains = domains;
 exports.vizWidth = vizWidth;
+exports.stickyNavTop = stickyNavTop;
 exports.colors = colors;
 exports.dimensions = dimensions;
 exports.filterEls = filterEls;
@@ -253,6 +255,7 @@ var updateViews = require( './update-views' );
 
 function init() {
 	bindFilterListeners();
+	bindStickyListener();
 }
 
 function bindFilterListeners() {
@@ -264,6 +267,23 @@ function bindFilterListeners() {
 		filterCards();
 		updateViews();
 	});
+}
+
+function stickyNav() {     
+	if ( $( window ).scrollTop() > appState.stickyNavTop ) { 
+	    $( '.filter' ).addClass( 'filter--is--sticky' );
+		$( '.stream' ).addClass( 'stream--is--sticky' );
+	} else {
+	    $( '.filter' ).removeClass( 'filter--is--sticky' );
+		$( '.stream' ).removeClass( 'stream--is--sticky' ); 
+	}
+}
+
+function bindStickyListener() {
+	appState.stickyNavTop = $( '.filter' ).offset().top;
+	var throttled = _.throttle( stickyNav, 100 );
+	
+	$( window ).scroll( throttled );
 }
 
 module.exports = init;
@@ -850,7 +870,9 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
     var alias1=this.lambda, alias2=this.escapeExpression;
 
-  return "      <th class=\"color__column__header\">\n        <h3 class=\"color__head\">"
+  return "      <th class=\"color__column__header\">\n        <img class=\"color__column__icon\" src=\"/images/icons/mana_"
+    + alias2(alias1(depth0, depth0))
+    + ".svg\">\n        <h3 class=\"color__head\">"
     + alias2(alias1(depth0, depth0))
     + "</h3>\n        <h4 class=\"color__subhead\"><span id=\"card__total--"
     + alias2(alias1(depth0, depth0))
