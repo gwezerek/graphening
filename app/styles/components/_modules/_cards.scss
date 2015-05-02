@@ -4,8 +4,47 @@
 *
 **/
 
-.grid__cards {
+.cards {
+	position: fixed;
+	bottom: 0;
+	height: $baseSpace * 4;
+	background: $colorBlueGrey900;
+	padding: $baseSpace $baseSpace 0 0;
+}
+
+.cards__btn--reveal {
 	display: none;
-	overflow-x: scroll;
-	white-space: nowrap;
+	background: $colorBlueGrey900;
+	color: $colorBlueGrey300;
+	// width: 5rem;
+	// height: 5rem;
+	// transform: rotateZ(-45deg);
+	// transform-origin: 0 100% 0deg;
+	// text-overflow: clip;
+	// box-sizing: content-box;
+}
+
+.cards__grid {
+	display: flex;
+	margin: -$baseSpace 0 0 -$baseSpace;
+}
+
+.cards__head {
+	color: white;
+	font-size: $fontMedium;
+	font-weight: 700;
+	line-height: 130%;
+}
+
+.cards__item {
+	list-style: none;
+	margin: 0;
+	flex: 1;
+	padding: $baseSpace 0 0 $baseSpace;
+	text-align: left;
+}
+
+.cards__img {
+	max-width: 100%;
+	height: auto;
 }

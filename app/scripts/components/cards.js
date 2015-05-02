@@ -6,8 +6,11 @@
 
 'use strict';
 
-function init() {
+var _ = require( 'underscore' );
+var appState = require( '../app-state' );
 
+function updateSelected() {
+	document.querySelector( '.cards__selected' ).innerHTML = appState.currentCards.length;
 }
 
-module.exports = init;
+exports.updateSelected = updateSelected;

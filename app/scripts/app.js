@@ -34,7 +34,7 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 
 });
 
-},{"./components/bind-listeners":4,"./components/compile-page":7,"./components/filter-cards":8,"./components/selectized":10,"./components/update-views":11,"d3":19}],2:[function(require,module,exports){
+},{"./components/bind-listeners":4,"./components/compile-page":8,"./components/filter-cards":9,"./components/selectized":11,"./components/update-views":12,"d3":20}],2:[function(require,module,exports){
 /**
 *
 * App State
@@ -235,7 +235,7 @@ var updateViz = function( color, dimension ) {
 exports.initViz = initViz;
 exports.updateViz = updateViz;
 
-},{"../app-state":2,"d3":19}],4:[function(require,module,exports){
+},{"../app-state":2,"d3":20}],4:[function(require,module,exports){
 /**
 *
 * Bind Listeners
@@ -285,7 +285,7 @@ function bindStickyListener() {
 
 module.exports = init;
 
-},{"../app-state":2,"./filter-cards":8,"./update-views":11,"jquery":28,"underscore":32}],5:[function(require,module,exports){
+},{"../app-state":2,"./filter-cards":9,"./update-views":12,"jquery":29,"underscore":33}],5:[function(require,module,exports){
 /**
 *
 * Colors
@@ -443,7 +443,25 @@ var updateViz = function( color, dimension ) {
 exports.initViz = initViz;
 exports.updateViz = updateViz;
 
-},{"../app-state":2,"d3":19}],6:[function(require,module,exports){
+},{"../app-state":2,"d3":20}],6:[function(require,module,exports){
+/**
+*
+* Cards
+*
+**/
+
+'use strict';
+
+var _ = require( 'underscore' );
+var appState = require( '../app-state' );
+
+function updateSelected() {
+	document.querySelector( '.cards__selected' ).innerHTML = appState.currentCards.length;
+}
+
+exports.updateSelected = updateSelected;
+
+},{"../app-state":2,"underscore":33}],7:[function(require,module,exports){
 /**
 *
 * Colors
@@ -651,7 +669,7 @@ function vizDispatch( color, dimension, init ) {
 exports.prepData = prepData;
 exports.updateViews = updateViews;
 
-},{"../app-state":2,"../utils":18,"./bars":3,"./bubbles":5,"./inventory":9,"d3":19,"underscore":32}],7:[function(require,module,exports){
+},{"../app-state":2,"../utils":19,"./bars":3,"./bubbles":5,"./inventory":10,"d3":20,"underscore":33}],8:[function(require,module,exports){
 /**
 *
 * Filter
@@ -725,7 +743,7 @@ function setVizWidth() {
 
 module.exports = init;
 
-},{"../app-state":2,"../templates/components/cards.hbs":12,"../templates/components/colors.hbs":13,"../templates/components/filters.hbs":14,"../templates/components/footer.hbs":15,"../templates/index.hbs":16,"./selectized":10,"hbsfy/runtime":27,"underscore":32}],8:[function(require,module,exports){
+},{"../app-state":2,"../templates/components/cards.hbs":13,"../templates/components/colors.hbs":14,"../templates/components/filters.hbs":15,"../templates/components/footer.hbs":16,"../templates/index.hbs":17,"./selectized":11,"hbsfy/runtime":28,"underscore":33}],9:[function(require,module,exports){
 /**
 *
 * Filter Cards
@@ -764,7 +782,7 @@ function filterCards() {
 
 module.exports = init;
 
-},{"../app-state":2,"underscore":32}],9:[function(require,module,exports){
+},{"../app-state":2,"underscore":33}],10:[function(require,module,exports){
 /**
 *
 * Colors
@@ -792,7 +810,7 @@ var updateInventory = function( color, dimension ) {
 
 exports.updateInventory = updateInventory;
 
-},{"../app-state":2,"../templates/partials/colors-inventory.hbs":17,"underscore":32}],10:[function(require,module,exports){
+},{"../app-state":2,"../templates/partials/colors-inventory.hbs":18,"underscore":33}],11:[function(require,module,exports){
 /**
 *
 * Selectized
@@ -862,7 +880,7 @@ function setDefault() {
 exports.init = init;
 exports.populate = populate;
 
-},{"../app-state":2,"jquery":28,"selectize":29,"underscore":32}],11:[function(require,module,exports){
+},{"../app-state":2,"jquery":29,"selectize":30,"underscore":33}],12:[function(require,module,exports){
 /**
 *
 * Update views
@@ -872,22 +890,24 @@ exports.populate = populate;
 'use strict';
 
 var colors = require( './colors' );
+var cards = require( './cards' );
 
 var updateViews = function( init ) {
 	colors.prepData();
 	colors.updateViews( init );
+	cards.updateSelected();
 };
 
 module.exports = updateViews;
 
-},{"./colors":6}],12:[function(require,module,exports){
+},{"./cards":6,"./colors":7}],13:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<h2 class=\"stream__head\">128 cards selected</h2>\n<div class=\"grid__cards\">\n  <a href=\"\" class=\"card__link\">\n    <img class=\"\" src=\"/images/dummy/card--blue-0.png\" width=\"223\" height=\"311\">\n  </a>\n  <a href=\"\" class=\"card__link\">\n    <img class=\"\" src=\"/images/dummy/card--blue-1.png\" width=\"223\" height=\"311\">\n  </a>\n  <a href=\"\" class=\"card__link\">\n    <img class=\"\" src=\"/images/dummy/card--blue-2.png\" width=\"223\" height=\"311\">\n  </a>\n  <a href=\"\" class=\"card__link\">\n    <img class=\"\" src=\"/images/dummy/card--blue-3.png\" width=\"223\" height=\"311\">\n  </a>\n  <a href=\"\" class=\"card__link\">\n    <img class=\"\" src=\"/images/dummy/card--blue-4.png\" width=\"223\" height=\"311\">\n  </a>\n  <a href=\"\" class=\"card__link\">\n    <img class=\"\" src=\"/images/dummy/card--blue-5.png\" width=\"223\" height=\"311\">\n  </a>\n  <a href=\"\" class=\"card__link\">\n    <img class=\"\" src=\"/images/dummy/card--blue-0.png\" width=\"223\" height=\"311\">\n  </a>\n</div>";
+    return "<button class=\"cards__btn--reveal cards__btn--reveal--is-closed\">▲</button>\n<ul class=\"cards__grid\">\n  <li class=\"cards__item\">\n    <h2 class=\"cards__head\"><span class=\"cards__selected\">128</span> cards selected</h2>\n  </li>\n  <li class=\"cards__item\">\n    <a href=\"\" class=\"card__link\">\n      <img class=\"cards__img\" src=\"/images/dummy/card--blue-1.png\" width=\"223\" height=\"311\">\n    </a>\n  </li>\n  <li class=\"cards__item\">\n    <a href=\"\" class=\"card__link\">\n      <img class=\"cards__img\" src=\"/images/dummy/card--blue-1.png\" width=\"223\" height=\"311\">\n    </a>\n  </li>\n  <li class=\"cards__item\">\n    <a href=\"\" class=\"card__link\">\n      <img class=\"cards__img\" src=\"/images/dummy/card--blue-1.png\" width=\"223\" height=\"311\">\n    </a>\n  </li>\n  <li class=\"cards__item\">\n    <a href=\"\" class=\"card__link\">\n      <img class=\"cards__img\" src=\"/images/dummy/card--blue-1.png\" width=\"223\" height=\"311\">\n    </a>\n  </li>\n  <li class=\"cards__item\">\n    <a href=\"\" class=\"card__link\">\n      <img class=\"cards__img\" src=\"/images/dummy/card--blue-1.png\" width=\"223\" height=\"311\">\n    </a>\n  </li>\n  <li class=\"cards__item\">\n    <a href=\"\" class=\"card__link\">\n      <img class=\"cards__img\" src=\"/images/dummy/card--blue-1.png\" width=\"223\" height=\"311\">\n    </a>\n  </li>\n</ul>";
 },"useData":true});
 
-},{"hbsfy/runtime":27}],13:[function(require,module,exports){
+},{"hbsfy/runtime":28}],14:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
@@ -998,21 +1018,21 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
     + "    </tr>\n  </tbody>\n</table>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":27}],14:[function(require,module,exports){
+},{"hbsfy/runtime":28}],15:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<form class=\"filter\">\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--set\" multiple=\"multiple\" placeholder=\"Filter by sets...\">\n      <option value=\"Dragons of Tarkir\" selected>Dragons of Tarkir</option>\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--rarity\" multiple=\"multiple\" placeholder=\"Filter by rarity...\">\n      <option value=\"Common\">Common</option>\n      <option value=\"Uncommon\">Uncommon</option>\n      <option value=\"Rare\">Rare</option>\n      <option value=\"Mythic Rare\">Mythic Rare</option>\n      <option value=\"Special\">Special</option>\n      <option value=\"Basic Land\">Basic Land</option>\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--types\" multiple=\"multiple\" placeholder=\"Filter by type...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--subtypes\" multiple=\"multiple\" placeholder=\"Filter by subtype...\">\n    </select>\n  </fieldset>\n<!--           <fieldset class=\"filter__fieldset\">\n    <label class=\"filter__label\"><input class=\"input__radio\" type=\"radio\" name=\"reprints\" value=\"exclude\" checked>Exclude reprints</label>\n    <label class=\"filter__label\"><input class=\"input__radio\" type=\"radio\" name=\"reprints\" value=\"include\">Include reprints</label>\n  </fieldset> -->\n</form>";
 },"useData":true});
 
-},{"hbsfy/runtime":27}],15:[function(require,module,exports){
+},{"hbsfy/runtime":28}],16:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<footer class=\"footer\">\n  <p class=\"footer__text\">Card names and text are all copyright <a href=\"http://company.wizards.com/\" class=\"footer__link\">Wizards of the Coast</a>. This website is not affiliated with Wizards of the Coast in any way. Great thanks to <a href=\"http://mtgjson.com/\" class=\"footer__link\">MTG JSON</a> for the card data.</p>\n</footer>";
 },"useData":true});
 
-},{"hbsfy/runtime":27}],16:[function(require,module,exports){
+},{"hbsfy/runtime":28}],17:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -1026,7 +1046,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + ((stack1 = this.invokePartial(partials.footer,depth0,{"name":"footer","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "");
 },"usePartial":true,"useData":true});
 
-},{"hbsfy/runtime":27}],17:[function(require,module,exports){
+},{"hbsfy/runtime":28}],18:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -1039,7 +1059,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + "</li>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":27}],18:[function(require,module,exports){
+},{"hbsfy/runtime":28}],19:[function(require,module,exports){
 /**
 *
 * Utils
@@ -1054,7 +1074,7 @@ var isInt = function(n) { return parseInt(n) === n; };
 
 exports.isInt = isInt;
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.5"
@@ -10559,7 +10579,7 @@ exports.isInt = isInt;
   if (typeof define === "function" && define.amd) define(d3); else if (typeof module === "object" && module.exports) module.exports = d3;
   this.d3 = d3;
 }();
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -10629,7 +10649,7 @@ exports['default'] = Handlebars;
 module.exports = exports['default'];
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./handlebars/base":21,"./handlebars/exception":22,"./handlebars/runtime":23,"./handlebars/safe-string":24,"./handlebars/utils":25}],21:[function(require,module,exports){
+},{"./handlebars/base":22,"./handlebars/exception":23,"./handlebars/runtime":24,"./handlebars/safe-string":25,"./handlebars/utils":26}],22:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -10903,7 +10923,7 @@ function createFrame(object) {
 }
 
 /* [args, ]options */
-},{"./exception":22,"./utils":25}],22:[function(require,module,exports){
+},{"./exception":23,"./utils":26}],23:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -10942,7 +10962,7 @@ Exception.prototype = new Error();
 
 exports['default'] = Exception;
 module.exports = exports['default'];
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -11175,7 +11195,7 @@ function initData(context, data) {
   }
   return data;
 }
-},{"./base":21,"./exception":22,"./utils":25}],24:[function(require,module,exports){
+},{"./base":22,"./exception":23,"./utils":26}],25:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11190,7 +11210,7 @@ SafeString.prototype.toString = SafeString.prototype.toHTML = function () {
 
 exports['default'] = SafeString;
 module.exports = exports['default'];
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11306,15 +11326,15 @@ function blockParams(params, ids) {
 function appendContextPath(contextPath, id) {
   return (contextPath ? contextPath + '.' : '') + id;
 }
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":20}],27:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":21}],28:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":26}],28:[function(require,module,exports){
+},{"handlebars/runtime":27}],29:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -20521,7 +20541,7 @@ return jQuery;
 
 }));
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /**
  * selectize.js (v0.12.1)
  * Copyright (c) 2013–2015 Brian Reavis & contributors
@@ -23580,7 +23600,7 @@ return jQuery;
 
 	return Selectize;
 }));
-},{"jquery":28,"microplugin":30,"sifter":31}],30:[function(require,module,exports){
+},{"jquery":29,"microplugin":31,"sifter":32}],31:[function(require,module,exports){
 /**
  * microplugin.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -23716,7 +23736,7 @@ return jQuery;
 
 	return MicroPlugin;
 }));
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /**
  * sifter.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -24189,7 +24209,7 @@ return jQuery;
 }));
 
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
