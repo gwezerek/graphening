@@ -14,6 +14,9 @@ var updateViews = require( './components/update-views' );
 var selectized = require( './components/selectized' );
 var bindListeners = require( './components/bind-listeners' );
 
+// Add the filter chrome
+selectized.init();
+
 d3.json( '../data/AllSets.json', function( error, data ) {
 
 	// Populate filters
@@ -26,7 +29,7 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 	updateViews( true );
 
 	// Add filter chrome
-	selectized();
+	selectized.populate();
 
 	// Bind handlers
 	bindListeners();

@@ -15,6 +15,9 @@ var updateViews = require( './components/update-views' );
 var selectized = require( './components/selectized' );
 var bindListeners = require( './components/bind-listeners' );
 
+// Add the filter chrome
+selectized.init();
+
 d3.json( '../data/AllSets.json', function( error, data ) {
 
 	// Populate filters
@@ -27,14 +30,14 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 	updateViews( true );
 
 	// Add filter chrome
-	selectized();
+	selectized.populate();
 
 	// Bind handlers
 	bindListeners();
 
 });
 
-},{"./components/bind-listeners":4,"./components/compile-page":7,"./components/filter-cards":8,"./components/selectized":10,"./components/update-views":11,"d3":16}],2:[function(require,module,exports){
+},{"./components/bind-listeners":4,"./components/compile-page":7,"./components/filter-cards":8,"./components/selectized":10,"./components/update-views":11,"d3":15}],2:[function(require,module,exports){
 /**
 *
 * App State
@@ -233,7 +236,7 @@ var updateViz = function( color, dimension ) {
 exports.initViz = initViz;
 exports.updateViz = updateViz;
 
-},{"../app-state":2,"d3":16}],4:[function(require,module,exports){
+},{"../app-state":2,"d3":15}],4:[function(require,module,exports){
 /**
 *
 * Bind Listeners
@@ -265,7 +268,7 @@ function bindFilterListeners() {
 
 module.exports = init;
 
-},{"../app-state":2,"./filter-cards":8,"./update-views":11,"jquery":25,"underscore":29}],5:[function(require,module,exports){
+},{"../app-state":2,"./filter-cards":8,"./update-views":11,"jquery":24,"underscore":28}],5:[function(require,module,exports){
 /**
 *
 * Colors
@@ -423,7 +426,7 @@ var updateViz = function( color, dimension ) {
 exports.initViz = initViz;
 exports.updateViz = updateViz;
 
-},{"../app-state":2,"d3":16}],6:[function(require,module,exports){
+},{"../app-state":2,"d3":15}],6:[function(require,module,exports){
 /**
 *
 * Colors
@@ -631,7 +634,7 @@ function vizDispatch( color, dimension, init ) {
 exports.prepData = prepData;
 exports.updateViews = updateViews;
 
-},{"../app-state":2,"../utils":15,"./bars":3,"./bubbles":5,"./inventory":9,"d3":16,"underscore":29}],7:[function(require,module,exports){
+},{"../app-state":2,"../utils":14,"./bars":3,"./bubbles":5,"./inventory":9,"d3":15,"underscore":28}],7:[function(require,module,exports){
 /**
 *
 * Filter
@@ -643,19 +646,10 @@ exports.updateViews = updateViews;
 var _ = require( 'underscore' );
 var appState = require( '../app-state' );
 
-var templateFilterOptions = require( '../templates/partials/filter-options.hbs' );
 var templateColors = require( '../templates/components/colors.hbs' );
-
-var ranges = {
-	'set': [],
-	'types': [],
-	'subtypes': []
-};
 
 function init( data ) {
 	appState.allCards = flattenCards( data );
-	getRanges();
-	compileOptions();
 	compileColumns();
 	setVizWidth();
 }
@@ -685,24 +679,6 @@ function flattenCards( data ) {
 	return allCards;
 }
 
-// get keys for each of the four filters
-function getRanges() {
-	_.each( _.keys( ranges ), function( dimension ) {
-		ranges[ dimension ] = _.chain( appState.allCards )
-			.pluck( dimension )
-			.uniq()
-			.value();
-	});
-}
-
-// compile template for each and insert that html
-// refactor to use native selectize update
-function compileOptions() {
-	_.each( _.keys( ranges ), function( dimension ) {
-		document.querySelector( '#filter__select--multi--' + dimension ).innerHTML = templateFilterOptions( { 'dimension_value': ranges[ dimension ] } );
-	});
-}
-
 function compileColumns() {
 	document.querySelector( '#colors' ).innerHTML += templateColors( { 'color': appState.colors } );
 }
@@ -713,7 +689,7 @@ function setVizWidth() {
 
 module.exports = init;
 
-},{"../app-state":2,"../templates/components/colors.hbs":12,"../templates/partials/filter-options.hbs":14,"underscore":29}],8:[function(require,module,exports){
+},{"../app-state":2,"../templates/components/colors.hbs":12,"underscore":28}],8:[function(require,module,exports){
 /**
 *
 * Filter Cards
@@ -752,7 +728,7 @@ function filterCards() {
 
 module.exports = init;
 
-},{"../app-state":2,"underscore":29}],9:[function(require,module,exports){
+},{"../app-state":2,"underscore":28}],9:[function(require,module,exports){
 /**
 *
 * Colors
@@ -780,7 +756,7 @@ var updateInventory = function( color, dimension ) {
 
 exports.updateInventory = updateInventory;
 
-},{"../app-state":2,"../templates/partials/colors-inventory.hbs":13,"underscore":29}],10:[function(require,module,exports){
+},{"../app-state":2,"../templates/partials/colors-inventory.hbs":13,"underscore":28}],10:[function(require,module,exports){
 /**
 *
 * Selectized
@@ -790,16 +766,67 @@ exports.updateInventory = updateInventory;
 'use strict';
 
 var $ = require( 'jquery' );
+var _ = require( 'underscore' );
 var selectize = require( 'selectize' );
 var appState = require( '../app-state' );
+
+var ranges = {
+	'set': [],
+	'types': [],
+	'subtypes': []
+};
 
 var init = function() {
 	appState.filterEls =  $( '.filter__select--multi' ).selectize();
 };
 
-module.exports = init;
+var populate = function() {
+	getRanges();
+	compileOptions();
+	setDefault();
+};
 
-},{"../app-state":2,"jquery":25,"selectize":26}],11:[function(require,module,exports){
+function compileOptions() {
+	_.each( _.keys( ranges ), function( dimension ) {
+		var optionsObj = [];
+
+		_.each( ranges[ dimension ], function( dimensionValue ) {
+			optionsObj.push({
+				text: dimensionValue, 
+				value: dimensionValue
+			});
+		});
+
+		appState.filterEls.filter( '#filter__select--multi--' + dimension )[0].selectize.load( function( callback ) {
+		    callback( optionsObj );
+		});
+	});
+}
+
+// get keys for each of the three dynamically populated filters
+function getRanges() {
+	_.each( _.keys( ranges ), function( dimension ) {
+		ranges[ dimension ] = _.chain( appState.allCards )
+			.pluck( dimension )
+			.uniq()
+			.value();
+
+		if ( dimension === 'set' ) {
+			ranges[ dimension ].reverse();
+		} else {
+			ranges[ dimension ].sort();
+		}
+	});
+}
+
+function setDefault() {
+
+}
+
+exports.init = init;
+exports.populate = populate;
+
+},{"../app-state":2,"jquery":24,"selectize":25,"underscore":28}],11:[function(require,module,exports){
 /**
 *
 * Update views
@@ -920,7 +947,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
     + "    </tr>\n  </tbody>\n</table>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":24}],13:[function(require,module,exports){
+},{"hbsfy/runtime":23}],13:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -933,24 +960,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + "</li>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":24}],14:[function(require,module,exports){
-// hbsfy compiled Handlebars template
-var HandlebarsCompiler = require('hbsfy/runtime');
-module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
-    var alias1=this.lambda, alias2=this.escapeExpression;
-
-  return "	<option value=\""
-    + alias2(alias1(depth0, depth0))
-    + "\">"
-    + alias2(alias1(depth0, depth0))
-    + "</option>\n";
-},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    var stack1;
-
-  return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.dimension_value : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
-},"useData":true});
-
-},{"hbsfy/runtime":24}],15:[function(require,module,exports){
+},{"hbsfy/runtime":23}],14:[function(require,module,exports){
 /**
 *
 * Utils
@@ -965,7 +975,7 @@ var isInt = function(n) { return parseInt(n) === n; };
 
 exports.isInt = isInt;
 
-},{}],16:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.5"
@@ -10470,7 +10480,7 @@ exports.isInt = isInt;
   if (typeof define === "function" && define.amd) define(d3); else if (typeof module === "object" && module.exports) module.exports = d3;
   this.d3 = d3;
 }();
-},{}],17:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -10540,7 +10550,7 @@ exports['default'] = Handlebars;
 module.exports = exports['default'];
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./handlebars/base":18,"./handlebars/exception":19,"./handlebars/runtime":20,"./handlebars/safe-string":21,"./handlebars/utils":22}],18:[function(require,module,exports){
+},{"./handlebars/base":17,"./handlebars/exception":18,"./handlebars/runtime":19,"./handlebars/safe-string":20,"./handlebars/utils":21}],17:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -10814,7 +10824,7 @@ function createFrame(object) {
 }
 
 /* [args, ]options */
-},{"./exception":19,"./utils":22}],19:[function(require,module,exports){
+},{"./exception":18,"./utils":21}],18:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -10853,7 +10863,7 @@ Exception.prototype = new Error();
 
 exports['default'] = Exception;
 module.exports = exports['default'];
-},{}],20:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -11086,7 +11096,7 @@ function initData(context, data) {
   }
   return data;
 }
-},{"./base":18,"./exception":19,"./utils":22}],21:[function(require,module,exports){
+},{"./base":17,"./exception":18,"./utils":21}],20:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11101,7 +11111,7 @@ SafeString.prototype.toString = SafeString.prototype.toHTML = function () {
 
 exports['default'] = SafeString;
 module.exports = exports['default'];
-},{}],22:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11217,15 +11227,15 @@ function blockParams(params, ids) {
 function appendContextPath(contextPath, id) {
   return (contextPath ? contextPath + '.' : '') + id;
 }
-},{}],23:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":17}],24:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":16}],23:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":23}],25:[function(require,module,exports){
+},{"handlebars/runtime":22}],24:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -20432,7 +20442,7 @@ return jQuery;
 
 }));
 
-},{}],26:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /**
  * selectize.js (v0.12.1)
  * Copyright (c) 2013–2015 Brian Reavis & contributors
@@ -23491,7 +23501,7 @@ return jQuery;
 
 	return Selectize;
 }));
-},{"jquery":25,"microplugin":27,"sifter":28}],27:[function(require,module,exports){
+},{"jquery":24,"microplugin":26,"sifter":27}],26:[function(require,module,exports){
 /**
  * microplugin.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -23627,7 +23637,7 @@ return jQuery;
 
 	return MicroPlugin;
 }));
-},{}],28:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /**
  * sifter.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -24100,7 +24110,7 @@ return jQuery;
 }));
 
 
-},{}],29:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
