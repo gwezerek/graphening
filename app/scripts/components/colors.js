@@ -31,6 +31,8 @@ var prepData = function() {
   // set the dimension domains across colors
   getDimensionDomains();
 
+  // debugger;
+
 };
 
 var updateViews = function( init ) {
@@ -167,8 +169,6 @@ function getDimensionDomains() {
       var values = _.pluck( color[ dimension ].rollup, 'key' );
       flatArrayValues = _.union( flatArrayValues, values );
     });
-
-    // debugger;
 
     // set dimension domain
     appState.domains[ dimension ] = flatArrayValues;

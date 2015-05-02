@@ -14,5 +14,12 @@
 	font-size: $fontXXLarge;
 	font-weight: 700;
 	letter-spacing: -2px;
-	padding: $baseSpace $baseSpace 0;
+	padding: $baseSpace/2 $baseSpace 0;
+}
+
+.site__subhead {
+	color: white;
+	font-size: $fontMedium;
+	font-weight: 700;
+	padding: 0 $baseSpace;
 }
