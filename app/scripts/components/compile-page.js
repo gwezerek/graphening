@@ -7,14 +7,32 @@
 'use strict';
 
 var _ = require( 'underscore' );
-var appState = require( '../app-state' );
+var Handlebars = require( 'hbsfy/runtime' );
 
+var appState = require( '../app-state' );
+var selectized = require( './selectized' );
+
+var index = require( '../templates/index.hbs' );
 var templateColors = require( '../templates/components/colors.hbs' );
 
+// Partials
+Handlebars.registerPartial( 'filter', require( '../templates/components/filters.hbs' ) );
+Handlebars.registerPartial( 'cards', require( '../templates/components/cards.hbs' ) );
+Handlebars.registerPartial( 'footer', require( '../templates/components/footer.hbs' ) );
+
 function init( data ) {
+	compilePage();
+
+	// Add the filter chrome
+	selectized.init();
+
 	appState.allCards = flattenCards( data );
 	compileColumns();
 	setVizWidth();
+}
+
+function compilePage() {
+	document.body.innerHTML = index();
 }
 
 // flatten array of cards

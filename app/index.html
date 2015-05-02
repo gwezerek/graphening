@@ -12,89 +12,11 @@
   </head>
 
   <body>
-    <main class="main">
-      <header class="site__header">
-        <h1 class="site__head">Magic: The Graphening</h1>
-        <h3 class="site__subhead">What color will you play?</h3>
-        <form class="filter">
-          <fieldset class="filter__fieldset">
-            <select class="filter__select--multi" id="filter__select--multi--set" multiple="multiple" placeholder="Filter by sets...">
-              <option value="Dragons of Tarkir" selected>Dragons of Tarkir</option>
-            </select>
-          </fieldset>
-          <fieldset class="filter__fieldset">
-            <select class="filter__select--multi" id="filter__select--multi--rarity" multiple="multiple" placeholder="Filter by rarity...">
-              <option value="Common">Common</option>
-              <option value="Uncommon">Uncommon</option>
-              <option value="Rare">Rare</option>
-              <option value="Mythic Rare">Mythic Rare</option>
-              <option value="Special">Special</option>
-              <option value="Basic Land">Basic Land</option>
-            </select>
-          </fieldset>
-          <fieldset class="filter__fieldset">
-            <select class="filter__select--multi" id="filter__select--multi--types" multiple="multiple" placeholder="Filter by type...">
-            </select>
-          </fieldset>
-          <fieldset class="filter__fieldset">
-            <select class="filter__select--multi" id="filter__select--multi--subtypes" multiple="multiple" placeholder="Filter by subtype...">
-            </select>
-          </fieldset>
-<!--           <fieldset class="filter__fieldset">
-            <label class="filter__label"><input class="input__radio" type="radio" name="reprints" value="exclude" checked>Exclude reprints</label>
-            <label class="filter__label"><input class="input__radio" type="radio" name="reprints" value="include">Include reprints</label>
-          </fieldset> -->
-        </form>
-      </header>
-
-      <article class="stream">
-<!--         <section class="cards">
-          <h2 class="stream__head">128 cards selected</h2>
-          <form class="filter">
-            <h4 class="filter__subhead">Sort by</h2>
-            <label class="sort__label"><input class="input__radio" type="radio" name="cards__sort" value="rarity" checked>Rarity</label>
-            <label class="sort__label"><input class="input__radio" type="radio" name="cards__sort" value="name">Name</label>
-            <label class="sort__label"><input class="input__radio" type="radio" name="cards__sort" value="release">Release</label>
-          </form>
-          <div class="grid__cards">
-            <a href="" class="card__link">
-              <img class="" src="/images/dummy/card--blue-0.png" width="223" height="311">
-            </a>
-            <a href="" class="card__link">
-              <img class="" src="/images/dummy/card--blue-1.png" width="223" height="311">
-            </a>
-            <a href="" class="card__link">
-              <img class="" src="/images/dummy/card--blue-2.png" width="223" height="311">
-            </a>
-            <a href="" class="card__link">
-              <img class="" src="/images/dummy/card--blue-3.png" width="223" height="311">
-            </a>
-            <a href="" class="card__link">
-              <img class="" src="/images/dummy/card--blue-4.png" width="223" height="311">
-            </a>
-            <a href="" class="card__link">
-              <img class="" src="/images/dummy/card--blue-5.png" width="223" height="311">
-            </a>
-            <a href="" class="card__link">
-              <img class="" src="/images/dummy/card--blue-0.png" width="223" height="311">
-            </a>
-          </div>
-        </section> -->
-        <section class="colors" id="colors"> </section>
-<!--         <section class="timeline">
-          <h2 class="stream__head">Set timeline</h2>
-          <div class="timeline__wrap" id="timeline__wrap"></div>
-        </section> -->
-      </article>
-    </main>
-
-    <footer class="footer">
-      <p class="footer__text">Card names and text are all copyright <a href="http://company.wizards.com/" class="footer__link">Wizards of the Coast</a>. This website is not affiliated with Wizards of the Coast in any way. Great thanks to <a href="http://mtgjson.com/" class="footer__link">MTG JSON</a> for the card data.</p>
-    </footer>
+    <!-- Handlebars template compiles here -->
 
     <!-- build:js scripts/main.min.js -->
     <script src="scripts/app.js"></script>
     <!-- endbuild -->
-
   </body>
+
 </html>
