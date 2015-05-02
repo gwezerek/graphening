@@ -7,8 +7,15 @@
 .footer {
 	padding: 20px;
 	background: $colorBlueGrey600;
+	text-align: center;
 }
 
 .footer__text {
 	padding-top: 0;
+	color: $colorBlueGrey400;
+	font-size: $fontSmall;
+}
+
+.footer__link {
+	color: $colorBlueGrey300;
 }
