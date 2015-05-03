@@ -23,3 +23,13 @@
 		color: $colorBlueGrey100;
 	}
 }
+
+.border--bottom--colors {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	border-bottom-width: 5px;
+	border-style: solid;
+	border-image: linear-gradient(to right, #f8f6da 0%, #f8f6da 15%, #ace0f9 15%, #ace0f9 29%, #999999 29%, #999999 43%, #f8aa92 43%, #f8aa92 57%, #9dd2af 57%, #9dd2af 71%, #e2c870 71%, #e2c870 85%, #ced9e2 85%, #ced9e2 100%);
+	border-image-slice: 1;
+}

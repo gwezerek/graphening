@@ -1140,7 +1140,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<footer class=\"footer\">\n  <p class=\"footer__text\">The information presented on this site, both literal and graphical, is copyrighted by <a href=\"http://company.wizards.com/\" class=\"footer__link\">Wizards of the Coast</a>. This website is not affiliated with Wizards of the Coast in any way.</p>\n  <p class=\"footer__text\">Many thanks to <a href=\"http://mtgjson.com/\" class=\"footer__link\">MTG JSON</a> for the card data and <a href=\"http://magiccards.info/\" class=\"footer__link\">magiccards.info</a> for the images.</p>\n</footer>";
+    return "<footer class=\"footer\">\n  <p class=\"footer__text\">The information presented on this site, both literal and graphical, is copyrighted by <a href=\"http://company.wizards.com/\" class=\"footer__link\">Wizards of the Coast</a>. This website is not affiliated with Wizards of the Coast in any way.</p>\n  <p class=\"footer__text\">Many thanks to <a href=\"http://mtgjson.com/\" class=\"footer__link\">MTG JSON</a> for the card data and <a href=\"http://magiccards.info/\" class=\"footer__link\">magiccards.info</a> for the images.</p>\n</footer>\n\n<div class=\"border--bottom--colors\"></div>";
 },"useData":true});
 
 },{"hbsfy/runtime":28}],17:[function(require,module,exports){
@@ -1151,7 +1151,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 
   return "<main class=\"main\">\n  <header class=\"site__header\">\n    <h1 class=\"site__head\">Magic: The Graphening</h1>\n    <div class=\"site__header__stickymod\">\n"
     + ((stack1 = this.invokePartial(partials.filter,depth0,{"name":"filter","data":data,"indent":"      ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
-    + "      <aside class=\"cards\">\n        <ul class=\"cards__grid\">\n        </ul>\n        <button class=\"cards__btn cards__btn--add\">+ Load more</button>\n      </aside>\n    </div>\n  </header>\n\n  <article class=\"stream\">\n    <section class=\"colors\" id=\"colors\"> \n      <!-- Color grid renders here when data is ready -->\n    </section>\n  </article>\n\n</main>\n\n"
+    + "      <aside class=\"cards\">\n        <ul class=\"cards__grid\">\n        </ul>\n        <button class=\"cards__btn cards__btn--add\">+ Load more</button>\n      </aside>\n    </div>\n  </header>\n\n  <article class=\"stream\">\n    <section class=\"colors\" id=\"colors\"> \n      <!-- Color grid renders here when data is ready -->\n    </section>\n  </article>\n\n</main>\n"
     + ((stack1 = this.invokePartial(partials.footer,depth0,{"name":"footer","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "");
 },"usePartial":true,"useData":true});
 
