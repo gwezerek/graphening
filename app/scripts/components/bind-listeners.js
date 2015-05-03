@@ -11,11 +11,13 @@ var _ = require( 'underscore' );
 var appState = require( '../app-state' );
 var filterCards = require( './filter-cards' );
 var updateViews = require( './update-views' );
+var cards = require( './cards' );
 
 function init() {
 	bindFilterListeners();
 	bindStickyListener();
-	bindCardsListener();
+	bindCardsListenerGrid();
+	bindCardsListenerAdd();
 }
 
 function bindFilterListeners() {
@@ -46,9 +48,15 @@ function bindStickyListener() {
 	$( window ).scroll( throttled );
 }
 
-function bindCardsListener() {
+function bindCardsListenerGrid() {
 	$( '.cards__btn--cardview--open, .cards__btn--cardview--close' ).on( 'click', function() {
 		$( '.site__header__stickymod' ).toggleClass( 'stickymod--is--open' );
+	});
+}
+
+function bindCardsListenerAdd() {
+	$( '.cards__btn--add' ).on( 'click', function() {
+		cards.addImages();
 	});
 }
 

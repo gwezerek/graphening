@@ -1,10 +1,12 @@
-<ul class="cards__grid">
- <li class="cards__item">
-   <h2 class="cards__head"><span class="cards__selected">128</span> cards selected</h2>
-   <button class="cards__btn--cardview cards__btn--cardview--open">⤢ Expand card grid</button>
-   <button class="cards__btn--cardview cards__btn--cardview--close">Close card grid</button>
- </li>
-  {{#each cards}}
+{{#if init}}
+  <li class="cards__item">
+    <h2 class="cards__head"><span class="cards__selected">128</span> cards selected</h2>
+    <button class="cards__btn cards__btn--cardview cards__btn--cardview--open">⤢ Card grid</button>
+    <button class="cards__btn cards__btn--cardview cards__btn--cardview--close">Close card grid</button>
+  </li>
+{{/if}}
+
+{{#each cards}}
   {{#if this.magicCardsInfoCode}}
 {{!--     <li class="cards__item">
      <a href="http://magiccards.info/{{ this.magicCardsInfoCode }}/en/{{ this.number }}.html" class="card__link">
@@ -24,5 +26,4 @@
       </div>
     </li>
   {{/if}}
-  {{/each}}
-</ul>
+{{/each}}

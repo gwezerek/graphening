@@ -1,8 +1,15 @@
 BEFORE LAUNCH
 
 Add card images
-	// Fill with 
-	// 
+	// On filter change
+		// If diff is a union
+			// 
+		// Reset the slice position
+	// Add sort button to the card grid
+	// When user filters, filter the shown cards?
+		// If higher than six, keep
+		// If lower than six, repopulate
+	// Max dropdowns open up when stickymod--is--open
 
 Add brushing to graphs as filter
 	// While rolling up, add cards: [ id1, id2 ] property to the [color][dimension]

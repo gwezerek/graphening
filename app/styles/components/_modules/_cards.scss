@@ -12,6 +12,7 @@
 	overflow: hidden;
 	border-bottom: 1px solid $colorBlueGrey800;
 	transition: all 0.3s $animationEasing;
+	text-align: center;
 }
 
 .cards__grid {
@@ -33,15 +34,18 @@
 	line-height: 100%;
 }
 
-.cards__btn--cardview {
+.cards__btn {
 	color: $colorBlueGrey700;
 	font-size: $fontBase;
-	text-align: left;
 	cursor: pointer;
 	transition: color 0.1s $animationEasing;
 	&:hover {
 		color: $colorBlueGrey300;
 	}
+}
+
+.cards__btn--cardview {
+	text-align: left;
 }
 
 .cards__btn--cardview--close {
@@ -78,4 +82,9 @@
 .cards__item__label--proxy {
 	font-size: $fontSmall;
 	color: $colorBlueGrey500;
+}
+
+.cards__btn--add {
+	text-align: center;
+	margin: $baseSpace*2 auto $baseSpace*2;
 }
