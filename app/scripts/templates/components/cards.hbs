@@ -8,9 +8,10 @@
 
 {{#each cards}}
   {{#if this.magicCardsInfoCode}}
+    {{#if this.number }}
 {{!--     <li class="cards__item">
      <a href="http://magiccards.info/{{ this.magicCardsInfoCode }}/en/{{ this.number }}.html" class="card__link">
-       <img class="cards__img" src="http://magiccards.info/scans/en/{{ this.magicCardsInfoCode }}/{{ this.number }}.jpg" alt="{{ this.name }}">
+       <img class="cards__img cards__img--info" src="http://magiccards.info/scans/en/{{ this.magicCardsInfoCode }}/{{ this.number }}.jpg" alt="{{ this.name }}">
      </a>
     </li> --}}
     <li class="cards__item">
@@ -18,11 +19,18 @@
         <img class="cards__img" src="/images/dummy/card--blue-2.png" alt="{{ this.name }}">
       </a>
     </li>
+    {{else}}
+      <li class="cards__item">
+        <a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid={{ this.multiverseid }}" class="card__link">
+          <img class="cards__img cards__img--gatherer" src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{ this.multiverseid }}&type=card" alt="{{ this.name }}">
+        </a>
+      </li>
+    {{/if}}
   {{else}}
     <li class="cards__item">
       <div class="cards--proxy">
         <p class="cards__item__name--proxy">{{ this.name }}</p>
-        <h4 class="cards__item__label--proxy">{{ this.text }}</h4>
+        <h4 class="cards__item__label--proxy">{{ this.set }}</h4>
       </div>
     </li>
   {{/if}}

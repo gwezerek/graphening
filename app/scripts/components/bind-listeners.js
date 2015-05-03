@@ -49,7 +49,11 @@ function bindStickyListener() {
 }
 
 function bindCardsListenerGrid() {
-	$( '.cards__btn--cardview--open, .cards__btn--cardview--close' ).on( 'click', function() {
+	$( '.cards__grid' ).on( 'click', '.cards__btn--cardview--open', function() {
+		$( '.site__header__stickymod' ).toggleClass( 'stickymod--is--open' );
+		cards.addImages();
+	});
+	$( '.cards__grid' ).on( 'click', '.cards__btn--cardview--close', function() {
 		$( '.site__header__stickymod' ).toggleClass( 'stickymod--is--open' );
 	});
 }

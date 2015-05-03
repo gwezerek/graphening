@@ -22,8 +22,6 @@ function updateImages() {
 	appState.currentSlice = 0;
 	$( '.cards__grid' ).empty();
 
-	debugger;
-
 	resetGrid();
 }
 

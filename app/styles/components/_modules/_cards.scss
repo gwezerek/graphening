@@ -7,7 +7,7 @@
 .cards {
 	height: $baseSpace * 5;
 	background: $colorBlueGrey900;
-	padding: $baseSpace $baseSpace 0 0;
+	padding: $baseSpace/2 $baseSpace 0 0;
 	width: 100%;
 	overflow: hidden;
 	border-bottom: 1px solid $colorBlueGrey800;
@@ -58,12 +58,25 @@
 	padding: $baseSpace 0 0 $baseSpace;
 	text-align: left;
 	flex: 0 0 14.285714286%;
+	position: relative;
 }
 
 .cards__img {
 	max-width: 100%;
 	height: auto;
+}
+
+.cards__img, 
+.cards--proxy {
+	box-shadow: 2px 2px 10px rgba(20, 20, 25, 0.3);
+}
+
+.cards__img--info {
 	border-radius: 0.4rem;
+}
+
+.cards__img--gatherer {
+	border-radius: 0.8rem;
 }
 
 .cards--proxy {
@@ -71,7 +84,10 @@
 	border: 1px solid $colorBlueGrey500;
 	padding: $baseSpace/2;
 	border-radius: 0.4rem;
-	min-height: 30rem;
+	min-height: 15rem;
+	position: absolute;
+	bottom: 0;
+	top: $baseSpace;
 }
 
 .cards__item__name--proxy {

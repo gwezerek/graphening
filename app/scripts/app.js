@@ -290,7 +290,11 @@ function bindStickyListener() {
 }
 
 function bindCardsListenerGrid() {
-	$( '.cards__btn--cardview--open, .cards__btn--cardview--close' ).on( 'click', function() {
+	$( '.cards__grid' ).on( 'click', '.cards__btn--cardview--open', function() {
+		$( '.site__header__stickymod' ).toggleClass( 'stickymod--is--open' );
+		cards.addImages();
+	});
+	$( '.cards__grid' ).on( 'click', '.cards__btn--cardview--close', function() {
 		$( '.site__header__stickymod' ).toggleClass( 'stickymod--is--open' );
 	});
 }
@@ -486,8 +490,6 @@ function update() {
 function updateImages() {
 	appState.currentSlice = 0;
 	$( '.cards__grid' ).empty();
-
-	debugger;
 
 	resetGrid();
 }
@@ -981,18 +983,32 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 },"3":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.magicCardsInfoCode : depth0),{"name":"if","hash":{},"fn":this.program(4, data, 0),"inverse":this.program(6, data, 0),"data":data})) != null ? stack1 : "");
+  return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.magicCardsInfoCode : depth0),{"name":"if","hash":{},"fn":this.program(4, data, 0),"inverse":this.program(9, data, 0),"data":data})) != null ? stack1 : "");
 },"4":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.number : depth0),{"name":"if","hash":{},"fn":this.program(5, data, 0),"inverse":this.program(7, data, 0),"data":data})) != null ? stack1 : "");
+},"5":function(depth0,helpers,partials,data) {
     return "    <li class=\"cards__item\">\n      <a href=\"\" class=\"card__link\">\n        <img class=\"cards__img\" src=\"/images/dummy/card--blue-2.png\" alt=\""
     + this.escapeExpression(this.lambda((depth0 != null ? depth0.name : depth0), depth0))
     + "\">\n      </a>\n    </li>\n";
-},"6":function(depth0,helpers,partials,data) {
+},"7":function(depth0,helpers,partials,data) {
+    var alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "      <li class=\"cards__item\">\n        <a href=\"http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid="
+    + alias2(alias1((depth0 != null ? depth0.multiverseid : depth0), depth0))
+    + "\" class=\"card__link\">\n          <img class=\"cards__img cards__img--gatherer\" src=\"http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid="
+    + alias2(alias1((depth0 != null ? depth0.multiverseid : depth0), depth0))
+    + "&type=card\" alt=\""
+    + alias2(alias1((depth0 != null ? depth0.name : depth0), depth0))
+    + "\">\n        </a>\n      </li>\n";
+},"9":function(depth0,helpers,partials,data) {
     var alias1=this.lambda, alias2=this.escapeExpression;
 
   return "    <li class=\"cards__item\">\n      <div class=\"cards--proxy\">\n        <p class=\"cards__item__name--proxy\">"
     + alias2(alias1((depth0 != null ? depth0.name : depth0), depth0))
     + "</p>\n        <h4 class=\"cards__item__label--proxy\">"
-    + alias2(alias1((depth0 != null ? depth0.text : depth0), depth0))
+    + alias2(alias1((depth0 != null ? depth0.set : depth0), depth0))
     + "</h4>\n      </div>\n    </li>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
@@ -1133,9 +1149,9 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<main class=\"main\">\n  <header class=\"site__header\">\n    <h1 class=\"site__head\">Magic: The Graphening</h1>\n    <div class=\"site__header__stickymod\">\n      <aside class=\"cards\">\n        <ul class=\"cards__grid\">\n        </ul>\n        <button class=\"cards__btn cards__btn--add\">+ Load more</button>\n      </aside>\n"
+  return "<main class=\"main\">\n  <header class=\"site__header\">\n    <h1 class=\"site__head\">Magic: The Graphening</h1>\n    <div class=\"site__header__stickymod\">\n"
     + ((stack1 = this.invokePartial(partials.filter,depth0,{"name":"filter","data":data,"indent":"      ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
-    + "    </div>\n  </header>\n\n  <article class=\"stream\">\n    <section class=\"colors\" id=\"colors\"> \n      <!-- Color grid renders here when data is ready -->\n    </section>\n  </article>\n\n</main>\n\n"
+    + "      <aside class=\"cards\">\n        <ul class=\"cards__grid\">\n        </ul>\n        <button class=\"cards__btn cards__btn--add\">+ Load more</button>\n      </aside>\n    </div>\n  </header>\n\n  <article class=\"stream\">\n    <section class=\"colors\" id=\"colors\"> \n      <!-- Color grid renders here when data is ready -->\n    </section>\n  </article>\n\n</main>\n\n"
     + ((stack1 = this.invokePartial(partials.footer,depth0,{"name":"footer","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "");
 },"usePartial":true,"useData":true});
 
