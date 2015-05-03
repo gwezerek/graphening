@@ -284,7 +284,7 @@ function stickyNav() {     
 
 function bindStickyListener() {
 	appState.stickyNavTop = $( '.site__header__stickymod' ).offset().top;
-	var throttled = _.throttle( stickyNav, 50 );
+	var throttled = _.throttle( stickyNav, 1 );
 	
 	$( window ).scroll( throttled );
 }
@@ -292,10 +292,12 @@ function bindStickyListener() {
 function bindCardsListenerGrid() {
 	$( '.site__header__stickymod' ).on( 'click', '.cards__btn--cardview--open', function() {
 		$( '.site__header__stickymod' ).toggleClass( 'stickymod--is--open' );
+		$( 'html' ).toggleClass( 'is--frozen' );
 		cards.addImages();
 	});
 	$( '.site__header__stickymod' ).on( 'click', '.cards__btn--cardview--close', function() {
 		$( '.site__header__stickymod' ).toggleClass( 'stickymod--is--open' );
+		$( 'html' ).toggleClass( 'is--frozen' );
 	});
 }
 
@@ -980,19 +982,9 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 
   return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.number : depth0),{"name":"if","hash":{},"fn":this.program(3, data, 0),"inverse":this.program(5, data, 0),"data":data})) != null ? stack1 : "");
 },"3":function(depth0,helpers,partials,data) {
-    var alias1=this.lambda, alias2=this.escapeExpression;
-
-  return "    <li class=\"cards__item\">\n     <a href=\"http://magiccards.info/"
-    + alias2(alias1((depth0 != null ? depth0.magicCardsInfoCode : depth0), depth0))
-    + "/en/"
-    + alias2(alias1((depth0 != null ? depth0.number : depth0), depth0))
-    + ".html\" class=\"card__link\">\n       <img class=\"cards__img cards__img--info\" src=\"http://magiccards.info/scans/en/"
-    + alias2(alias1((depth0 != null ? depth0.magicCardsInfoCode : depth0), depth0))
-    + "/"
-    + alias2(alias1((depth0 != null ? depth0.number : depth0), depth0))
-    + ".jpg\" alt=\""
-    + alias2(alias1((depth0 != null ? depth0.name : depth0), depth0))
-    + "\">\n     </a>\n    </li>\n";
+    return "    <li class=\"cards__item\">\n      <a href=\"\" class=\"card__link\">\n        <img class=\"cards__img\" src=\"/images/dummy/card--blue-2.png\" alt=\""
+    + this.escapeExpression(this.lambda((depth0 != null ? depth0.name : depth0), depth0))
+    + "\">\n      </a>\n    </li>\n";
 },"5":function(depth0,helpers,partials,data) {
     var alias1=this.lambda, alias2=this.escapeExpression;
 
@@ -1148,7 +1140,7 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<main class=\"main\">\n  <header class=\"site__header\">\n    <h1 class=\"site__head\">Magic: The Graphening</h1>\n    <h3 class=\"site__subhead\">What color will you play?</h3>\n    <div class=\"site__header__stickymod\">\n      <h2 class=\"cards__head\"><span class=\"cards__selected\">128</span> cards selected</h2>\n      <button class=\"cards__btn cards__btn--cardview cards__btn--cardview--open\">↓ Show selected cards</button>\n      <button class=\"cards__btn cards__btn--cardview cards__btn--cardview--close\">↑ Close card grid</button>\n"
+  return "<main class=\"main\">\n  <header class=\"site__header\">\n    <h1 class=\"site__head\">Magic: The Graphening</h1>\n    <h3 class=\"site__subhead\">What color will you play?</h3>\n    <div class=\"site__header__stickymod\">\n      <h2 class=\"cards__head\"><span class=\"cards__selected\">128</span> cards selected</h2>\n      <button class=\"cards__btn cards__btn--cardview cards__btn--cardview--open\">↓ Show selected cards</button>\n      <button class=\"cards__btn cards__btn--cardview cards__btn--cardview--close\">↑ Hide selected cards</button>\n"
     + ((stack1 = this.invokePartial(partials.filter,depth0,{"name":"filter","data":data,"indent":"      ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + "      <aside class=\"cards\">\n        <ul class=\"cards__grid\">\n        </ul>\n        <button class=\"cards__btn cards__btn--add\">+ Load more</button>\n      </aside>\n    </div>\n  </header>\n\n  <article class=\"stream\">\n    <section class=\"colors\" id=\"colors\"> \n      <!-- Color grid renders here when data is ready -->\n    </section>\n  </article>\n\n</main>\n"
     + ((stack1 = this.invokePartial(partials.footer,depth0,{"name":"footer","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "");

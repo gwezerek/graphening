@@ -43,7 +43,7 @@ function stickyNav() {     
 
 function bindStickyListener() {
 	appState.stickyNavTop = $( '.site__header__stickymod' ).offset().top;
-	var throttled = _.throttle( stickyNav, 50 );
+	var throttled = _.throttle( stickyNav, 1 );
 	
 	$( window ).scroll( throttled );
 }
@@ -51,10 +51,12 @@ function bindStickyListener() {
 function bindCardsListenerGrid() {
 	$( '.site__header__stickymod' ).on( 'click', '.cards__btn--cardview--open', function() {
 		$( '.site__header__stickymod' ).toggleClass( 'stickymod--is--open' );
+		$( 'html' ).toggleClass( 'is--frozen' );
 		cards.addImages();
 	});
 	$( '.site__header__stickymod' ).on( 'click', '.cards__btn--cardview--close', function() {
 		$( '.site__header__stickymod' ).toggleClass( 'stickymod--is--open' );
+		$( 'html' ).toggleClass( 'is--frozen' );
 	});
 }
 
