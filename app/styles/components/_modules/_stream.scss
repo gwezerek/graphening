@@ -5,12 +5,12 @@
 **/
 
 .stream {
-	padding: $baseSpace;
+	padding: $baseSpace*1.5 $baseSpace $baseSpace;
 }
 
 .stream--is--sticky {
 	padding: $baseSpace;
-	margin-top: 240px;
+	margin-top: 18rem;
 }
 
 .stream__head {

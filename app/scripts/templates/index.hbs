@@ -1,8 +1,11 @@
 <main class="main">
   <header class="site__header">
     <h1 class="site__head">Magic: The Graphening</h1>
-    {{!-- <h3 class="site__subhead">What color will you play?</h3> --}}
+    <h3 class="site__subhead">What color will you play?</h3>
     <div class="site__header__stickymod">
+      <h2 class="cards__head"><span class="cards__selected">128</span> cards selected</h2>
+      <button class="cards__btn cards__btn--cardview cards__btn--cardview--open">↓ Show selected cards</button>
+      <button class="cards__btn cards__btn--cardview cards__btn--cardview--close">↑ Close card grid</button>
       {{> filter}}
       <aside class="cards">
         <ul class="cards__grid">

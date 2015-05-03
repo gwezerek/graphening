@@ -5,7 +5,7 @@
 **/
 
 .cards {
-	height: $baseSpace * 5;
+	height: $baseSpace*2;
 	background: $colorBlueGrey900;
 	padding: $baseSpace/2 $baseSpace 0 0;
 	width: 100%;
@@ -13,7 +13,11 @@
 	border-bottom: 1px solid $colorBlueGrey800;
 	transition: all 0.3s $animationEasing;
 	text-align: center;
-	box-shadow: 0px 3px 5px rgba(20, 20, 25, 0.1);
+	// box-shadow: 0px 3px 5px rgba(20, 20, 25, 0.1);
+	border-bottom-width: 5px;
+	border-style: solid;
+	border-image: linear-gradient(to right, #f8f6da 0%, #f8f6da 15%, #ace0f9 15%, #ace0f9 29%, #999999 29%, #999999 43%, #f8aa92 43%, #f8aa92 57%, #9dd2af 57%, #9dd2af 71%, #e2c870 71%, #e2c870 85%, #ced9e2 85%, #ced9e2 100%);
+	border-image-slice: 1;
 }
 
 .cards__grid {
@@ -25,13 +29,13 @@
 .cards__head {
 	color: $colorBlueGrey100;
 	font-size: $fontBase;
-	margin-bottom: $baseSpace / 2;
+	display: inline-block;
+	padding: $baseSpace 0 0 $baseSpace;
 }
 
 .cards__selected {
 	font-size: $fontLarge;
 	font-weight: 700;
-	display: block;
 	line-height: 100%;
 }
 
@@ -46,7 +50,8 @@
 }
 
 .cards__btn--cardview {
-	text-align: left;
+	float: right;
+	padding: $baseSpace $baseSpace 0 0;
 }
 
 .cards__btn--cardview--close {
@@ -103,5 +108,5 @@
 
 .cards__btn--add {
 	text-align: center;
-	margin: $baseSpace*2 auto $baseSpace*2;
+	margin: $baseSpace*2 auto $baseSpace*3;
 }

@@ -49,11 +49,11 @@ function bindStickyListener() {
 }
 
 function bindCardsListenerGrid() {
-	$( '.cards__grid' ).on( 'click', '.cards__btn--cardview--open', function() {
+	$( '.site__header__stickymod' ).on( 'click', '.cards__btn--cardview--open', function() {
 		$( '.site__header__stickymod' ).toggleClass( 'stickymod--is--open' );
 		cards.addImages();
 	});
-	$( '.cards__grid' ).on( 'click', '.cards__btn--cardview--close', function() {
+	$( '.site__header__stickymod' ).on( 'click', '.cards__btn--cardview--close', function() {
 		$( '.site__header__stickymod' ).toggleClass( 'stickymod--is--open' );
 	});
 }

@@ -6,7 +6,7 @@
 
 .site__header {
 	background: $colorBlueGrey900;
-	margin-bottom: $baseSpace;
+	// margin-bottom: $baseSpace;
 }
 
 .site__head {
@@ -14,7 +14,12 @@
 	font-size: $fontXXLarge;
 	font-weight: 700;
 	letter-spacing: -2px;
-	padding: $baseSpace/2 $baseSpace 0;
+	padding: $baseSpace $baseSpace 0;
+	text-align: center;
+}
+
+.site__header__stickymod {
+	background: $colorBlueGrey900;
 }
 
 .stickymod--is--sticky {
@@ -29,9 +34,14 @@
 	bottom: 8.5rem;
 	left: 0;
 	right: 0;
+	.filter {
+		padding-bottom: $baseSpace;
+		border-bottom: 1px solid $colorBlueGrey700;
+	}
 	.cards {
 		height: 100%;
 		overflow-y: scroll;
+		padding-top: $baseSpace;
 	}
 	.cards__btn--cardview--open {
 		display: none;
@@ -41,9 +51,10 @@
 	}
 }
 
-// .site__subhead {
-// 	color: white;
-// 	font-size: $fontMedium;
-// 	font-weight: 700;
-// 	padding: 0 $baseSpace;
-// }
+.site__subhead {
+	color: white;
+	font-size: $fontMedium;
+	font-weight: 700;
+	padding: 0 $baseSpace;
+	text-align: center;
+}
