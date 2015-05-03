@@ -252,7 +252,7 @@ var updateViews = require( './update-views' );
 
 function init() {
 	bindFilterListeners();
-	// bindStickyListener();
+	bindStickyListener();
 }
 
 function bindFilterListeners() {
@@ -268,16 +268,16 @@ function bindFilterListeners() {
 
 function stickyNav() {     
 	if ( $( window ).scrollTop() > appState.stickyNavTop ) { 
-	    $( '.filter' ).addClass( 'filter--is--sticky' );
+	    $( '.site__header__stickymod' ).addClass( 'stickymod--is--sticky' );
 		$( '.stream' ).addClass( 'stream--is--sticky' );
 	} else {
-	    $( '.filter' ).removeClass( 'filter--is--sticky' );
+	    $( '.site__header__stickymod' ).removeClass( 'stickymod--is--sticky' );
 		$( '.stream' ).removeClass( 'stream--is--sticky' ); 
 	}
 }
 
 function bindStickyListener() {
-	appState.stickyNavTop = $( '.filter' ).offset().top;
+	appState.stickyNavTop = $( '.site__header__stickymod' ).offset().top;
 	var throttled = _.throttle( stickyNav, 100 );
 	
 	$( window ).scroll( throttled );
@@ -1086,9 +1086,9 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<main class=\"main\">\n  <header class=\"site__header\">\n    <h1 class=\"site__head\">Magic: The Graphening</h1>\n    <aside class=\"cards\">\n    </aside>\n"
-    + ((stack1 = this.invokePartial(partials.filter,depth0,{"name":"filter","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
-    + "  </header>\n\n  <article class=\"stream\">\n    <section class=\"colors\" id=\"colors\"> \n      <!-- Color grid renders here when data is ready -->\n    </section>\n  </article>\n\n</main>\n\n"
+  return "<main class=\"main\">\n  <header class=\"site__header\">\n    <h1 class=\"site__head\">Magic: The Graphening</h1>\n    <div class=\"site__header__stickymod\">\n      <aside class=\"cards\">\n      </aside>\n"
+    + ((stack1 = this.invokePartial(partials.filter,depth0,{"name":"filter","data":data,"indent":"      ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
+    + "    </div>\n  </header>\n\n  <article class=\"stream\">\n    <section class=\"colors\" id=\"colors\"> \n      <!-- Color grid renders here when data is ready -->\n    </section>\n  </article>\n\n</main>\n\n"
     + ((stack1 = this.invokePartial(partials.footer,depth0,{"name":"footer","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "");
 },"usePartial":true,"useData":true});
 

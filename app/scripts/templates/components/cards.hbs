@@ -7,7 +7,7 @@
   </li> --}}
   {{#if this.magicCardsInfoCode}}
 {{!--     <li class="cards__item">
-     <a href="" class="card__link">
+     <a href="http://magiccards.info/{{ this.magicCardsInfoCode }}/en/{{ this.number }}.html" class="card__link">
        <img class="cards__img" src="http://magiccards.info/scans/en/{{ this.magicCardsInfoCode }}/{{ this.number }}.jpg" alt="{{ this.name }}">
      </a>
     </li> --}}
@@ -24,6 +24,9 @@
     </li>
   {{/if}}
   {{/each}}
+{{!--   <li class="cards__item cards_item--proxy">
+    <img class="cards__img" src="/images/dummy/card-back.png" alt="{{ this.name }}">
+  </li> --}}
   <li class="cards__item">
     <h2 class="cards__head"><span class="cards__selected">128</span> cards selected</h2>
     <button class="cards__btn--cardview">⤢ Card view</button>

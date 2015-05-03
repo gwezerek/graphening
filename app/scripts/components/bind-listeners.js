@@ -14,7 +14,7 @@ var updateViews = require( './update-views' );
 
 function init() {
 	bindFilterListeners();
-	// bindStickyListener();
+	bindStickyListener();
 }
 
 function bindFilterListeners() {
@@ -30,16 +30,16 @@ function bindFilterListeners() {
 
 function stickyNav() {     
 	if ( $( window ).scrollTop() > appState.stickyNavTop ) { 
-	    $( '.filter' ).addClass( 'filter--is--sticky' );
+	    $( '.site__header__stickymod' ).addClass( 'stickymod--is--sticky' );
 		$( '.stream' ).addClass( 'stream--is--sticky' );
 	} else {
-	    $( '.filter' ).removeClass( 'filter--is--sticky' );
+	    $( '.site__header__stickymod' ).removeClass( 'stickymod--is--sticky' );
 		$( '.stream' ).removeClass( 'stream--is--sticky' ); 
 	}
 }
 
 function bindStickyListener() {
-	appState.stickyNavTop = $( '.filter' ).offset().top;
+	appState.stickyNavTop = $( '.site__header__stickymod' ).offset().top;
 	var throttled = _.throttle( stickyNav, 100 );
 	
 	$( window ).scroll( throttled );

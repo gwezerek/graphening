@@ -1,8 +1,10 @@
 BEFORE LAUNCH
 
 Add card images
-	// Scaffold drawer with dummy cards
-	// Sort cards by rarity
+	// Add expand interaction
+	// Add default if card doesn't exist
+	// Add links to cards
+	// Add formatting for card totals, undefined
 Add brushing to bars as filter
 	// While rolling up, add cards: [ id1, id2 ] property to the [color][dimension]
 Add brushing to bubbles as filter
@@ -19,6 +21,8 @@ Stage JSON load from all sets to just the most recent set
 Add icons, release date and optGrouping by block to set options
 
 VISUAL
+Give the site a logo
 Redesign color icons
 Swap icons for sticky segmented color bar
 Restyle selectize inputs to match app
+Add favicon

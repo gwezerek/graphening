@@ -17,9 +17,15 @@
 	padding: $baseSpace/2 $baseSpace 0;
 }
 
-.site__subhead {
-	color: white;
-	font-size: $fontMedium;
-	font-weight: 700;
-	padding: 0 $baseSpace;
+.stickymod--is--sticky {
+	position: fixed;
+	top: 0;
+	width: 100%;
 }
+
+// .site__subhead {
+// 	color: white;
+// 	font-size: $fontMedium;
+// 	font-weight: 700;
+// 	padding: 0 $baseSpace;
+// }
