@@ -15,6 +15,7 @@ var updateViews = require( './update-views' );
 function init() {
 	bindFilterListeners();
 	bindStickyListener();
+	bindCardsListener();
 }
 
 function bindFilterListeners() {
@@ -43,6 +44,12 @@ function bindStickyListener() {
 	var throttled = _.throttle( stickyNav, 50 );
 	
 	$( window ).scroll( throttled );
+}
+
+function bindCardsListener() {
+	$( '.cards__btn--cardview--open, .cards__btn--cardview--close' ).on( 'click', function() {
+		$( '.site__header__stickymod' ).toggleClass( 'stickymod--is--open' );
+	});
 }
 
 module.exports = init;

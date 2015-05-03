@@ -254,6 +254,7 @@ var updateViews = require( './update-views' );
 function init() {
 	bindFilterListeners();
 	bindStickyListener();
+	bindCardsListener();
 }
 
 function bindFilterListeners() {
@@ -282,6 +283,12 @@ function bindStickyListener() {
 	var throttled = _.throttle( stickyNav, 50 );
 	
 	$( window ).scroll( throttled );
+}
+
+function bindCardsListener() {
+	$( '.cards__btn--cardview--open, .cards__btn--cardview--close' ).on( 'click', function() {
+		$( '.site__header__stickymod' ).toggleClass( 'stickymod--is--open' );
+	});
 }
 
 module.exports = init;
@@ -470,7 +477,6 @@ function updateText() {
 }
 
 function updateImages() {
-	console.log( appState.currentCards.slice( 0, 6) );
 	document.querySelector( '.cards' ).innerHTML = cards( { cards: appState.currentCards.slice( 0, 6) } );
 }
 
@@ -958,9 +964,9 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<ul class=\"cards__grid\">\n"
+  return "<ul class=\"cards__grid\">\n <li class=\"cards__item\">\n   <h2 class=\"cards__head\"><span class=\"cards__selected\">128</span> cards selected</h2>\n   <button class=\"cards__btn--cardview cards__btn--cardview--open\">⤢ Expand card grid</button>\n   <button class=\"cards__btn--cardview cards__btn--cardview--close\">Close card grid</button>\n </li>\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.cards : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "  <li class=\"cards__item\">\n    <h2 class=\"cards__head\"><span class=\"cards__selected\">128</span> cards selected</h2>\n    <button class=\"cards__btn--cardview\">⤢ Card view</button>\n  </li>\n</ul>";
+    + "</ul>";
 },"useData":true});
 
 },{"hbsfy/runtime":28}],14:[function(require,module,exports){

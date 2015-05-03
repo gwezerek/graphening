@@ -11,11 +11,13 @@
 	width: 100%;
 	overflow: hidden;
 	border-bottom: 1px solid $colorBlueGrey800;
+	transition: all 0.3s $animationEasing;
 }
 
 .cards__grid {
 	display: flex;
 	margin: -$baseSpace 0 0 -$baseSpace;
+	flex-wrap: wrap;
 }
 
 .cards__head {
@@ -42,13 +44,16 @@
 	}
 }
 
+.cards__btn--cardview--close {
+	display: none;
+}
+
 .cards__item {
 	list-style: none;
 	margin: 0;
-	flex: 1;
 	padding: $baseSpace 0 0 $baseSpace;
 	text-align: left;
-	max-width: 14.285714286%;
+	flex: 0 0 14.285714286%;
 }
 
 .cards__img {

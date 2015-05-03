@@ -1,13 +1,11 @@
 BEFORE LAUNCH
 
 Add card images
-	// Add expand interaction
-	// Add default if card doesn't exist
-	// Add links to cards
-	// Add formatting for card totals, undefined
-Add brushing to bars as filter
+	// Fill with 
+	// 
+
+Add brushing to graphs as filter
 	// While rolling up, add cards: [ id1, id2 ] property to the [color][dimension]
-Add brushing to bubbles as filter
 
 ICEBOX
 Add timeline
@@ -19,6 +17,8 @@ Implement caching for images to reduce requests
 Switch from static JSON dump to API
 Stage JSON load from all sets to just the most recent set
 Add icons, release date and optGrouping by block to set options
+Add 0 card copy when nothing there
+Hide undefined labels if 0 are undefined
 
 VISUAL
 Give the site a logo
@@ -26,3 +26,4 @@ Redesign color icons
 Swap icons for sticky segmented color bar
 Restyle selectize inputs to match app
 Add favicon
+Turn off scroll on body when modal is open

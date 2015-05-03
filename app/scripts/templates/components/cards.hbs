@@ -1,10 +1,10 @@
 <ul class="cards__grid">
+ <li class="cards__item">
+   <h2 class="cards__head"><span class="cards__selected">128</span> cards selected</h2>
+   <button class="cards__btn--cardview cards__btn--cardview--open">⤢ Expand card grid</button>
+   <button class="cards__btn--cardview cards__btn--cardview--close">Close card grid</button>
+ </li>
   {{#each cards}}
-{{!--   <li class="cards__item">
-    <a href="" class="card__link">
-      <img class="cards__img" src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{ this.multiverseid }}&type=card" alt="{{ this.name }}">
-    </a>
-  </li> --}}
   {{#if this.magicCardsInfoCode}}
 {{!--     <li class="cards__item">
      <a href="http://magiccards.info/{{ this.magicCardsInfoCode }}/en/{{ this.number }}.html" class="card__link">
@@ -25,8 +25,4 @@
     </li>
   {{/if}}
   {{/each}}
-  <li class="cards__item">
-    <h2 class="cards__head"><span class="cards__selected">128</span> cards selected</h2>
-    <button class="cards__btn--cardview">⤢ Card view</button>
-  </li>
 </ul>

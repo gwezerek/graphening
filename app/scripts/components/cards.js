@@ -22,7 +22,6 @@ function updateText() {
 }
 
 function updateImages() {
-	console.log( appState.currentCards.slice( 0, 6) );
 	document.querySelector( '.cards' ).innerHTML = cards( { cards: appState.currentCards.slice( 0, 6) } );
 }
 
