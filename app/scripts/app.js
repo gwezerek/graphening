@@ -92,6 +92,7 @@ exports.filters = filters;
 'use strict';
 
 var d3 = require( 'd3' );
+var utils = require( '../utils' );
 var appState = require( '../app-state' );
 
 var margin = { top: 15, bottom: 15 };
@@ -223,7 +224,7 @@ var updateViz = function( color, dimension ) {
 
   barWrap.selectAll( 'text' )
       .data( function( d ) { return [ d ]; } )
-      .text( function( d ) { return d.values; } )
+      .text( function( d ) { return utils.formatCommas( d.values ); } )
       .transition()
       .attr({
         x: xScale.rangeBand() / 2,
@@ -235,7 +236,7 @@ var updateViz = function( color, dimension ) {
 exports.initViz = initViz;
 exports.updateViz = updateViz;
 
-},{"../app-state":2,"d3":20}],4:[function(require,module,exports){
+},{"../app-state":2,"../utils":19,"d3":20}],4:[function(require,module,exports){
 /**
 *
 * Bind Listeners
@@ -295,6 +296,7 @@ module.exports = init;
 'use strict';
 
 var d3 = require( 'd3' );
+var utils = require( '../utils' );
 var appState = require( '../app-state' );
 
 // Scales
@@ -427,7 +429,7 @@ var updateViz = function( color, dimension ) {
 
   bubbleWrap.selectAll( '.bubble__label--value' )
       .data( function( d ) { return [ d ]; } )
-      .text( function( d ) { return d.values; } )
+      .text( function( d ) { return utils.formatCommas( d.values ); } )
       .attr( 'y', 3 );
 
   // Update key labels
@@ -443,7 +445,7 @@ var updateViz = function( color, dimension ) {
 exports.initViz = initViz;
 exports.updateViz = updateViz;
 
-},{"../app-state":2,"d3":20}],6:[function(require,module,exports){
+},{"../app-state":2,"../utils":19,"d3":20}],6:[function(require,module,exports){
 /**
 *
 * Cards
@@ -453,6 +455,7 @@ exports.updateViz = updateViz;
 'use strict';
 
 var _ = require( 'underscore' );
+var utils = require( '../utils' );
 var appState = require( '../app-state' );
 
 var cards = require( '../templates/components/cards.hbs' );
@@ -463,7 +466,7 @@ function update() {
 }
 
 function updateText() {
-	document.querySelector( '.cards__selected' ).innerHTML = appState.currentCards.length;
+	document.querySelector( '.cards__selected' ).innerHTML = utils.formatCommas( appState.currentCards.length );
 }
 
 function updateImages() {
@@ -473,7 +476,7 @@ function updateImages() {
 
 exports.update = update;
 
-},{"../app-state":2,"../templates/components/cards.hbs":13,"underscore":33}],7:[function(require,module,exports){
+},{"../app-state":2,"../templates/components/cards.hbs":13,"../utils":19,"underscore":33}],7:[function(require,module,exports){
 /**
 *
 * Colors
@@ -536,7 +539,7 @@ function groupByColor() {
 
 function updateCardTotal( color ) {
   if ( groupedByColor[ color ] ) {
-    document.querySelector( '#card__total--' + color ).innerHTML = groupedByColor[ color ].length;
+    document.querySelector( '#card__total--' + color ).innerHTML = utils.formatCommas( groupedByColor[ color ].length );
   } else {
     document.querySelector( '#card__total--' + color ).innerHTML = 0;
   }
@@ -656,7 +659,7 @@ function updateUndefinedTotals( color, dimension ) {
   var undefinedEl = document.querySelector( '#card__undefined--' + dimension + '--' + color );
 
   if ( undefinedEl ) {
-    undefinedEl.innerHTML = appState.currentRollups[ color ][ dimension ].undefined;
+    undefinedEl.innerHTML = utils.formatCommas( appState.currentRollups[ color ][ dimension ].undefined );
   }
 }
 
@@ -824,6 +827,7 @@ module.exports = init;
 'use strict';
 
 var _ = require( 'underscore' );
+var utils = require( '../utils' );
 var appState = require( '../app-state' );
 
 // Templates
@@ -834,7 +838,7 @@ var updateInventory = function( color, dimension ) {
   var ol = document.querySelector( '#color__graph__ol--' + dimension + '--' + color );
 
   _.each( appState.currentRollups[ color ][ dimension ].rollup, function( key ) {
-    inventoryStr += templateColorsInventory( { 'key': key.key, 'value': key.values } );
+    inventoryStr += templateColorsInventory( { 'key': key.key, 'value': utils.formatCommas( key.values ) } );
   });
 
   ol.innerHTML = inventoryStr;
@@ -842,7 +846,7 @@ var updateInventory = function( color, dimension ) {
 
 exports.updateInventory = updateInventory;
 
-},{"../app-state":2,"../templates/partials/colors-inventory.hbs":18,"underscore":33}],11:[function(require,module,exports){
+},{"../app-state":2,"../templates/partials/colors-inventory.hbs":18,"../utils":19,"underscore":33}],11:[function(require,module,exports){
 /**
 *
 * Selectized
@@ -1113,14 +1117,18 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 **/
 
 'use strict';
+var d3 = require( 'd3' );
 
 // from http://stackoverflow.com/questions/3885817/how-to-check-if-a-number-is-float-or-integer
 // Accepts positive ints, rejects negative, strings and floats
 var isInt = function(n) { return parseInt(n) === n; };
 
+var formatCommas = d3.format('0,000');
+
+exports.formatCommas = formatCommas;
 exports.isInt = isInt;
 
-},{}],20:[function(require,module,exports){
+},{"d3":20}],20:[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.5"

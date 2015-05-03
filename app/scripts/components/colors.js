@@ -60,7 +60,7 @@ function groupByColor() {
 
 function updateCardTotal( color ) {
   if ( groupedByColor[ color ] ) {
-    document.querySelector( '#card__total--' + color ).innerHTML = groupedByColor[ color ].length;
+    document.querySelector( '#card__total--' + color ).innerHTML = utils.formatCommas( groupedByColor[ color ].length );
   } else {
     document.querySelector( '#card__total--' + color ).innerHTML = 0;
   }
@@ -180,7 +180,7 @@ function updateUndefinedTotals( color, dimension ) {
   var undefinedEl = document.querySelector( '#card__undefined--' + dimension + '--' + color );
 
   if ( undefinedEl ) {
-    undefinedEl.innerHTML = appState.currentRollups[ color ][ dimension ].undefined;
+    undefinedEl.innerHTML = utils.formatCommas( appState.currentRollups[ color ][ dimension ].undefined );
   }
 }
 

@@ -7,6 +7,7 @@
 'use strict';
 
 var d3 = require( 'd3' );
+var utils = require( '../utils' );
 var appState = require( '../app-state' );
 
 var margin = { top: 15, bottom: 15 };
@@ -138,7 +139,7 @@ var updateViz = function( color, dimension ) {
 
   barWrap.selectAll( 'text' )
       .data( function( d ) { return [ d ]; } )
-      .text( function( d ) { return d.values; } )
+      .text( function( d ) { return utils.formatCommas( d.values ); } )
       .transition()
       .attr({
         x: xScale.rangeBand() / 2,

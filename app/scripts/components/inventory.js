@@ -7,6 +7,7 @@
 'use strict';
 
 var _ = require( 'underscore' );
+var utils = require( '../utils' );
 var appState = require( '../app-state' );
 
 // Templates
@@ -17,7 +18,7 @@ var updateInventory = function( color, dimension ) {
   var ol = document.querySelector( '#color__graph__ol--' + dimension + '--' + color );
 
   _.each( appState.currentRollups[ color ][ dimension ].rollup, function( key ) {
-    inventoryStr += templateColorsInventory( { 'key': key.key, 'value': key.values } );
+    inventoryStr += templateColorsInventory( { 'key': key.key, 'value': utils.formatCommas( key.values ) } );
   });
 
   ol.innerHTML = inventoryStr;

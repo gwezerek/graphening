@@ -7,6 +7,7 @@
 'use strict';
 
 var d3 = require( 'd3' );
+var utils = require( '../utils' );
 var appState = require( '../app-state' );
 
 // Scales
@@ -139,7 +140,7 @@ var updateViz = function( color, dimension ) {
 
   bubbleWrap.selectAll( '.bubble__label--value' )
       .data( function( d ) { return [ d ]; } )
-      .text( function( d ) { return d.values; } )
+      .text( function( d ) { return utils.formatCommas( d.values ); } )
       .attr( 'y', 3 );
 
   // Update key labels
