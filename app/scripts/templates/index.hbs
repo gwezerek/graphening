@@ -1,7 +1,10 @@
 <main class="main">
   <header class="site__header">
     <h1 class="site__head">Magic: The Graphening</h1>
-    <h3 class="site__subhead">What color will you play?</h3>
+    {{!-- <h3 class="site__subhead">What color will you play?</h3> --}}
+    <aside class="cards">
+      {{!-- Card grid renders here when data is ready --}}
+    </aside>
     {{> filter}}
   </header>
 
@@ -10,9 +13,7 @@
       <!-- Color grid renders here when data is ready -->
     </section>
   </article>
-  <aside class="cards">
-    {{!-- Card grid renders here when data is ready --}}
-  </aside>
+
 </main>
 
 {{> footer}}

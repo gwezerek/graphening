@@ -5,24 +5,12 @@
 **/
 
 .cards {
-	position: fixed;
-	bottom: 0;
-	height: $baseSpace * 4;
+	height: $baseSpace * 5;
 	background: $colorBlueGrey900;
 	padding: $baseSpace $baseSpace 0 0;
 	width: 100%;
-}
-
-.cards__btn--reveal {
-	display: none;
-	background: $colorBlueGrey900;
-	color: $colorBlueGrey300;
-	// width: 5rem;
-	// height: 5rem;
-	// transform: rotateZ(-45deg);
-	// transform-origin: 0 100% 0deg;
-	// text-overflow: clip;
-	// box-sizing: content-box;
+	overflow: hidden;
+	border-bottom: 1px solid $colorBlueGrey800;
 }
 
 .cards__grid {
@@ -31,10 +19,27 @@
 }
 
 .cards__head {
-	color: white;
-	font-size: $fontMedium;
+	color: $colorBlueGrey100;
+	font-size: $fontBase;
+	margin-bottom: $baseSpace / 2;
+}
+
+.cards__selected {
+	font-size: $fontLarge;
 	font-weight: 700;
-	line-height: 130%;
+	display: block;
+	line-height: 100%;
+}
+
+.cards__btn--cardview {
+	color: $colorBlueGrey700;
+	font-size: $fontBase;
+	text-align: left;
+	cursor: pointer;
+	transition: color 0.1s $animationEasing;
+	&:hover {
+		color: $colorBlueGrey300;
+	}
 }
 
 .cards__item {

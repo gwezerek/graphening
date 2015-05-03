@@ -936,15 +936,23 @@ module.exports = updateViews;
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
-    return "  <li class=\"cards__item\">\n    <a href=\"\" class=\"card__link\">\n      <img class=\"cards__img\" src=\"/images/dummy/card--blue-1.png\" alt=\""
+    var stack1;
+
+  return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.magicCardsInfoCode : depth0),{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.program(4, data, 0),"data":data})) != null ? stack1 : "");
+},"2":function(depth0,helpers,partials,data) {
+    return "    <li class=\"cards__item\">\n      <a href=\"\" class=\"card__link\">\n        <img class=\"cards__img\" src=\"/images/dummy/card--blue-2.png\" alt=\""
     + this.escapeExpression(this.lambda((depth0 != null ? depth0.name : depth0), depth0))
-    + "\">\n    </a>\n  </li>\n";
+    + "\">\n      </a>\n    </li>\n";
+},"4":function(depth0,helpers,partials,data) {
+    return "    <li class=\"cards__item\">\n      <a href=\"\" class=\"card__link\">\n        <img class=\"cards__img\" src=\"/images/dummy/card-back.png\" alt=\""
+    + this.escapeExpression(this.lambda((depth0 != null ? depth0.name : depth0), depth0))
+    + "\">\n      </a>\n    </li>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<button class=\"cards__btn--reveal cards__btn--reveal--is-closed\">▲</button>\n<ul class=\"cards__grid\">\n  <li class=\"cards__item\">\n    <h2 class=\"cards__head\"><span class=\"cards__selected\">128</span> cards selected</h2>\n  </li>\n"
+  return "<ul class=\"cards__grid\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.cards : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "</ul>";
+    + "  <li class=\"cards__item\">\n    <h2 class=\"cards__head\"><span class=\"cards__selected\">128</span> cards selected</h2>\n    <button class=\"cards__btn--cardview\">⤢ Card view</button>\n  </li>\n</ul>";
 },"useData":true});
 
 },{"hbsfy/runtime":28}],14:[function(require,module,exports){
@@ -1069,7 +1077,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<footer class=\"footer\">\n  <p class=\"footer__text\">Card names and text are all copyright <a href=\"http://company.wizards.com/\" class=\"footer__link\">Wizards of the Coast</a>. This website is not affiliated with Wizards of the Coast in any way. Great thanks to <a href=\"http://mtgjson.com/\" class=\"footer__link\">MTG JSON</a> for the card data.</p>\n</footer>";
+    return "<footer class=\"footer\">\n  <p class=\"footer__text\">The information presented on this site, both literal and graphical, is copyrighted by <a href=\"http://company.wizards.com/\" class=\"footer__link\">Wizards of the Coast</a>. This website is not affiliated with Wizards of the Coast in any way.</p>\n  <p class=\"footer__text\">Many thanks to <a href=\"http://mtgjson.com/\" class=\"footer__link\">MTG JSON</a> for the card data and <a href=\"http://magiccards.info/\" class=\"footer__link\">magiccards.info</a> for the images.</p>\n</footer>";
 },"useData":true});
 
 },{"hbsfy/runtime":28}],17:[function(require,module,exports){
@@ -1078,9 +1086,9 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<main class=\"main\">\n  <header class=\"site__header\">\n    <h1 class=\"site__head\">Magic: The Graphening</h1>\n    <h3 class=\"site__subhead\">What color will you play?</h3>\n"
+  return "<main class=\"main\">\n  <header class=\"site__header\">\n    <h1 class=\"site__head\">Magic: The Graphening</h1>\n    <aside class=\"cards\">\n    </aside>\n"
     + ((stack1 = this.invokePartial(partials.filter,depth0,{"name":"filter","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
-    + "  </header>\n\n  <article class=\"stream\">\n    <section class=\"colors\" id=\"colors\"> \n      <!-- Color grid renders here when data is ready -->\n    </section>\n  </article>\n  <aside class=\"cards\">\n  </aside>\n</main>\n\n"
+    + "  </header>\n\n  <article class=\"stream\">\n    <section class=\"colors\" id=\"colors\"> \n      <!-- Color grid renders here when data is ready -->\n    </section>\n  </article>\n\n</main>\n\n"
     + ((stack1 = this.invokePartial(partials.footer,depth0,{"name":"footer","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "");
 },"usePartial":true,"useData":true});
 

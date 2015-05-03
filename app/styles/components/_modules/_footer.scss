@@ -5,7 +5,7 @@
 **/
 
 .footer {
-	padding: $baseSpace $baseSpace $baseSpace*5;
+	padding: $baseSpace;
 	background: $colorBlueGrey600;
 	text-align: center;
 }
@@ -18,4 +18,8 @@
 
 .footer__link {
 	color: $colorBlueGrey300;
+	transition: color 0.1s $animationEasing;
+	&:hover {
+		color: $colorBlueGrey100;
+	}
 }

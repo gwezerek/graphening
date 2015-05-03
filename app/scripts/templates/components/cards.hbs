@@ -1,23 +1,31 @@
-<button class="cards__btn--reveal cards__btn--reveal--is-closed">▲</button>
 <ul class="cards__grid">
-  <li class="cards__item">
-    <h2 class="cards__head"><span class="cards__selected">128</span> cards selected</h2>
-  </li>
   {{#each cards}}
 {{!--   <li class="cards__item">
     <a href="" class="card__link">
       <img class="cards__img" src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{ this.multiverseid }}&type=card" alt="{{ this.name }}">
     </a>
   </li> --}}
-{{!--   <li class="cards__item">
-    <a href="" class="card__link">
-      <img class="cards__img" src="http://magiccards.info/scans/en/{{ this.magicCardsInfoCode }}/{{ this.number }}.jpg" alt="{{ this.name }}">
-    </a>
-  </li> --}}
-  <li class="cards__item">
-    <a href="" class="card__link">
-      <img class="cards__img" src="/images/dummy/card--blue-1.png" alt="{{ this.name }}">
-    </a>
-  </li>
+  {{#if this.magicCardsInfoCode}}
+{{!--     <li class="cards__item">
+     <a href="" class="card__link">
+       <img class="cards__img" src="http://magiccards.info/scans/en/{{ this.magicCardsInfoCode }}/{{ this.number }}.jpg" alt="{{ this.name }}">
+     </a>
+    </li> --}}
+    <li class="cards__item">
+      <a href="" class="card__link">
+        <img class="cards__img" src="/images/dummy/card--blue-2.png" alt="{{ this.name }}">
+      </a>
+    </li>
+  {{else}}
+    <li class="cards__item">
+      <a href="" class="card__link">
+        <img class="cards__img" src="/images/dummy/card-back.png" alt="{{ this.name }}">
+      </a>
+    </li>
+  {{/if}}
   {{/each}}
+  <li class="cards__item">
+    <h2 class="cards__head"><span class="cards__selected">128</span> cards selected</h2>
+    <button class="cards__btn--cardview">⤢ Card view</button>
+  </li>
 </ul>
