@@ -40,7 +40,7 @@ function stickyNav() {     
 
 function bindStickyListener() {
 	appState.stickyNavTop = $( '.site__header__stickymod' ).offset().top;
-	var throttled = _.throttle( stickyNav, 100 );
+	var throttled = _.throttle( stickyNav, 50 );
 	
 	$( window ).scroll( throttled );
 }

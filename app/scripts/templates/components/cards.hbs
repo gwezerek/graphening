@@ -18,15 +18,13 @@
     </li>
   {{else}}
     <li class="cards__item">
-      <a href="" class="card__link">
-        <img class="cards__img" src="/images/dummy/card-back.png" alt="{{ this.name }}">
-      </a>
+      <div class="cards--proxy">
+        <p class="cards__item__name--proxy">{{ this.name }}</p>
+        <h4 class="cards__item__label--proxy">{{ this.text }}</h4>
+      </div>
     </li>
   {{/if}}
   {{/each}}
-{{!--   <li class="cards__item cards_item--proxy">
-    <img class="cards__img" src="/images/dummy/card-back.png" alt="{{ this.name }}">
-  </li> --}}
   <li class="cards__item">
     <h2 class="cards__head"><span class="cards__selected">128</span> cards selected</h2>
     <button class="cards__btn--cardview">⤢ Card view</button>

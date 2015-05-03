@@ -56,3 +56,21 @@
 	height: auto;
 	border-radius: 0.4rem;
 }
+
+.cards--proxy {
+	background: $colorBlueGrey700;
+	border: 1px solid $colorBlueGrey500;
+	padding: $baseSpace/2;
+	border-radius: 0.4rem;
+	min-height: 30rem;
+}
+
+.cards__item__name--proxy {
+	font-size: $fontSmall;
+	color: $colorBlueGrey300;
+}
+
+.cards__item__label--proxy {
+	font-size: $fontSmall;
+	color: $colorBlueGrey500;
+}

@@ -279,7 +279,7 @@ function stickyNav() {     
 
 function bindStickyListener() {
 	appState.stickyNavTop = $( '.site__header__stickymod' ).offset().top;
-	var throttled = _.throttle( stickyNav, 100 );
+	var throttled = _.throttle( stickyNav, 50 );
 	
 	$( window ).scroll( throttled );
 }
@@ -948,9 +948,13 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
     + this.escapeExpression(this.lambda((depth0 != null ? depth0.name : depth0), depth0))
     + "\">\n      </a>\n    </li>\n";
 },"4":function(depth0,helpers,partials,data) {
-    return "    <li class=\"cards__item\">\n      <a href=\"\" class=\"card__link\">\n        <img class=\"cards__img\" src=\"/images/dummy/card-back.png\" alt=\""
-    + this.escapeExpression(this.lambda((depth0 != null ? depth0.name : depth0), depth0))
-    + "\">\n      </a>\n    </li>\n";
+    var alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "    <li class=\"cards__item\">\n      <div class=\"cards--proxy\">\n        <p class=\"cards__item__name--proxy\">"
+    + alias2(alias1((depth0 != null ? depth0.name : depth0), depth0))
+    + "</p>\n        <h4 class=\"cards__item__label--proxy\">"
+    + alias2(alias1((depth0 != null ? depth0.text : depth0), depth0))
+    + "</h4>\n      </div>\n    </li>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
