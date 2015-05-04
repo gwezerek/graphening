@@ -8,6 +8,7 @@
 
 var allCards = [];
 var currentCards = [];
+var filteredCards = [];
 var currentRollups = [];
 var currentSlice = 0;
 var dimensionMaxima = {};
@@ -36,6 +37,7 @@ var filters = [
 
 exports.allCards = allCards;
 exports.currentCards = currentCards;
+exports.filteredCards = filteredCards;
 exports.currentRollups = currentRollups;
 exports.currentSlice = currentSlice;
 exports.dimensionMaxima = dimensionMaxima;

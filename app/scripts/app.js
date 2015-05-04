@@ -21,16 +21,16 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 	compilePage( data );
 
 	// Filter cards with default options
-	filterCards();
+	filterCards.filterCards();
 
 	// Init views
-	updateViews( true );
+	updateViews.updateViews( true );
 
 	// Add filter chrome
 	selectized.populate();
 
 	// Bind handlers
-	bindListeners();
+	bindListeners.init();
 
 });
 
@@ -45,6 +45,7 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 
 var allCards = [];
 var currentCards = [];
+var filteredCards = [];
 var currentRollups = [];
 var currentSlice = 0;
 var dimensionMaxima = {};
@@ -73,6 +74,7 @@ var filters = [
 
 exports.allCards = allCards;
 exports.currentCards = currentCards;
+exports.filteredCards = filteredCards;
 exports.currentRollups = currentRollups;
 exports.currentSlice = currentSlice;
 exports.dimensionMaxima = dimensionMaxima;
@@ -93,9 +95,11 @@ exports.filters = filters;
 
 'use strict';
 
+var $ = require( 'jquery' );
 var d3 = require( 'd3' );
 var utils = require( '../utils' );
 var appState = require( '../app-state' );
+var bindListeners = require( './bind-listeners' );
 
 var margin = { top: 15, bottom: 15 };
 var height = 100 - margin.top - margin.bottom;
@@ -113,8 +117,6 @@ var xAxis = d3.svg.axis()
     .orient( 'bottom' );
 
 var initViz = function( color, dimension ) {
-
-  // debugger;
 
   // Set domains now that template is populated and we have data
   yScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
@@ -165,8 +167,8 @@ var initViz = function( color, dimension ) {
       .data( function( d ) { return [ d ]; } );
 
   bars.attr({
-        y: function ( d ) { return height - yScale( d.values ); },
-        height: function( d ) { return yScale( d.values ); },
+        y: function ( d ) { return height - yScale( d.values.count ); },
+        height: function( d ) { return yScale( d.values.count ); },
         width: xScale.rangeBand(),
         class: 'bar__rect'
       });
@@ -175,12 +177,26 @@ var initViz = function( color, dimension ) {
   barEnter.append( 'text' );
 
   barWrap.selectAll( 'text' )
-      .text( function( d ) { return d.values; } )
+      .text( function( d ) { return d.values.count; } )
       .attr({
         x: xScale.rangeBand() / 2,
-        y: function ( d ) { return height - yScale( d.values ) - 4; },
+        y: function ( d ) { return height - yScale( d.values.count ) - 4; },
         class: 'bar__label'
       });
+
+  // Brush
+  var brush = d3.svg.brush()
+      .x( xScale )
+      .clamp( true );
+
+  svg.append( 'g' )
+      .attr( 'class', 'brush' )
+      .call( brush )
+    .selectAll( 'rect' )
+      .attr( 'height', height + margin.top );
+
+  bindListeners.bindBrushListeners( brush, xScale );
+
 };
 
 var updateViz = function( color, dimension ) {
@@ -188,9 +204,6 @@ var updateViz = function( color, dimension ) {
   // Set domains now that template is populated and we have data
   yScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
   xScale.rangeRoundBands( [ 0, appState.vizWidth ], 0.33, 0 );
-
-  // Need to update axis, axis labels, bars and bar labels
-  // TK AXIS, AXIS LABELS
 
   // Update bar groups
   var barWrap = d3.selectAll( '#color__graph--' + dimension + '--' + color + ' .chart'  ).selectAll( 'g' )
@@ -215,8 +228,8 @@ var updateViz = function( color, dimension ) {
 
   bars.transition()
       .attr({
-        y: function ( d ) { return height - yScale( d.values ); },
-        height: function( d ) { return yScale( d.values ); },
+        y: function ( d ) { return height - yScale( d.values.count ); },
+        height: function( d ) { return yScale( d.values.count ); },
         width: xScale.rangeBand(),
         class: 'bar__rect'
       });
@@ -226,19 +239,33 @@ var updateViz = function( color, dimension ) {
 
   barWrap.selectAll( 'text' )
       .data( function( d ) { return [ d ]; } )
-      .text( function( d ) { return utils.formatCommas( d.values ); } )
+      .text( function( d ) { return utils.formatCommas( d.values.count ); } )
       .transition()
       .attr({
         x: xScale.rangeBand() / 2,
-        y: function ( d ) { return ( height - yScale( d.values ) - 4 ); },
+        y: function ( d ) { return ( height - yScale( d.values.count ) - 4 ); },
         class: 'bar__label'
       });
+
+  // Brush
+  var brush = d3.svg.brush()
+      .x( xScale )
+      .clamp( true );
+
+  d3.select( barWrap[0].parentNode.parentNode ).append( 'g' )
+      .attr( 'class', 'brush' )
+      .call( brush )
+    .selectAll( 'rect' )
+      .attr( 'height', height + margin.top );
+
+  bindListeners.bindBrushListeners( brush, xScale );
+
 };
 
 exports.initViz = initViz;
 exports.updateViz = updateViz;
 
-},{"../app-state":2,"../utils":19,"d3":20}],4:[function(require,module,exports){
+},{"../app-state":2,"../utils":19,"./bind-listeners":4,"d3":20,"jquery":29}],4:[function(require,module,exports){
 /**
 *
 * Bind Listeners
@@ -248,6 +275,7 @@ exports.updateViz = updateViz;
 'use strict';
 
 var $ = require( 'jquery' );
+var d3 = require( 'd3' );
 var _ = require( 'underscore' );
 var appState = require( '../app-state' );
 var filterCards = require( './filter-cards' );
@@ -267,8 +295,8 @@ function bindFilterListeners() {
 			appState.filters[ i ].values = el.selectize.getValue();
 		});
 
-		filterCards();
-		updateViews();
+		filterCards.filterCards();
+		updateViews.updateViews();
 	});
 }
 
@@ -295,6 +323,7 @@ function bindCardsListenerGrid() {
 		$( 'html' ).toggleClass( 'is--frozen' );
 		cards.addImages();
 	});
+
 	$( '.site__header__stickymod' ).on( 'click', '.cards__btn--cardview--close', function() {
 		$( '.site__header__stickymod' ).toggleClass( 'stickymod--is--open' );
 		$( 'html' ).toggleClass( 'is--frozen' );
@@ -307,9 +336,32 @@ function bindCardsListenerAdd() {
 	});
 }
 
-module.exports = init;
+function bindBrushListeners( brush, xScale ) {
+	brush.on( 'brushend', function() {
+		var parentEl = this.parentElement;
+		var barData = d3.select( parentEl ).selectAll( '.bar__wrap' ).data();
+		var extent = brush.extent();
+		var barWidth = xScale.rangeBand();
+		var selectedIds = [];
 
-},{"../app-state":2,"./cards":6,"./filter-cards":9,"./update-views":12,"jquery":29,"underscore":33}],5:[function(require,module,exports){
+		console.log( barData, brush.extent() );
+		
+		_.map( barData, function( bar ) {
+			var barStart = xScale( bar.key );
+			if ( barStart > ( extent[0] - barWidth ) && barStart < extent[1] ) {
+				selectedIds.push.apply( selectedIds, bar.values.ids );
+			}
+		});
+
+		filterCards.getCardsById( selectedIds );
+		cards.update();
+	});
+}
+
+exports.init = init;
+exports.bindBrushListeners = bindBrushListeners;
+
+},{"../app-state":2,"./cards":6,"./filter-cards":9,"./update-views":12,"d3":20,"jquery":29,"underscore":33}],5:[function(require,module,exports){
 /**
 *
 * Colors
@@ -374,7 +426,7 @@ var initViz = function( color, dimension ) {
       .data( function( d ) { return [ d ]; } );
 
   bubbles.attr({
-        r: function( d ) { return rScale( d.values ); },
+        r: function( d ) { return rScale( d.values.count ); },
         class: 'bubble__circle'
       });
 
@@ -383,7 +435,7 @@ var initViz = function( color, dimension ) {
     .attr( 'class', 'bubble__label bubble__label--value' );
 
   bubbleWrap.selectAll( '.bubble__label--value' )
-      .text( function( d ) { return d.values; } )
+      .text( function( d ) { return d.values.count; } )
       .attr( 'y', 3 );
 
   // Update key labels
@@ -442,7 +494,7 @@ var updateViz = function( color, dimension ) {
 
   bubbles.transition()
       .attr({
-        r: function( d ) { return rScale( d.values ); },
+        r: function( d ) { return rScale( d.values.count ); },
         class: 'bubble__circle'
       });
 
@@ -452,7 +504,7 @@ var updateViz = function( color, dimension ) {
 
   bubbleWrap.selectAll( '.bubble__label--value' )
       .data( function( d ) { return [ d ]; } )
-      .text( function( d ) { return utils.formatCommas( d.values ); } )
+      .text( function( d ) { return utils.formatCommas( d.values.count ); } )
       .attr( 'y', 3 );
 
   // Update key labels
@@ -500,14 +552,25 @@ function updateText() {
 	document.querySelector( '.cards__selected' ).innerHTML = utils.formatCommas( appState.currentCards.length );
 }
 
-function addImages() {
-	var newCards = appState.currentCards.slice( appState.currentSlice, appState.currentSlice + 7 );
+function checkAddBtnVisibility() {
+	if ( appState.currentCards.length <= appState.currentSlice ) {
+		$( '.cards__btn--add' ).addClass( 'cards__btn--add--finished' );
+	} else {
+		$( '.cards__btn--add' ).removeClass( 'cards__btn--add--finished' )
+	}
+}
+
+function addImages( brushed ) {
+	var cardSet = appState.currentCards;
+	var newCards = cardSet.slice( appState.currentSlice, appState.currentSlice + 7 );
 	$( '.cards__grid' ).append( cards( { cards: newCards } ) );
 	appState.currentSlice += newCards.length;
+	checkAddBtnVisibility();
 }
 
 
 exports.update = update;
+exports.updateText = updateText;
 exports.addImages = addImages;
 
 },{"../app-state":2,"../templates/components/cards.hbs":13,"../utils":19,"jquery":29,"underscore":33}],7:[function(require,module,exports){
@@ -543,8 +606,6 @@ var prepData = function() {
 
   // set the dimension domains across colors
   getDimensionDomains();
-
-  // debugger;
 
 };
 
@@ -625,7 +686,7 @@ function rollupByDimensionQuantitative( color, dimension, rollups ) {
             return d[ dimension ];
           }
         })
-        .rollup( function( cards ) { return cards.length; } )
+        .rollup( function( cards ) { return { 'count': cards.length, 'ids': _.pluck( cards, 'multiverseid' ) }; } )
         .entries( groupedByColor[ color ] );
   }
 
@@ -645,7 +706,7 @@ function rollupByDimensionCategorical( color, dimension, rollups ) {
             return d[ dimension ];
           }
         }).sortValues( function( a, b ) { return a.length - b.length; } )
-        .rollup( function( cards ) { return cards.length; } )
+        .rollup( function( cards ) { return { 'count': cards.length, 'ids': _.pluck( cards, 'multiverseid' ) }; } )
         .entries( groupedByColor[ color ] );
   }
 
@@ -654,7 +715,7 @@ function rollupByDimensionCategorical( color, dimension, rollups ) {
 
 function sortCategoricalNest( color, dimension, rollups ) {
   rollups[color][dimension].rollup.sort( function( a, b ) {
-    return b.values - a.values;
+    return b.values.count - a.values.count;
   });
 
   return rollups;
@@ -665,7 +726,9 @@ function getDimensionMaxima() {
     var flatArrayValues = [];
 
     _.each( appState.currentRollups, function( color ) {
-      var values = _.pluck( color[ dimension ].rollup, 'values' );
+      var values = _.map( color[ dimension ].rollup, function( rollup ) {
+        return rollup.values.count;
+      });
       flatArrayValues = _.union( flatArrayValues, values );
     });
 
@@ -814,10 +877,6 @@ var rank = {
 	"Basic Land" :6
 };
 
-function init() {
-	appState.currentCards = filterCards();
-}
-
 function filterCards() {
 	var filteredCards = appState.allCards;
 
@@ -838,7 +897,16 @@ function filterCards() {
 
 	filteredCards = sortCardsByRarity( filteredCards );
 	
-	return filteredCards;
+	appState.filteredCards = filteredCards;
+	appState.currentCards = filteredCards;
+}
+
+function getCardsById( ids ) {
+	var currentCards  = _.filter( appState.filteredCards, function( card ) {
+		return ids.indexOf( card.multiverseid ) !== -1;
+	});
+
+	appState.currentCards = sortCardsByRarity( currentCards );
 }
 
 function sortCardsByRarity( filteredCards ) {
@@ -849,7 +917,8 @@ function sortCardsByRarity( filteredCards ) {
 	return sortedArr;
 }
 
-module.exports = init;
+exports.filterCards = filterCards;
+exports.getCardsById = getCardsById;
 
 },{"../app-state":2,"underscore":33}],10:[function(require,module,exports){
 /**
@@ -872,7 +941,7 @@ var updateInventory = function( color, dimension ) {
   var ol = document.querySelector( '#color__graph__ol--' + dimension + '--' + color );
 
   _.each( appState.currentRollups[ color ][ dimension ].rollup, function( key ) {
-    inventoryStr += templateColorsInventory( { 'key': key.key, 'value': utils.formatCommas( key.values ) } );
+    inventoryStr += templateColorsInventory( { 'key': key.key, 'value': utils.formatCommas( key.values.count ) } );
   });
 
   ol.innerHTML = inventoryStr;
@@ -962,13 +1031,14 @@ exports.populate = populate;
 var colors = require( './colors' );
 var cards = require( './cards' );
 
-var updateViews = function( init ) {
+exports.updateViews = function( init ) {
 	colors.prepData();
 	colors.updateViews( init );
 	cards.update();
 };
 
-module.exports = updateViews;
+// Unsure why the below doesn't work, using exports instead...
+// module.exports = updateViews;
 
 },{"./cards":6,"./colors":7}],13:[function(require,module,exports){
 // hbsfy compiled Handlebars template
@@ -1131,7 +1201,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<footer class=\"footer\">\n  <p class=\"footer__text\">The information presented on this site, both literal and graphical, is copyrighted by <a href=\"http://company.wizards.com/\" class=\"footer__link\">Wizards of the Coast</a>. This website is not affiliated with Wizards of the Coast in any way.</p>\n  <p class=\"footer__text\">Many thanks to <a href=\"http://mtgjson.com/\" class=\"footer__link\">MTG JSON</a> for the card data and <a href=\"http://magiccards.info/\" class=\"footer__link\">magiccards.info</a> for the images.</p>\n</footer>\n\n<div class=\"border--bottom--colors\"></div>";
+    return "<footer class=\"footer\">\n  <p class=\"footer__text\">The information presented on this site, both literal and graphical, is copyrighted by <a href=\"http://company.wizards.com/\" class=\"footer__link\">Wizards of the Coast</a>. This website is not affiliated with Wizards of the Coast in any way.</p>\n  <p class=\"footer__text\">Many thanks to <a href=\"http://mtgjson.com/\" class=\"footer__link\">MTG JSON</a> for the card data and <a href=\"http://magiccards.info/\" class=\"footer__link\">magiccards.info</a> for the images.</p>\n</footer>";
 },"useData":true});
 
 },{"hbsfy/runtime":28}],17:[function(require,module,exports){

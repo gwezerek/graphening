@@ -21,7 +21,7 @@
 
 .cards__grid {
 	display: flex;
-	margin: -$baseSpace 0 0 -$baseSpace;
+	margin: 0 0 $baseSpace*3;
 	flex-wrap: wrap;
 }
 
@@ -107,5 +107,9 @@
 
 .cards__btn--add {
 	text-align: center;
-	margin: $baseSpace*2 auto $baseSpace*3;
+	margin: -$baseSpace*2 auto $baseSpace*3;
+}
+
+.cards__btn--add--finished {
+	display: none;
 }

@@ -20,15 +20,15 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 	compilePage( data );
 
 	// Filter cards with default options
-	filterCards();
+	filterCards.filterCards();
 
 	// Init views
-	updateViews( true );
+	updateViews.updateViews( true );
 
 	// Add filter chrome
 	selectized.populate();
 
 	// Bind handlers
-	bindListeners();
+	bindListeners.init();
 
 });

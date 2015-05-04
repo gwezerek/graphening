@@ -18,10 +18,6 @@ var rank = {
 	"Basic Land" :6
 };
 
-function init() {
-	appState.currentCards = filterCards();
-}
-
 function filterCards() {
 	var filteredCards = appState.allCards;
 
@@ -42,7 +38,16 @@ function filterCards() {
 
 	filteredCards = sortCardsByRarity( filteredCards );
 	
-	return filteredCards;
+	appState.filteredCards = filteredCards;
+	appState.currentCards = filteredCards;
+}
+
+function getCardsById( ids ) {
+	var currentCards  = _.filter( appState.filteredCards, function( card ) {
+		return ids.indexOf( card.multiverseid ) !== -1;
+	});
+
+	appState.currentCards = sortCardsByRarity( currentCards );
 }
 
 function sortCardsByRarity( filteredCards ) {
@@ -53,4 +58,5 @@ function sortCardsByRarity( filteredCards ) {
 	return sortedArr;
 }
 
-module.exports = init;
+exports.filterCards = filterCards;
+exports.getCardsById = getCardsById;

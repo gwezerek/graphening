@@ -31,8 +31,6 @@ var prepData = function() {
   // set the dimension domains across colors
   getDimensionDomains();
 
-  // debugger;
-
 };
 
 var updateViews = function( init ) {
@@ -112,7 +110,7 @@ function rollupByDimensionQuantitative( color, dimension, rollups ) {
             return d[ dimension ];
           }
         })
-        .rollup( function( cards ) { return cards.length; } )
+        .rollup( function( cards ) { return { 'count': cards.length, 'ids': _.pluck( cards, 'multiverseid' ) }; } )
         .entries( groupedByColor[ color ] );
   }
 
@@ -132,7 +130,7 @@ function rollupByDimensionCategorical( color, dimension, rollups ) {
             return d[ dimension ];
           }
         }).sortValues( function( a, b ) { return a.length - b.length; } )
-        .rollup( function( cards ) { return cards.length; } )
+        .rollup( function( cards ) { return { 'count': cards.length, 'ids': _.pluck( cards, 'multiverseid' ) }; } )
         .entries( groupedByColor[ color ] );
   }
 
@@ -141,7 +139,7 @@ function rollupByDimensionCategorical( color, dimension, rollups ) {
 
 function sortCategoricalNest( color, dimension, rollups ) {
   rollups[color][dimension].rollup.sort( function( a, b ) {
-    return b.values - a.values;
+    return b.values.count - a.values.count;
   });
 
   return rollups;
@@ -152,7 +150,9 @@ function getDimensionMaxima() {
     var flatArrayValues = [];
 
     _.each( appState.currentRollups, function( color ) {
-      var values = _.pluck( color[ dimension ].rollup, 'values' );
+      var values = _.map( color[ dimension ].rollup, function( rollup ) {
+        return rollup.values.count;
+      });
       flatArrayValues = _.union( flatArrayValues, values );
     });
 

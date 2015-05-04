@@ -9,10 +9,11 @@
 var colors = require( './colors' );
 var cards = require( './cards' );
 
-var updateViews = function( init ) {
+exports.updateViews = function( init ) {
 	colors.prepData();
 	colors.updateViews( init );
 	cards.update();
 };
 
-module.exports = updateViews;
+// Unsure why the below doesn't work, using exports instead...
+// module.exports = updateViews;

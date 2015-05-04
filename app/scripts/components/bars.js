@@ -6,9 +6,11 @@
 
 'use strict';
 
+var $ = require( 'jquery' );
 var d3 = require( 'd3' );
 var utils = require( '../utils' );
 var appState = require( '../app-state' );
+var bindListeners = require( './bind-listeners' );
 
 var margin = { top: 15, bottom: 15 };
 var height = 100 - margin.top - margin.bottom;
@@ -26,8 +28,6 @@ var xAxis = d3.svg.axis()
     .orient( 'bottom' );
 
 var initViz = function( color, dimension ) {
-
-  // debugger;
 
   // Set domains now that template is populated and we have data
   yScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
@@ -78,8 +78,8 @@ var initViz = function( color, dimension ) {
       .data( function( d ) { return [ d ]; } );
 
   bars.attr({
-        y: function ( d ) { return height - yScale( d.values ); },
-        height: function( d ) { return yScale( d.values ); },
+        y: function ( d ) { return height - yScale( d.values.count ); },
+        height: function( d ) { return yScale( d.values.count ); },
         width: xScale.rangeBand(),
         class: 'bar__rect'
       });
@@ -88,12 +88,26 @@ var initViz = function( color, dimension ) {
   barEnter.append( 'text' );
 
   barWrap.selectAll( 'text' )
-      .text( function( d ) { return d.values; } )
+      .text( function( d ) { return d.values.count; } )
       .attr({
         x: xScale.rangeBand() / 2,
-        y: function ( d ) { return height - yScale( d.values ) - 4; },
+        y: function ( d ) { return height - yScale( d.values.count ) - 4; },
         class: 'bar__label'
       });
+
+  // Brush
+  var brush = d3.svg.brush()
+      .x( xScale )
+      .clamp( true );
+
+  svg.append( 'g' )
+      .attr( 'class', 'brush' )
+      .call( brush )
+    .selectAll( 'rect' )
+      .attr( 'height', height + margin.top );
+
+  bindListeners.bindBrushListeners( brush, xScale );
+
 };
 
 var updateViz = function( color, dimension ) {
@@ -101,9 +115,6 @@ var updateViz = function( color, dimension ) {
   // Set domains now that template is populated and we have data
   yScale.domain( [ 0, appState.dimensionMaxima[ dimension ] ] );
   xScale.rangeRoundBands( [ 0, appState.vizWidth ], 0.33, 0 );
-
-  // Need to update axis, axis labels, bars and bar labels
-  // TK AXIS, AXIS LABELS
 
   // Update bar groups
   var barWrap = d3.selectAll( '#color__graph--' + dimension + '--' + color + ' .chart'  ).selectAll( 'g' )
@@ -128,8 +139,8 @@ var updateViz = function( color, dimension ) {
 
   bars.transition()
       .attr({
-        y: function ( d ) { return height - yScale( d.values ); },
-        height: function( d ) { return yScale( d.values ); },
+        y: function ( d ) { return height - yScale( d.values.count ); },
+        height: function( d ) { return yScale( d.values.count ); },
         width: xScale.rangeBand(),
         class: 'bar__rect'
       });
@@ -139,13 +150,27 @@ var updateViz = function( color, dimension ) {
 
   barWrap.selectAll( 'text' )
       .data( function( d ) { return [ d ]; } )
-      .text( function( d ) { return utils.formatCommas( d.values ); } )
+      .text( function( d ) { return utils.formatCommas( d.values.count ); } )
       .transition()
       .attr({
         x: xScale.rangeBand() / 2,
-        y: function ( d ) { return ( height - yScale( d.values ) - 4 ); },
+        y: function ( d ) { return ( height - yScale( d.values.count ) - 4 ); },
         class: 'bar__label'
       });
+
+  // Brush
+  var brush = d3.svg.brush()
+      .x( xScale )
+      .clamp( true );
+
+  d3.select( barWrap[0].parentNode.parentNode ).append( 'g' )
+      .attr( 'class', 'brush' )
+      .call( brush )
+    .selectAll( 'rect' )
+      .attr( 'height', height + margin.top );
+
+  bindListeners.bindBrushListeners( brush, xScale );
+
 };
 
 exports.initViz = initViz;

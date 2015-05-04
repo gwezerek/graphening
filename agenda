@@ -1,0 +1,25 @@
+BEFORE LAUNCH
+
+Add brushing to graphs as filter
+	// On brush, to get range
+		// Remove other brushes
+
+ICEBOX
+Stage JSON load from all sets to just the most recent set
+Remove duplicate cards
+
+Add timeline
+Add 0s and labels where rarity rollup = 0
+Refactor initViz for graphs
+Visually filter filter options based on already selected filters
+Switch from static JSON dump to API
+Add icons, release date and optGrouping by block to set options
+Add 0 card copy when nothing there
+Hide undefined labels if 0 are undefined
+Add smarter card filtering for images
+Add sort button to the card grid
+
+VISUAL
+Give the site a logo
+Restyle selectize inputs to match app
+Add favicon

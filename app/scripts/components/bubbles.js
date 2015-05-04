@@ -62,7 +62,7 @@ var initViz = function( color, dimension ) {
       .data( function( d ) { return [ d ]; } );
 
   bubbles.attr({
-        r: function( d ) { return rScale( d.values ); },
+        r: function( d ) { return rScale( d.values.count ); },
         class: 'bubble__circle'
       });
 
@@ -71,7 +71,7 @@ var initViz = function( color, dimension ) {
     .attr( 'class', 'bubble__label bubble__label--value' );
 
   bubbleWrap.selectAll( '.bubble__label--value' )
-      .text( function( d ) { return d.values; } )
+      .text( function( d ) { return d.values.count; } )
       .attr( 'y', 3 );
 
   // Update key labels
@@ -130,7 +130,7 @@ var updateViz = function( color, dimension ) {
 
   bubbles.transition()
       .attr({
-        r: function( d ) { return rScale( d.values ); },
+        r: function( d ) { return rScale( d.values.count ); },
         class: 'bubble__circle'
       });
 
@@ -140,7 +140,7 @@ var updateViz = function( color, dimension ) {
 
   bubbleWrap.selectAll( '.bubble__label--value' )
       .data( function( d ) { return [ d ]; } )
-      .text( function( d ) { return utils.formatCommas( d.values ); } )
+      .text( function( d ) { return utils.formatCommas( d.values.count ); } )
       .attr( 'y', 3 );
 
   // Update key labels

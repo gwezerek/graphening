@@ -7,6 +7,7 @@
 'use strict';
 
 var $ = require( 'jquery' );
+var d3 = require( 'd3' );
 var _ = require( 'underscore' );
 var appState = require( '../app-state' );
 var filterCards = require( './filter-cards' );
@@ -26,8 +27,8 @@ function bindFilterListeners() {
 			appState.filters[ i ].values = el.selectize.getValue();
 		});
 
-		filterCards();
-		updateViews();
+		filterCards.filterCards();
+		updateViews.updateViews();
 	});
 }
 
@@ -54,6 +55,7 @@ function bindCardsListenerGrid() {
 		$( 'html' ).toggleClass( 'is--frozen' );
 		cards.addImages();
 	});
+
 	$( '.site__header__stickymod' ).on( 'click', '.cards__btn--cardview--close', function() {
 		$( '.site__header__stickymod' ).toggleClass( 'stickymod--is--open' );
 		$( 'html' ).toggleClass( 'is--frozen' );
@@ -66,4 +68,27 @@ function bindCardsListenerAdd() {
 	});
 }
 
-module.exports = init;
+function bindBrushListeners( brush, xScale ) {
+	brush.on( 'brushend', function() {
+		var parentEl = this.parentElement;
+		var barData = d3.select( parentEl ).selectAll( '.bar__wrap' ).data();
+		var extent = brush.extent();
+		var barWidth = xScale.rangeBand();
+		var selectedIds = [];
+
+		console.log( barData, brush.extent() );
+		
+		_.map( barData, function( bar ) {
+			var barStart = xScale( bar.key );
+			if ( barStart > ( extent[0] - barWidth ) && barStart < extent[1] ) {
+				selectedIds.push.apply( selectedIds, bar.values.ids );
+			}
+		});
+
+		filterCards.getCardsById( selectedIds );
+		cards.update();
+	});
+}
+
+exports.init = init;
+exports.bindBrushListeners = bindBrushListeners;
