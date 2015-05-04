@@ -38,6 +38,7 @@ function filterCards() {
 
 	filteredCards = sortCardsByRarity( filteredCards );
 	
+	appState.isBrushed = false;
 	appState.filteredCards = filteredCards;
 	appState.currentCards = filteredCards;
 }
@@ -47,6 +48,7 @@ function getCardsById( ids ) {
 		return ids.indexOf( card.multiverseid ) !== -1;
 	});
 
+	appState.isBrushed = true;
 	appState.currentCards = sortCardsByRarity( currentCards );
 }
 

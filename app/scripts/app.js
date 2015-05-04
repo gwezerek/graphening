@@ -43,19 +43,20 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 
 'use strict';
 
-var allCards = [];
-var currentCards = [];
-var filteredCards = [];
-var currentRollups = [];
-var currentSlice = 0;
-var dimensionMaxima = {};
-var domains = {};
-var vizWidth = 0;
-var stickyNavTop = 0;
-var colors = [ 'white', 'blue' , 'black', 'red', 'green', 'multicolor', 'colorless' ];
-var dimensions = [ 'cmc', 'power', 'toughness', 'rarity', 'types', 'subtypes' ];
-var filterEls = [];
-var filters = [
+exports.allCards = [];
+exports.currentCards = [];
+exports.filteredCards = [];
+exports.isBrushed = false;
+exports.currentRollups = [];
+exports.currentSlice = 0;
+exports.dimensionMaxima = {};
+exports.domains = {};
+exports.vizWidth = 0;
+exports.stickyNavTop = 0;
+exports.colors = [ 'white', 'blue' , 'black', 'red', 'green', 'multicolor', 'colorless' ];
+exports.dimensions = [ 'cmc', 'power', 'toughness', 'rarity', 'types', 'subtypes' ];
+exports.filterEls = [];
+exports.filters = [
 	{
 		'dimension': 'set',
 		'values': [ 'Dragons of Tarkir' ]
@@ -70,21 +71,6 @@ var filters = [
 		'values': []
 	}
 ];
-
-
-exports.allCards = allCards;
-exports.currentCards = currentCards;
-exports.filteredCards = filteredCards;
-exports.currentRollups = currentRollups;
-exports.currentSlice = currentSlice;
-exports.dimensionMaxima = dimensionMaxima;
-exports.domains = domains;
-exports.vizWidth = vizWidth;
-exports.stickyNavTop = stickyNavTop;
-exports.colors = colors;
-exports.dimensions = dimensions;
-exports.filterEls = filterEls;
-exports.filters = filters;
 
 },{}],3:[function(require,module,exports){
 /**
@@ -338,17 +324,20 @@ function bindCardsListenerAdd() {
 
 function bindBrushListeners( brush, xScale ) {
 	brush.on( 'brushend', function() {
+		// If the user clicks instead of brushing
+		if ( brush.empty() ) {
+			handleEmptyBrush();
+			return;
+		}
+
 		var parentEl = this.parentElement;
 		var barData = d3.select( parentEl ).selectAll( '.bar__wrap' ).data();
 		var extent = brush.extent();
-		var barWidth = xScale.rangeBand();
 		var selectedIds = [];
-
-		console.log( barData, brush.extent() );
 		
 		_.map( barData, function( bar ) {
 			var barStart = xScale( bar.key );
-			if ( barStart > ( extent[0] - barWidth ) && barStart < extent[1] ) {
+			if ( barStart > ( extent[0] - xScale.rangeBand() ) && barStart < extent[1] ) {
 				selectedIds.push.apply( selectedIds, bar.values.ids );
 			}
 		});
@@ -356,6 +345,15 @@ function bindBrushListeners( brush, xScale ) {
 		filterCards.getCardsById( selectedIds );
 		cards.update();
 	});
+}
+
+function handleEmptyBrush() {
+	if ( appState.isBrushed ) {
+		// reset the view to filtered set
+		appState.isBrushed = false;
+		appState.currentCards = appState.filteredCards;
+		updateViews.updateViews();
+	}
 }
 
 exports.init = init;
@@ -897,6 +895,7 @@ function filterCards() {
 
 	filteredCards = sortCardsByRarity( filteredCards );
 	
+	appState.isBrushed = false;
 	appState.filteredCards = filteredCards;
 	appState.currentCards = filteredCards;
 }
@@ -906,6 +905,7 @@ function getCardsById( ids ) {
 		return ids.indexOf( card.multiverseid ) !== -1;
 	});
 
+	appState.isBrushed = true;
 	appState.currentCards = sortCardsByRarity( currentCards );
 }
 

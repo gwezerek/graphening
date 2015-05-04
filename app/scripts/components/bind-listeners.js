@@ -70,17 +70,20 @@ function bindCardsListenerAdd() {
 
 function bindBrushListeners( brush, xScale ) {
 	brush.on( 'brushend', function() {
+		// If the user clicks instead of brushing
+		if ( brush.empty() ) {
+			handleEmptyBrush();
+			return;
+		}
+
 		var parentEl = this.parentElement;
 		var barData = d3.select( parentEl ).selectAll( '.bar__wrap' ).data();
 		var extent = brush.extent();
-		var barWidth = xScale.rangeBand();
 		var selectedIds = [];
-
-		console.log( barData, brush.extent() );
 		
 		_.map( barData, function( bar ) {
 			var barStart = xScale( bar.key );
-			if ( barStart > ( extent[0] - barWidth ) && barStart < extent[1] ) {
+			if ( barStart > ( extent[0] - xScale.rangeBand() ) && barStart < extent[1] ) {
 				selectedIds.push.apply( selectedIds, bar.values.ids );
 			}
 		});
@@ -88,6 +91,15 @@ function bindBrushListeners( brush, xScale ) {
 		filterCards.getCardsById( selectedIds );
 		cards.update();
 	});
+}
+
+function handleEmptyBrush() {
+	if ( appState.isBrushed ) {
+		// reset the view to filtered set
+		appState.isBrushed = false;
+		appState.currentCards = appState.filteredCards;
+		updateViews.updateViews();
+	}
 }
 
 exports.init = init;
