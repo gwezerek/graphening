@@ -10,12 +10,12 @@ var appState = require( '../app-state' );
 var _ = require( 'underscore' );
 
 var rank = {
-	"Mythic Rare" : 2,
-	"Special" : 1,
-	"Rare" :3,
-	"Uncommon" :4,
-	"Common" :5,
-	"Basic Land" :6
+	'Mythic Rare' : 2,
+	'Special' : 1,
+	'Rare' :3,
+	'Uncommon' :4,
+	'Common' :5,
+	'Basic Land' :6
 };
 
 function filterCards() {

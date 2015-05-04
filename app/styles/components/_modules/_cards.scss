@@ -64,6 +64,7 @@
 	text-align: left;
 	flex: 0 0 14.285714286%;
 	position: relative;
+	min-height: 15rem;
 }
 
 .cards__img {
@@ -89,9 +90,10 @@
 	border: 1px solid $colorBlueGrey500;
 	padding: $baseSpace/2;
 	border-radius: 0.4rem;
-	min-height: 15rem;
 	position: absolute;
 	bottom: 0;
+	left: $baseSpace;
+	right: 0;
 	top: $baseSpace;
 }
 

@@ -14,7 +14,8 @@ var appState = require( '../app-state' );
 var ranges = {
 	'set': [],
 	'types': [],
-	'subtypes': []
+	'subtypes': [],
+	'artist': []
 };
 
 var init = function() {
@@ -24,7 +25,6 @@ var init = function() {
 var populate = function() {
 	getRanges();
 	compileOptions();
-	setDefault();
 };
 
 function compileOptions() {
@@ -58,10 +58,6 @@ function getRanges() {
 			ranges[ dimension ].sort();
 		}
 	});
-}
-
-function setDefault() {
-
 }
 
 exports.init = init;

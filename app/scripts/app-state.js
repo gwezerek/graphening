@@ -32,5 +32,8 @@ exports.filters = [
 	}, {
 		'dimension': 'subtypes',
 		'values': []
+	}, {
+		'dimension': 'artist',
+		'values': []
 	}
 ];

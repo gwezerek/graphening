@@ -97,14 +97,16 @@ var initViz = function( color, dimension ) {
 
   // Brush
   var brush = d3.svg.brush()
-      .x( xScale )
-      .clamp( true );
+      .x( xScale );
 
-  svg.append( 'g' )
+  var brushGroup = svg.append( 'g' )
       .attr( 'class', 'brush' )
-      .call( brush )
-    .selectAll( 'rect' )
+      .call( brush );
+    
+  brushGroup.selectAll( 'rect' )
       .attr( 'height', height + margin.top );
+
+  brushGroup.datum( { brush: brush } );
 
   bindListeners.bindBrushListeners( brush, xScale );
 
@@ -160,18 +162,28 @@ var updateViz = function( color, dimension ) {
 
   // Brush
   var brush = d3.svg.brush()
-      .x( xScale )
-      .clamp( true );
+      .x( xScale );
 
-  d3.select( barWrap[0].parentNode.parentNode ).append( 'g' )
+  var brushGroup = d3.select( barWrap[0].parentNode.parentNode ).append( 'g' )
       .attr( 'class', 'brush' )
-      .call( brush )
-    .selectAll( 'rect' )
+      .call( brush );
+
+  brushGroup.selectAll( 'rect' )
       .attr( 'height', height + margin.top );
+
+  brushGroup.datum( { brush: brush } );
 
   bindListeners.bindBrushListeners( brush, xScale );
 
 };
 
+// Totally jacked from http://stackoverflow.com/questions/18661359/d3-brush-multiple-brushes
+function clearBrushes( brush ) {
+  d3.selectAll( '.brush' ) 
+      .filter( function( d ) { return d.brush != brush; } )
+      .each( function( d ) { d3.select( this ).call( d.brush.clear() ); } );
+}
+
 exports.initViz = initViz;
 exports.updateViz = updateViz;
+exports.clearBrushes = clearBrushes;

@@ -13,6 +13,7 @@ var appState = require( '../app-state' );
 var filterCards = require( './filter-cards' );
 var updateViews = require( './update-views' );
 var cards = require( './cards' );
+var bars = require( './bars' );
 
 function init() {
 	bindFilterListeners();
@@ -70,6 +71,9 @@ function bindCardsListenerAdd() {
 
 function bindBrushListeners( brush, xScale ) {
 	brush.on( 'brushend', function() {
+		// Clear all other brushes
+		bars.clearBrushes( brush );
+
 		// If the user clicks instead of brushing
 		if ( brush.empty() ) {
 			handleEmptyBrush();

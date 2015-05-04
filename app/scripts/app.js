@@ -69,6 +69,9 @@ exports.filters = [
 	}, {
 		'dimension': 'subtypes',
 		'values': []
+	}, {
+		'dimension': 'artist',
+		'values': []
 	}
 ];
 
@@ -172,14 +175,16 @@ var initViz = function( color, dimension ) {
 
   // Brush
   var brush = d3.svg.brush()
-      .x( xScale )
-      .clamp( true );
+      .x( xScale );
 
-  svg.append( 'g' )
+  var brushGroup = svg.append( 'g' )
       .attr( 'class', 'brush' )
-      .call( brush )
-    .selectAll( 'rect' )
+      .call( brush );
+    
+  brushGroup.selectAll( 'rect' )
       .attr( 'height', height + margin.top );
+
+  brushGroup.datum( { brush: brush } );
 
   bindListeners.bindBrushListeners( brush, xScale );
 
@@ -235,21 +240,31 @@ var updateViz = function( color, dimension ) {
 
   // Brush
   var brush = d3.svg.brush()
-      .x( xScale )
-      .clamp( true );
+      .x( xScale );
 
-  d3.select( barWrap[0].parentNode.parentNode ).append( 'g' )
+  var brushGroup = d3.select( barWrap[0].parentNode.parentNode ).append( 'g' )
       .attr( 'class', 'brush' )
-      .call( brush )
-    .selectAll( 'rect' )
+      .call( brush );
+
+  brushGroup.selectAll( 'rect' )
       .attr( 'height', height + margin.top );
+
+  brushGroup.datum( { brush: brush } );
 
   bindListeners.bindBrushListeners( brush, xScale );
 
 };
 
+// Totally jacked from http://stackoverflow.com/questions/18661359/d3-brush-multiple-brushes
+function clearBrushes( brush ) {
+  d3.selectAll( '.brush' ) 
+      .filter( function( d ) { return d.brush != brush; } )
+      .each( function( d ) { d3.select( this ).call( d.brush.clear() ); } );
+}
+
 exports.initViz = initViz;
 exports.updateViz = updateViz;
+exports.clearBrushes = clearBrushes;
 
 },{"../app-state":2,"../utils":19,"./bind-listeners":4,"d3":20,"jquery":29}],4:[function(require,module,exports){
 /**
@@ -267,6 +282,7 @@ var appState = require( '../app-state' );
 var filterCards = require( './filter-cards' );
 var updateViews = require( './update-views' );
 var cards = require( './cards' );
+var bars = require( './bars' );
 
 function init() {
 	bindFilterListeners();
@@ -324,6 +340,9 @@ function bindCardsListenerAdd() {
 
 function bindBrushListeners( brush, xScale ) {
 	brush.on( 'brushend', function() {
+		// Clear all other brushes
+		bars.clearBrushes( brush );
+
 		// If the user clicks instead of brushing
 		if ( brush.empty() ) {
 			handleEmptyBrush();
@@ -359,7 +378,7 @@ function handleEmptyBrush() {
 exports.init = init;
 exports.bindBrushListeners = bindBrushListeners;
 
-},{"../app-state":2,"./cards":6,"./filter-cards":9,"./update-views":12,"d3":20,"jquery":29,"underscore":33}],5:[function(require,module,exports){
+},{"../app-state":2,"./bars":3,"./cards":6,"./filter-cards":9,"./update-views":12,"d3":20,"jquery":29,"underscore":33}],5:[function(require,module,exports){
 /**
 *
 * Colors
@@ -528,7 +547,6 @@ exports.updateViz = updateViz;
 'use strict';
 
 var $ = require( 'jquery' );
-var _ = require( 'underscore' );
 var utils = require( '../utils' );
 var appState = require( '../app-state' );
 
@@ -554,11 +572,11 @@ function checkAddBtnVisibility() {
 	if ( appState.currentCards.length <= appState.currentSlice ) {
 		$( '.cards__btn--add' ).addClass( 'cards__btn--add--finished' );
 	} else {
-		$( '.cards__btn--add' ).removeClass( 'cards__btn--add--finished' )
+		$( '.cards__btn--add' ).removeClass( 'cards__btn--add--finished' );
 	}
 }
 
-function addImages( brushed ) {
+function addImages() {
 	var cardSet = appState.currentCards;
 	var newCards = cardSet.slice( appState.currentSlice, appState.currentSlice + 7 );
 	$( '.cards__grid' ).append( cards( { cards: newCards } ) );
@@ -571,7 +589,7 @@ exports.update = update;
 exports.updateText = updateText;
 exports.addImages = addImages;
 
-},{"../app-state":2,"../templates/components/cards.hbs":13,"../utils":19,"jquery":29,"underscore":33}],7:[function(require,module,exports){
+},{"../app-state":2,"../templates/components/cards.hbs":13,"../utils":19,"jquery":29}],7:[function(require,module,exports){
 /**
 *
 * Colors
@@ -867,12 +885,12 @@ var appState = require( '../app-state' );
 var _ = require( 'underscore' );
 
 var rank = {
-	"Mythic Rare" : 2,
-	"Special" : 1,
-	"Rare" :3,
-	"Uncommon" :4,
-	"Common" :5,
-	"Basic Land" :6
+	'Mythic Rare' : 2,
+	'Special' : 1,
+	'Rare' :3,
+	'Uncommon' :4,
+	'Common' :5,
+	'Basic Land' :6
 };
 
 function filterCards() {
@@ -966,7 +984,8 @@ var appState = require( '../app-state' );
 var ranges = {
 	'set': [],
 	'types': [],
-	'subtypes': []
+	'subtypes': [],
+	'artist': []
 };
 
 var init = function() {
@@ -976,7 +995,6 @@ var init = function() {
 var populate = function() {
 	getRanges();
 	compileOptions();
-	setDefault();
 };
 
 function compileOptions() {
@@ -1012,10 +1030,6 @@ function getRanges() {
 	});
 }
 
-function setDefault() {
-
-}
-
 exports.init = init;
 exports.populate = populate;
 
@@ -1030,17 +1044,19 @@ exports.populate = populate;
 
 var colors = require( './colors' );
 var cards = require( './cards' );
+var bars = require( './bars' );
 
 exports.updateViews = function( init ) {
 	colors.prepData();
 	colors.updateViews( init );
 	cards.update();
+	bars.clearBrushes();
 };
 
 // Unsure why the below doesn't work, using exports instead...
 // module.exports = updateViews;
 
-},{"./cards":6,"./colors":7}],13:[function(require,module,exports){
+},{"./bars":3,"./cards":6,"./colors":7}],13:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
@@ -1052,9 +1068,19 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 
   return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.number : depth0),{"name":"if","hash":{},"fn":this.program(3, data, 0),"inverse":this.program(5, data, 0),"data":data})) != null ? stack1 : "");
 },"3":function(depth0,helpers,partials,data) {
-    return "    <li class=\"cards__item\">\n      <a href=\"\" class=\"card__link\">\n        <img class=\"cards__img\" src=\"/images/dummy/card--blue-2.png\" alt=\""
-    + this.escapeExpression(this.lambda((depth0 != null ? depth0.name : depth0), depth0))
-    + "\">\n      </a>\n    </li>\n";
+    var alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "    <li class=\"cards__item\">\n     <a href=\"http://magiccards.info/"
+    + alias2(alias1((depth0 != null ? depth0.magicCardsInfoCode : depth0), depth0))
+    + "/en/"
+    + alias2(alias1((depth0 != null ? depth0.number : depth0), depth0))
+    + ".html\" class=\"card__link\">\n       <img class=\"cards__img cards__img--info\" src=\"http://magiccards.info/scans/en/"
+    + alias2(alias1((depth0 != null ? depth0.magicCardsInfoCode : depth0), depth0))
+    + "/"
+    + alias2(alias1((depth0 != null ? depth0.number : depth0), depth0))
+    + ".jpg\" alt=\""
+    + alias2(alias1((depth0 != null ? depth0.name : depth0), depth0))
+    + "\">\n     </a>\n    </li>\n";
 },"5":function(depth0,helpers,partials,data) {
     var alias1=this.lambda, alias2=this.escapeExpression;
 
@@ -1194,7 +1220,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<form class=\"filter\">\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--set\" multiple=\"multiple\" placeholder=\"Filter by sets...\">\n      <option value=\"Dragons of Tarkir\" selected>Dragons of Tarkir</option>\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--rarity\" multiple=\"multiple\" placeholder=\"Filter by rarity...\">\n      <option value=\"Common\">Common</option>\n      <option value=\"Uncommon\">Uncommon</option>\n      <option value=\"Rare\">Rare</option>\n      <option value=\"Mythic Rare\">Mythic Rare</option>\n      <option value=\"Special\">Special</option>\n      <option value=\"Basic Land\">Basic Land</option>\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--types\" multiple=\"multiple\" placeholder=\"Filter by type...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--subtypes\" multiple=\"multiple\" placeholder=\"Filter by subtype...\">\n    </select>\n  </fieldset>\n<!--           <fieldset class=\"filter__fieldset\">\n    <label class=\"filter__label\"><input class=\"input__radio\" type=\"radio\" name=\"reprints\" value=\"exclude\" checked>Exclude reprints</label>\n    <label class=\"filter__label\"><input class=\"input__radio\" type=\"radio\" name=\"reprints\" value=\"include\">Include reprints</label>\n  </fieldset> -->\n</form>";
+    return "<form class=\"filter\">\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--set\" multiple=\"multiple\" placeholder=\"Filter by sets...\">\n      <option value=\"Dragons of Tarkir\" selected>Dragons of Tarkir</option>\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--rarity\" multiple=\"multiple\" placeholder=\"Filter by rarity...\">\n      <option value=\"Common\">Common</option>\n      <option value=\"Uncommon\">Uncommon</option>\n      <option value=\"Rare\">Rare</option>\n      <option value=\"Mythic Rare\">Mythic Rare</option>\n      <option value=\"Special\">Special</option>\n      <option value=\"Basic Land\">Basic Land</option>\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--types\" multiple=\"multiple\" placeholder=\"Filter by type...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--subtypes\" multiple=\"multiple\" placeholder=\"Filter by subtype...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--artist\" multiple=\"multiple\" placeholder=\"Filter by artist...\">\n    </select>\n  </fieldset>\n<!--           <fieldset class=\"filter__fieldset\">\n    <label class=\"filter__label\"><input class=\"input__radio\" type=\"radio\" name=\"reprints\" value=\"exclude\" checked>Exclude reprints</label>\n    <label class=\"filter__label\"><input class=\"input__radio\" type=\"radio\" name=\"reprints\" value=\"include\">Include reprints</label>\n  </fieldset> -->\n</form>";
 },"useData":true});
 
 },{"hbsfy/runtime":28}],16:[function(require,module,exports){
