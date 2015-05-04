@@ -175,7 +175,6 @@ function getDimensionDomains() {
   });
 }
 
-
 function updateUndefinedTotals( color, dimension ) {
   var undefinedEl = document.querySelector( '#card__undefined--' + dimension + '--' + color );
 

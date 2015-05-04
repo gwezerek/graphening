@@ -57,9 +57,10 @@
 
 .cards__btn--cardview {
 	padding: $baseSpace $baseSpace*1.5 0 0;
-	&:hover ~ .cards {
-		height: 7.5vw;
-	}
+}
+
+.cards__btn--cardview--open:hover ~ .cards {
+	height: 7.5vw;
 }
 
 .cards__btn--cardview--close {
