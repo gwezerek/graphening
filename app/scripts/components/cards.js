@@ -40,7 +40,6 @@ function addImages() {
 	var cardSet = appState.currentCards;
 	var newCards = cardSet.slice( appState.currentSlice, appState.currentSlice + 7 );
 	$( '.cards__grid' ).append( cards( { cards: newCards } ) );
-	console.log(newCards);
 	appState.currentSlice += newCards.length;
 	checkAddBtnVisibility();
 }
