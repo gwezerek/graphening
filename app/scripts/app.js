@@ -580,6 +580,7 @@ function addImages() {
 	var cardSet = appState.currentCards;
 	var newCards = cardSet.slice( appState.currentSlice, appState.currentSlice + 7 );
 	$( '.cards__grid' ).append( cards( { cards: newCards } ) );
+	console.log(newCards);
 	appState.currentSlice += newCards.length;
 	checkAddBtnVisibility();
 }
@@ -885,11 +886,11 @@ var appState = require( '../app-state' );
 var _ = require( 'underscore' );
 
 var rank = {
-	'Mythic Rare' : 2,
-	'Special' : 1,
-	'Rare' :3,
-	'Uncommon' :4,
-	'Common' :5,
+	'Mythic Rare' : 1,
+	'Rare' :2,
+	'Uncommon' :3,
+	'Common' :4,
+	'Special' : 5,
 	'Basic Land' :6
 };
 
@@ -1062,26 +1063,48 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.magicCardsInfoCode : depth0),{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.program(7, data, 0),"data":data})) != null ? stack1 : "");
+  return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.magicCardsInfoCode : depth0),{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.program(10, data, 0),"data":data})) != null ? stack1 : "");
 },"2":function(depth0,helpers,partials,data) {
     var stack1;
 
   return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.number : depth0),{"name":"if","hash":{},"fn":this.program(3, data, 0),"inverse":this.program(5, data, 0),"data":data})) != null ? stack1 : "");
 },"3":function(depth0,helpers,partials,data) {
-    return "    <li class=\"cards__item\">\n      <a href=\"\" class=\"card__link\">\n        <img class=\"cards__img\" src=\"/images/dummy/card--blue-2.png\" alt=\""
-    + this.escapeExpression(this.lambda((depth0 != null ? depth0.name : depth0), depth0))
-    + "\">\n      </a>\n    </li>\n";
-},"5":function(depth0,helpers,partials,data) {
     var alias1=this.lambda, alias2=this.escapeExpression;
 
-  return "      <li class=\"cards__item\">\n        <a href=\"http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid="
+  return "    <li class=\"cards__item\">\n     <a href=\"http://magiccards.info/"
+    + alias2(alias1((depth0 != null ? depth0.magicCardsInfoCode : depth0), depth0))
+    + "/en/"
+    + alias2(alias1((depth0 != null ? depth0.number : depth0), depth0))
+    + ".html\" class=\"card__link\">\n       <img class=\"cards__img cards__img--info\" src=\"http://magiccards.info/scans/en/"
+    + alias2(alias1((depth0 != null ? depth0.magicCardsInfoCode : depth0), depth0))
+    + "/"
+    + alias2(alias1((depth0 != null ? depth0.number : depth0), depth0))
+    + ".jpg\" alt=\""
+    + alias2(alias1((depth0 != null ? depth0.name : depth0), depth0))
+    + "\">\n     </a>\n    </li>\n";
+},"5":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.multiverseid : depth0),{"name":"if","hash":{},"fn":this.program(6, data, 0),"inverse":this.program(8, data, 0),"data":data})) != null ? stack1 : "");
+},"6":function(depth0,helpers,partials,data) {
+    var alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "        <li class=\"cards__item\">\n          <a href=\"http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid="
     + alias2(alias1((depth0 != null ? depth0.multiverseid : depth0), depth0))
-    + "\" class=\"card__link\">\n          <img class=\"cards__img cards__img--gatherer\" src=\"http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid="
+    + "\" class=\"card__link\">\n            <img class=\"cards__img cards__img--gatherer\" src=\"http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid="
     + alias2(alias1((depth0 != null ? depth0.multiverseid : depth0), depth0))
     + "&type=card\" alt=\""
     + alias2(alias1((depth0 != null ? depth0.name : depth0), depth0))
-    + "\">\n        </a>\n      </li>\n";
-},"7":function(depth0,helpers,partials,data) {
+    + "\">\n          </a>\n        </li>\n";
+},"8":function(depth0,helpers,partials,data) {
+    var alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "        <li class=\"cards__item\">\n          <div class=\"cards--proxy\">\n            <p class=\"cards__item__name--proxy\">"
+    + alias2(alias1((depth0 != null ? depth0.name : depth0), depth0))
+    + "</p>\n            <h4 class=\"cards__item__label--proxy\">"
+    + alias2(alias1((depth0 != null ? depth0.set : depth0), depth0))
+    + "</h4>\n          </div>\n        </li>\n";
+},"10":function(depth0,helpers,partials,data) {
     var alias1=this.lambda, alias2=this.escapeExpression;
 
   return "    <li class=\"cards__item\">\n      <div class=\"cards--proxy\">\n        <p class=\"cards__item__name--proxy\">"

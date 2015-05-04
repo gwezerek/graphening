@@ -10,11 +10,11 @@ var appState = require( '../app-state' );
 var _ = require( 'underscore' );
 
 var rank = {
-	'Mythic Rare' : 2,
-	'Special' : 1,
-	'Rare' :3,
-	'Uncommon' :4,
-	'Common' :5,
+	'Mythic Rare' : 1,
+	'Rare' :2,
+	'Uncommon' :3,
+	'Common' :4,
+	'Special' : 5,
 	'Basic Land' :6
 };
 
