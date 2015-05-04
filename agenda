@@ -2,7 +2,7 @@ BEFORE LAUNCH
 
 ICEBOX
 Stage JSON load from all sets to just the most recent set
-Remove duplicate cards
+Remove duplicate card filter
 
 Add timeline
 Add 0s and labels where rarity rollup = 0
@@ -18,6 +18,5 @@ Add sort button to the card grid
 VISUAL
 Give the site a logo
 Snap brush to bars
-Hide load more button when no more cards remain
 Restyle selectize inputs to match app
 Add favicon

@@ -1068,19 +1068,9 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 
   return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.number : depth0),{"name":"if","hash":{},"fn":this.program(3, data, 0),"inverse":this.program(5, data, 0),"data":data})) != null ? stack1 : "");
 },"3":function(depth0,helpers,partials,data) {
-    var alias1=this.lambda, alias2=this.escapeExpression;
-
-  return "    <li class=\"cards__item\">\n     <a href=\"http://magiccards.info/"
-    + alias2(alias1((depth0 != null ? depth0.magicCardsInfoCode : depth0), depth0))
-    + "/en/"
-    + alias2(alias1((depth0 != null ? depth0.number : depth0), depth0))
-    + ".html\" class=\"card__link\">\n       <img class=\"cards__img cards__img--info\" src=\"http://magiccards.info/scans/en/"
-    + alias2(alias1((depth0 != null ? depth0.magicCardsInfoCode : depth0), depth0))
-    + "/"
-    + alias2(alias1((depth0 != null ? depth0.number : depth0), depth0))
-    + ".jpg\" alt=\""
-    + alias2(alias1((depth0 != null ? depth0.name : depth0), depth0))
-    + "\">\n     </a>\n    </li>\n";
+    return "    <li class=\"cards__item\">\n      <a href=\"\" class=\"card__link\">\n        <img class=\"cards__img\" src=\"/images/dummy/card--blue-2.png\" alt=\""
+    + this.escapeExpression(this.lambda((depth0 != null ? depth0.name : depth0), depth0))
+    + "\">\n      </a>\n    </li>\n";
 },"5":function(depth0,helpers,partials,data) {
     var alias1=this.lambda, alias2=this.escapeExpression;
 
