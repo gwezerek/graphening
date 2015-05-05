@@ -15,7 +15,7 @@ var updateViews = require( './components/update-views' );
 var selectized = require( './components/selectized' );
 var bindListeners = require( './components/bind-listeners' );
 
-d3.json( '../data/AllSets.json', function( error, data ) {
+d3.json( './data/AllSets.json', function( error, data ) {
 
 	// Populate filters
 	compilePage( data );
@@ -1120,104 +1120,96 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
-    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "      <th class=\"color__column__header\">\n"
-    + ((stack1 = helpers['if'].call(depth0,depth0,{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "        <h3 class=\"color__head\">"
+  return "      <th class=\"color__column__header\">\n        <h3 class=\"color__head\">"
     + alias3(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
     + "</h3>\n        <h4 class=\"color__subhead\"><span id=\"card__total--"
     + alias3(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
     + "\">TK</span> cards</h4>\n      </th>\n";
-},"2":function(depth0,helpers,partials,data) {
-    var helper;
-
-  return "          <img class=\"color__column__icon\" src=\"/images/icons/mana_"
-    + this.escapeExpression(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
-    + ".svg\">\n";
-},"4":function(depth0,helpers,partials,data) {
+},"3":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
   return "        <td class=\"color__graph color__graph--cmc\">\n          <div class=\"color__graph__wrap\">\n            <header class=\"color__graph__header\">\n              <h4 class=\"color__graph__head color__graph__name--cmc\">"
-    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "</h4>\n            </header>\n            <div id=\"color__graph--cmc--"
     + alias3(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
     + "\"></div>\n            <aside class=\"color__graph__aside\">\n              <h5 class=\"color__graph__subhead color__graph__subhead--cmc\">Undefined for <span id=\"card__undefined--cmc--"
     + alias3(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
     + "\">0</span> cards</h5>\n            </aside>\n          </div>\n        </td>\n";
-},"5":function(depth0,helpers,partials,data) {
+},"4":function(depth0,helpers,partials,data) {
     return "Mana cost";
-},"7":function(depth0,helpers,partials,data) {
+},"6":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
   return "        <td class=\"color__graph color__graph--power\">\n          <div class=\"color__graph__wrap\">\n            <header class=\"color__graph__header\">\n              <h4 class=\"color__graph__head color__graph__name--power\">"
-    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(8, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(7, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "</h4>\n            </header>\n            <div id=\"color__graph--power--"
     + alias3(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
     + "\"></div>\n            <aside class=\"color__graph__aside\">\n              <h5 class=\"color__graph__subhead color__graph__subhead--power\">Undefined for <span id=\"card__undefined--power--"
     + alias3(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
     + "\">0</span> cards</h5>\n            </aside>\n          </div>\n        </td>\n";
-},"8":function(depth0,helpers,partials,data) {
+},"7":function(depth0,helpers,partials,data) {
     return "Power";
-},"10":function(depth0,helpers,partials,data) {
+},"9":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
   return "        <td class=\"color__graph color__graph--toughness\">\n          <div class=\"color__graph__wrap\">\n            <header class=\"color__graph__header\">\n              <h4 class=\"color__graph__head color__graph__name--toughness\">"
-    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(11, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(10, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "</h4>\n            </header>\n            <div id=\"color__graph--toughness--"
     + alias3(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
     + "\"></div>\n            <aside class=\"color__graph__aside\">\n              <h5 class=\"color__graph__subhead color__graph__subhead--toughness\">Undefined for <span id=\"card__undefined--toughness--"
     + alias3(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
     + "\">0</span> cards</h5>\n            </aside>\n          </div>\n        </td>\n";
-},"11":function(depth0,helpers,partials,data) {
+},"10":function(depth0,helpers,partials,data) {
     return "Toughness";
-},"13":function(depth0,helpers,partials,data) {
+},"12":function(depth0,helpers,partials,data) {
     var stack1, helper;
 
   return "        <td class=\"color__graph color__graph--rarity\">\n          <div class=\"color__graph__wrap\">\n            <header class=\"color__graph__header\">\n              <h4 class=\"color__graph__head color__graph__name--rarity\">"
-    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(14, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(13, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "</h4>\n            </header>\n            <div id=\"color__graph--rarity--"
     + this.escapeExpression(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
     + "\"></div>\n          </div>\n        </td>\n";
-},"14":function(depth0,helpers,partials,data) {
+},"13":function(depth0,helpers,partials,data) {
     return "Rarity";
-},"16":function(depth0,helpers,partials,data) {
+},"15":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
   return "        <td class=\"color__graph color__graph--set\" id=\"color__graph--set--"
     + alias3(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
     + "\">\n          <div class=\"color__graph__wrap\">\n            <header class=\"color__graph__header\">\n              <h4 class=\"color__graph__head color__graph__name--set\">"
-    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(17, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(16, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "</h4>\n            </header>\n            <ol class=\"color__graph__list\" id=\"color__graph__ol--set--"
     + alias3(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
     + "\"></ol>\n          </div>\n        </td>\n";
-},"17":function(depth0,helpers,partials,data) {
+},"16":function(depth0,helpers,partials,data) {
     return "Set";
-},"19":function(depth0,helpers,partials,data) {
+},"18":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
   return "        <td class=\"color__graph color__graph--types\" id=\"color__graph--types--"
     + alias3(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
     + "\">\n          <div class=\"color__graph__wrap\">\n            <header class=\"color__graph__header\">\n              <h4 class=\"color__graph__head color__graph__name--types\">"
-    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(20, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(19, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "</h4>\n            </header>\n            <ol class=\"color__graph__list\" id=\"color__graph__ol--types--"
     + alias3(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
     + "\"></ol>\n          </div>\n        </td>\n";
-},"20":function(depth0,helpers,partials,data) {
+},"19":function(depth0,helpers,partials,data) {
     return "Types";
-},"22":function(depth0,helpers,partials,data) {
+},"21":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
   return "        <td class=\"color__graph color__graph--subtypes\" id=\"color__graph--subtypes--"
     + alias3(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
     + "\">\n          <div class=\"color__graph__wrap\">\n            <header class=\"color__graph__header\">\n              <h4 class=\"color__graph__head color__graph__name--subtypes\">"
-    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(23, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(data && data.first),{"name":"if","hash":{},"fn":this.program(22, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "</h4>\n            </header>\n            <ol class=\"color__graph__list\" id=\"color__graph__ol--subtypes--"
     + alias3(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
     + "\"></ol>\n          </div>\n          <aside class=\"color__graph__aside\">\n            <h5 class=\"color__graph__subhead color__graph__subhead--subtypes\">Undefined for <span id=\"card__undefined--subtypes--"
     + alias3(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"key","hash":{},"data":data}) : helper)))
     + "\">0</span> cards</h5>\n          </aside>\n        </td>\n";
-},"23":function(depth0,helpers,partials,data) {
+},"22":function(depth0,helpers,partials,data) {
     return "Subtypes";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
@@ -1225,19 +1217,19 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   return "<table class=\"color__table\">\n  <thead>\n    <tr class=\"color__table__row color__table__row--header\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </tr>\n  </thead>\n  <tbody>\n    <tr class=\"color__table__row color__table__row--body\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </tr>\n    <tr class=\"color__table__row color__table__row--body\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(7, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </tr>\n    <tr class=\"color__table__row color__table__row--body\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(10, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(9, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </tr>\n    <tr class=\"color__table__row color__table__row--body\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(13, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(12, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </tr>\n    <tr class=\"color__table__row color__table__row--body\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(16, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(15, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </tr>\n    <tr class=\"color__table__row color__table__row--body\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(19, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(18, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </tr>\n    <tr class=\"color__table__row color__table__row--body\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(22, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.color : depth0),{"name":"each","hash":{},"fn":this.program(21, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </tr>\n  </tbody>\n</table>\n";
 },"useData":true});
 
