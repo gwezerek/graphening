@@ -72,6 +72,18 @@
     </tr>
     <tr class="color__table__row color__table__row--body">
       {{#each color}}
+        <td class="color__graph color__graph--set" id="color__graph--set--{{ @key }}">
+          <div class="color__graph__wrap">
+            <header class="color__graph__header">
+              <h4 class="color__graph__head color__graph__name--set">{{#if @first}}Set{{/if}}</h4>
+            </header>
+            <ol class="color__graph__list" id="color__graph__ol--set--{{ @key }}"></ol>
+          </div>
+        </td>
+      {{/each}}
+    </tr>
+    <tr class="color__table__row color__table__row--body">
+      {{#each color}}
         <td class="color__graph color__graph--types" id="color__graph--types--{{ @key }}">
           <div class="color__graph__wrap">
             <header class="color__graph__header">

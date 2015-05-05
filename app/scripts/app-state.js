@@ -17,7 +17,7 @@ exports.domains = {};
 exports.vizWidth = 0;
 exports.stickyNavTop = 0;
 exports.colors = [ 'white', 'blue' , 'black', 'red', 'green', 'multicolor', 'colorless' ];
-exports.dimensions = [ 'cmc', 'power', 'toughness', 'rarity', 'types', 'subtypes' ];
+exports.dimensions = [ 'cmc', 'power', 'toughness', 'rarity', 'set', 'types', 'subtypes' ];
 exports.filterEls = [];
 exports.filters = [
 	{
