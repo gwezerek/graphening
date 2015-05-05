@@ -5,13 +5,14 @@
 **/
 
 .footer {
-	padding: $baseSpace;
-	background: $colorBlueGrey600;
 	text-align: center;
+	padding-bottom: $baseSpace;
+	background: $colorBlueGrey600;
 }
 
 .footer__text {
 	padding-top: 0;
+	background: $colorBlueGrey600;
 	color: $colorBlueGrey400;
 	font-size: $fontSmall;
 }
@@ -22,4 +23,27 @@
 	&:hover {
 		color: $colorBlueGrey100;
 	}
+}
+
+
+.submission__wrap {
+	background: $colorBlueGrey500;
+}
+
+.video__wrap {
+	margin-bottom: $baseSpace;
+}
+
+.footer__text--description {
+	margin-bottom: $baseSpace;
+	font-size: $fontBase;
+	padding: $baseSpace;
+}
+
+.footer__link--process {
+	display: block;
+	font-size: $fontBase;
+	// color: $colorBlueGrey300;
+	margin-bottom: $baseSpace;
+	padding-bottom: $baseSpace;
 }
