@@ -14,10 +14,26 @@ var updateViews = require( './components/update-views' );
 var selectized = require( './components/selectized' );
 var bindListeners = require( './components/bind-listeners' );
 
+d3.json( './data/DTK.json', function( error, data ) {
+
+	// Populate filters
+	compilePage( data, true );
+
+	// Filter cards with default options
+	filterCards.filterCards();
+
+	// Init views
+	updateViews.updateViews( true );
+
+	// Bind handlers
+	bindListeners.init();
+
+});
+
 d3.json( './data/AllSets.json', function( error, data ) {
 
 	// Populate filters
-	compilePage( data );
+	compilePage( data, false );
 
 	// Filter cards with default options
 	filterCards.filterCards();

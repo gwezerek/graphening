@@ -15,10 +15,26 @@ var updateViews = require( './components/update-views' );
 var selectized = require( './components/selectized' );
 var bindListeners = require( './components/bind-listeners' );
 
+d3.json( './data/DTK.json', function( error, data ) {
+
+	// Populate filters
+	compilePage( data, true );
+
+	// Filter cards with default options
+	filterCards.filterCards();
+
+	// Init views
+	updateViews.updateViews( true );
+
+	// Bind handlers
+	bindListeners.init();
+
+});
+
 d3.json( './data/AllSets.json', function( error, data ) {
 
 	// Populate filters
-	compilePage( data );
+	compilePage( data, false );
 
 	// Filter cards with default options
 	filterCards.filterCards();
@@ -819,15 +835,16 @@ Handlebars.registerPartial( 'filter', require( '../templates/components/filters.
 Handlebars.registerPartial( 'cards', require( '../templates/components/cards.hbs' ) );
 Handlebars.registerPartial( 'footer', require( '../templates/components/footer.hbs' ) );
 
-function init( data ) {
-	compilePage();
-
-	// Add the filter chrome
-	selectized.init();
+function init( data, init ) {
+	if ( init ) {
+		// Add the filter chrome
+		compilePage();
+		selectized.init();
+		compileColumns();
+		setVizWidth();
+	}
 
 	appState.allCards = flattenCards( data );
-	compileColumns();
-	setVizWidth();
 }
 
 function compilePage() {

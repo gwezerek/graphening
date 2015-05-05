@@ -20,15 +20,16 @@ Handlebars.registerPartial( 'filter', require( '../templates/components/filters.
 Handlebars.registerPartial( 'cards', require( '../templates/components/cards.hbs' ) );
 Handlebars.registerPartial( 'footer', require( '../templates/components/footer.hbs' ) );
 
-function init( data ) {
-	compilePage();
-
-	// Add the filter chrome
-	selectized.init();
+function init( data, init ) {
+	if ( init ) {
+		// Add the filter chrome
+		compilePage();
+		selectized.init();
+		compileColumns();
+		setVizWidth();
+	}
 
 	appState.allCards = flattenCards( data );
-	compileColumns();
-	setVizWidth();
 }
 
 function compilePage() {
