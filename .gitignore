@@ -5,3 +5,4 @@ node_modules
 app.js.map
 process_journal/design
 process_journal/assets/Evaluation
+dist/

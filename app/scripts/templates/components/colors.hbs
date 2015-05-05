@@ -3,9 +3,6 @@
     <tr class="color__table__row color__table__row--header">
       {{#each color}}
       <th class="color__column__header">
-        {{#if this }}
-          <img class="color__column__icon" src="/images/icons/mana_{{ @key }}.svg">
-        {{/if}}
         <h3 class="color__head">{{ @key }}</h3>
         <h4 class="color__subhead"><span id="card__total--{{ @key }}">TK</span> cards</h4>
       </th>
