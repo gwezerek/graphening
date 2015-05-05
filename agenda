@@ -1,38 +1,34 @@
 BEFORE LAUNCH
 
-Process Journal
-	Week 3
-	Week 4
-	Next steps
-	Questions
 Project Website
 	Visualization
 	Summary of results
 	Link to data
 	Link to process journal
 	Embedded screencast
+
 Screencast
 	Start with the elevator pitch
-Peer assessment
+	
 README - The README file must give an overview of what you are handing in: which parts are your code, which parts are libraries, and so on. The README must contain URLs to your project websites and screencast videos. The README must also explain any non-obvious features of your interface.
 
 ICEBOX
-Stage JSON load from all sets to just the most recent set
-Remove duplicate card filter
-
-Add timeline
-Add 0s and labels where rarity rollup = 0
-Refactor initViz for graphs
-Visually filter filter options based on already selected filters
+Request only the most recent set on load and lazy load the full set after to shorten load times
+Add a filter to remove reprints from the selection
+Add timeline bar graph or some other solution to showing what sets the selected cards belong to
+Add 0s and labels to the rarity bubbles where there are no cards
+Refactor graph js to accept an init flag and DRY out build logic
+Visually filter the filter options based on already selected filters
 Switch from static JSON dump to API
 Add icons, release date and optGrouping by block to set options
-Add 0 card copy when nothing there
-Hide undefined labels if 0 are undefined
+Add “0 cards” copy to bar graphs when there are no cards
+Hide undefined labels if there aren’t any undefined
 Add smarter card filtering for images
-Add sort button to the card grid
-
-VISUAL
-Give the site a logo
-Snap brush to bars
+Add functionality to sort card grid by name, rarity
+Add filtering functionality to bubbles and inventory to mirror already present functionality in the select elements
+Add Google analytics
+Add sharing buttons and counts for Twitter and Facebook
+Design a logo and branding for the site
+Snap brush selection to bars
 Restyle selectize inputs to match app
 Add favicon

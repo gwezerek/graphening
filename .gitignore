@@ -4,3 +4,4 @@ node_modules
 .tmp
 app.js.map
 process_journal/design
+process_journal/assets/Evaluation
