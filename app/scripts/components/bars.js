@@ -94,21 +94,21 @@ var initViz = function( color, dimension ) {
         y: function ( d ) { return height - yScale( d.values.count ) - 4; },
         class: 'bar__label'
       });
-
+      
   // Brush
-  var brush = d3.svg.brush()
-      .x( xScale );
+  // var brush = d3.svg.brush()
+  //     .x( xScale );
 
-  var brushGroup = svg.append( 'g' )
-      .attr( 'class', 'brush' )
-      .call( brush );
+  // var brushGroup = svg.append( 'g' )
+  //     .attr( 'class', 'brush' )
+  //     .call( brush );
     
-  brushGroup.selectAll( 'rect' )
-      .attr( 'height', height + margin.top );
+  // brushGroup.selectAll( 'rect' )
+  //     .attr( 'height', height + margin.top );
 
-  brushGroup.datum( { brush: brush } );
+  // brushGroup.datum( { brush: brush } );
 
-  bindListeners.bindBrushListeners( brush, xScale );
+  // bindListeners.bindBrushListeners( brush, xScale );
 
 };
 

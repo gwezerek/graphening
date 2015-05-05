@@ -29,7 +29,7 @@ function init( data, init ) {
 		setVizWidth();
 	}
 
-	appState.allCards = flattenCards( data );
+	appState.allCards = flattenCards( data, init );
 }
 
 function compilePage() {
@@ -37,12 +37,15 @@ function compilePage() {
 }
 
 // flatten array of cards
-function flattenCards( data ) {
+function flattenCards( data, init ) {
 
-	var allCards = _.each( data, function( set ) {
-		_.each( set.cards, function( card ) {
-			card.set = set.name;
-			card.magicCardsInfoCode = set.magicCardsInfoCode;
+	var allCards = [];
+
+	// TODO: a more elegant way to handle init, maybe with _.toArray?
+	if ( init ) {
+		allCards = _.each( data.cards, function( card ) {
+			card.set = data.name;
+			card.magicCardsInfoCode = data.magicCardsInfoCode;
 			
 			// while we're at it...
 			if ( _.isArray( card.types ) ) {
@@ -52,12 +55,27 @@ function flattenCards( data ) {
 				card.subtypes = card.subtypes.join(' ');
 			}
 		});
-	});
+	} else {
+		allCards = _.each( data, function( set ) {
+			_.each( set.cards, function( card ) {
+				card.set = set.name;
+				card.magicCardsInfoCode = set.magicCardsInfoCode;
+				
+				// while we're at it...
+				if ( _.isArray( card.types ) ) {
+					card.types = card.types.join(' ');
+				}
+				if ( _.isArray( card.subtypes ) ) {
+					card.subtypes = card.subtypes.join(' ');
+				}
+			});
+		});
 
-	allCards = _.chain( allCards )
-			.pluck( 'cards' )
-			.flatten( true )
-			.value();
+		allCards = _.chain( allCards )
+				.pluck( 'cards' )
+				.flatten( true )
+				.value();
+	}
 
 	return allCards;
 }

@@ -26,9 +26,6 @@ d3.json( './data/DTK.json', function( error, data ) {
 	// Init views
 	updateViews.updateViews( true );
 
-	// Bind handlers
-	bindListeners.init();
-
 });
 
 d3.json( './data/AllSets.json', function( error, data ) {
@@ -40,7 +37,7 @@ d3.json( './data/AllSets.json', function( error, data ) {
 	filterCards.filterCards();
 
 	// Init views
-	updateViews.updateViews( true );
+	updateViews.updateViews();
 
 	// Add filter chrome
 	selectized.populate();
@@ -188,21 +185,21 @@ var initViz = function( color, dimension ) {
         y: function ( d ) { return height - yScale( d.values.count ) - 4; },
         class: 'bar__label'
       });
-
+      
   // Brush
-  var brush = d3.svg.brush()
-      .x( xScale );
+  // var brush = d3.svg.brush()
+  //     .x( xScale );
 
-  var brushGroup = svg.append( 'g' )
-      .attr( 'class', 'brush' )
-      .call( brush );
+  // var brushGroup = svg.append( 'g' )
+  //     .attr( 'class', 'brush' )
+  //     .call( brush );
     
-  brushGroup.selectAll( 'rect' )
-      .attr( 'height', height + margin.top );
+  // brushGroup.selectAll( 'rect' )
+  //     .attr( 'height', height + margin.top );
 
-  brushGroup.datum( { brush: brush } );
+  // brushGroup.datum( { brush: brush } );
 
-  bindListeners.bindBrushListeners( brush, xScale );
+  // bindListeners.bindBrushListeners( brush, xScale );
 
 };
 
@@ -844,7 +841,7 @@ function init( data, init ) {
 		setVizWidth();
 	}
 
-	appState.allCards = flattenCards( data );
+	appState.allCards = flattenCards( data, init );
 }
 
 function compilePage() {
@@ -852,12 +849,15 @@ function compilePage() {
 }
 
 // flatten array of cards
-function flattenCards( data ) {
+function flattenCards( data, init ) {
 
-	var allCards = _.each( data, function( set ) {
-		_.each( set.cards, function( card ) {
-			card.set = set.name;
-			card.magicCardsInfoCode = set.magicCardsInfoCode;
+	var allCards = [];
+
+	// TODO: a more elegant way to handle init, maybe with _.toArray?
+	if ( init ) {
+		allCards = _.each( data.cards, function( card ) {
+			card.set = data.name;
+			card.magicCardsInfoCode = data.magicCardsInfoCode;
 			
 			// while we're at it...
 			if ( _.isArray( card.types ) ) {
@@ -867,12 +867,27 @@ function flattenCards( data ) {
 				card.subtypes = card.subtypes.join(' ');
 			}
 		});
-	});
+	} else {
+		allCards = _.each( data, function( set ) {
+			_.each( set.cards, function( card ) {
+				card.set = set.name;
+				card.magicCardsInfoCode = set.magicCardsInfoCode;
+				
+				// while we're at it...
+				if ( _.isArray( card.types ) ) {
+					card.types = card.types.join(' ');
+				}
+				if ( _.isArray( card.subtypes ) ) {
+					card.subtypes = card.subtypes.join(' ');
+				}
+			});
+		});
 
-	allCards = _.chain( allCards )
-			.pluck( 'cards' )
-			.flatten( true )
-			.value();
+		allCards = _.chain( allCards )
+				.pluck( 'cards' )
+				.flatten( true )
+				.value();
+	}
 
 	return allCards;
 }

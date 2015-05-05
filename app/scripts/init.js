@@ -25,9 +25,6 @@ d3.json( './data/DTK.json', function( error, data ) {
 	// Init views
 	updateViews.updateViews( true );
 
-	// Bind handlers
-	bindListeners.init();
-
 });
 
 d3.json( './data/AllSets.json', function( error, data ) {
@@ -39,7 +36,7 @@ d3.json( './data/AllSets.json', function( error, data ) {
 	filterCards.filterCards();
 
 	// Init views
-	updateViews.updateViews( true );
+	updateViews.updateViews();
 
 	// Add filter chrome
 	selectized.populate();
