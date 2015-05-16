@@ -266,7 +266,7 @@ exports.initViz = initViz;
 exports.updateViz = updateViz;
 exports.clearBrushes = clearBrushes;
 
-},{"../app-state":2,"../utils":19,"./bind-listeners":4,"d3":20,"jquery":29}],4:[function(require,module,exports){
+},{"../app-state":2,"../utils":19,"./bind-listeners":4,"d3":20,"jquery":30}],4:[function(require,module,exports){
 /**
 *
 * Bind Listeners
@@ -378,7 +378,7 @@ function handleEmptyBrush() {
 exports.init = init;
 exports.bindBrushListeners = bindBrushListeners;
 
-},{"../app-state":2,"./bars":3,"./cards":6,"./filter-cards":9,"./update-views":12,"d3":20,"jquery":29,"underscore":33}],5:[function(require,module,exports){
+},{"../app-state":2,"./bars":3,"./cards":6,"./filter-cards":9,"./update-views":12,"d3":20,"jquery":30,"underscore":34}],5:[function(require,module,exports){
 /**
 *
 * Colors
@@ -589,7 +589,7 @@ exports.update = update;
 exports.updateText = updateText;
 exports.addImages = addImages;
 
-},{"../app-state":2,"../templates/components/cards.hbs":13,"../utils":19,"jquery":29}],7:[function(require,module,exports){
+},{"../app-state":2,"../templates/components/cards.hbs":13,"../utils":19,"jquery":30}],7:[function(require,module,exports){
 /**
 *
 * Colors
@@ -796,7 +796,7 @@ function vizDispatch( color, dimension, init ) {
 exports.prepData = prepData;
 exports.updateViews = updateViews;
 
-},{"../app-state":2,"../utils":19,"./bars":3,"./bubbles":5,"./inventory":10,"d3":20,"underscore":33}],8:[function(require,module,exports){
+},{"../app-state":2,"../utils":19,"./bars":3,"./bubbles":5,"./inventory":10,"d3":20,"underscore":34}],8:[function(require,module,exports){
 /**
 *
 * Filter
@@ -871,7 +871,7 @@ function setVizWidth() {
 
 module.exports = init;
 
-},{"../app-state":2,"../templates/components/cards.hbs":13,"../templates/components/colors.hbs":14,"../templates/components/filters.hbs":15,"../templates/components/footer.hbs":16,"../templates/index.hbs":17,"./selectized":11,"hbsfy/runtime":28,"underscore":33}],9:[function(require,module,exports){
+},{"../app-state":2,"../templates/components/cards.hbs":13,"../templates/components/colors.hbs":14,"../templates/components/filters.hbs":15,"../templates/components/footer.hbs":16,"../templates/index.hbs":17,"./selectized":11,"hbsfy/runtime":29,"underscore":34}],9:[function(require,module,exports){
 /**
 *
 * Filter Cards
@@ -937,7 +937,7 @@ function sortCardsByRarity( filteredCards ) {
 exports.filterCards = filterCards;
 exports.getCardsById = getCardsById;
 
-},{"../app-state":2,"underscore":33}],10:[function(require,module,exports){
+},{"../app-state":2,"underscore":34}],10:[function(require,module,exports){
 /**
 *
 * Colors
@@ -966,7 +966,7 @@ var updateInventory = function( color, dimension ) {
 
 exports.updateInventory = updateInventory;
 
-},{"../app-state":2,"../templates/partials/colors-inventory.hbs":18,"../utils":19,"underscore":33}],11:[function(require,module,exports){
+},{"../app-state":2,"../templates/partials/colors-inventory.hbs":18,"../utils":19,"underscore":34}],11:[function(require,module,exports){
 /**
 *
 * Selectized
@@ -1032,7 +1032,7 @@ function getRanges() {
 exports.init = init;
 exports.populate = populate;
 
-},{"../app-state":2,"jquery":29,"selectize":30,"underscore":33}],12:[function(require,module,exports){
+},{"../app-state":2,"jquery":30,"selectize":31,"underscore":34}],12:[function(require,module,exports){
 /**
 *
 * Update views
@@ -1116,7 +1116,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.cards : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"useData":true});
 
-},{"hbsfy/runtime":28}],14:[function(require,module,exports){
+},{"hbsfy/runtime":29}],14:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
@@ -1241,21 +1241,21 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
     + "    </tr>\n  </tbody>\n</table>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":28}],15:[function(require,module,exports){
+},{"hbsfy/runtime":29}],15:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<form class=\"filter\">\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--set\" multiple=\"multiple\" placeholder=\"Filter by sets...\">\n      <option value=\"Dragons of Tarkir\" selected>Dragons of Tarkir</option>\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--rarity\" multiple=\"multiple\" placeholder=\"Filter by rarity...\">\n      <option value=\"Common\">Common</option>\n      <option value=\"Uncommon\">Uncommon</option>\n      <option value=\"Rare\">Rare</option>\n      <option value=\"Mythic Rare\">Mythic Rare</option>\n      <option value=\"Special\">Special</option>\n      <option value=\"Basic Land\">Basic Land</option>\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--types\" multiple=\"multiple\" placeholder=\"Filter by type...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--subtypes\" multiple=\"multiple\" placeholder=\"Filter by subtype...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--artist\" multiple=\"multiple\" placeholder=\"Filter by artist...\">\n    </select>\n  </fieldset>\n<!--           <fieldset class=\"filter__fieldset\">\n    <label class=\"filter__label\"><input class=\"input__radio\" type=\"radio\" name=\"reprints\" value=\"exclude\" checked>Exclude reprints</label>\n    <label class=\"filter__label\"><input class=\"input__radio\" type=\"radio\" name=\"reprints\" value=\"include\">Include reprints</label>\n  </fieldset> -->\n</form>";
 },"useData":true});
 
-},{"hbsfy/runtime":28}],16:[function(require,module,exports){
+},{"hbsfy/runtime":29}],16:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<footer class=\"footer\">\n  <p class=\"footer__text\">The information presented on this site, both literal and graphical, is copyrighted by <a href=\"http://company.wizards.com/\" class=\"footer__link\">Wizards of the Coast</a>. This website is not affiliated with Wizards of the Coast in any way.</p>\n  <p class=\"footer__text\">Many thanks to <a href=\"http://mtgjson.com/\" class=\"footer__link\">MTG JSON</a> for the card data and <a href=\"http://magiccards.info/\" class=\"footer__link\">magiccards.info</a> for the images.</p>\n</footer>";
 },"useData":true});
 
-},{"hbsfy/runtime":28}],17:[function(require,module,exports){
+},{"hbsfy/runtime":29}],17:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -1267,7 +1267,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + ((stack1 = this.invokePartial(partials.footer,depth0,{"name":"footer","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "");
 },"usePartial":true,"useData":true});
 
-},{"hbsfy/runtime":28}],18:[function(require,module,exports){
+},{"hbsfy/runtime":29}],18:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -1280,7 +1280,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + "</li>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":28}],19:[function(require,module,exports){
+},{"hbsfy/runtime":29}],19:[function(require,module,exports){
 /**
 *
 * Utils
@@ -10805,13 +10805,11 @@ exports.isInt = isInt;
   this.d3 = d3;
 }();
 },{}],21:[function(require,module,exports){
-(function (global){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 exports.__esModule = true;
-/*global window */
 
 var _import = require('./handlebars/base');
 
@@ -10836,6 +10834,10 @@ var _import3 = require('./handlebars/runtime');
 
 var runtime = _interopRequireWildcard(_import3);
 
+var _noConflict = require('./handlebars/no-conflict');
+
+var _noConflict2 = _interopRequireWildcard(_noConflict);
+
 // For compatibility and usage outside of module systems, make the Handlebars object a namespace
 function create() {
   var hb = new base.HandlebarsEnvironment();
@@ -10854,27 +10856,16 @@ function create() {
   return hb;
 }
 
-var Handlebars = create();
-Handlebars.create = create;
+var inst = create();
+inst.create = create;
 
-/*jshint -W040 */
-/* istanbul ignore next */
-var root = typeof global !== 'undefined' ? global : window,
-    $Handlebars = root.Handlebars;
-/* istanbul ignore next */
-Handlebars.noConflict = function () {
-  if (root.Handlebars === Handlebars) {
-    root.Handlebars = $Handlebars;
-  }
-};
+_noConflict2['default'](inst);
 
-Handlebars['default'] = Handlebars;
+inst['default'] = inst;
 
-exports['default'] = Handlebars;
+exports['default'] = inst;
 module.exports = exports['default'];
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{"./handlebars/base":22,"./handlebars/exception":23,"./handlebars/runtime":24,"./handlebars/safe-string":25,"./handlebars/utils":26}],22:[function(require,module,exports){
+},{"./handlebars/base":22,"./handlebars/exception":23,"./handlebars/no-conflict":24,"./handlebars/runtime":25,"./handlebars/safe-string":26,"./handlebars/utils":27}],22:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -11148,7 +11139,7 @@ function createFrame(object) {
 }
 
 /* [args, ]options */
-},{"./exception":23,"./utils":26}],23:[function(require,module,exports){
+},{"./exception":23,"./utils":27}],23:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11188,6 +11179,28 @@ Exception.prototype = new Error();
 exports['default'] = Exception;
 module.exports = exports['default'];
 },{}],24:[function(require,module,exports){
+(function (global){
+'use strict';
+
+exports.__esModule = true;
+/*global window */
+
+exports['default'] = function (Handlebars) {
+  /* istanbul ignore next */
+  var root = typeof global !== 'undefined' ? global : window,
+      $Handlebars = root.Handlebars;
+  /* istanbul ignore next */
+  Handlebars.noConflict = function () {
+    if (root.Handlebars === Handlebars) {
+      root.Handlebars = $Handlebars;
+    }
+  };
+};
+
+module.exports = exports['default'];
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],25:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -11420,7 +11433,7 @@ function initData(context, data) {
   }
   return data;
 }
-},{"./base":22,"./exception":23,"./utils":26}],25:[function(require,module,exports){
+},{"./base":22,"./exception":23,"./utils":27}],26:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11435,7 +11448,7 @@ SafeString.prototype.toString = SafeString.prototype.toHTML = function () {
 
 exports['default'] = SafeString;
 module.exports = exports['default'];
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11447,7 +11460,6 @@ exports.escapeExpression = escapeExpression;
 exports.isEmpty = isEmpty;
 exports.blockParams = blockParams;
 exports.appendContextPath = appendContextPath;
-/*jshint -W004 */
 var escape = {
   '&': '&amp;',
   '<': '&lt;',
@@ -11551,17 +11563,17 @@ function blockParams(params, ids) {
 function appendContextPath(contextPath, id) {
   return (contextPath ? contextPath + '.' : '') + id;
 }
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":21}],28:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":21}],29:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":27}],29:[function(require,module,exports){
+},{"handlebars/runtime":28}],30:[function(require,module,exports){
 /*!
- * jQuery JavaScript Library v2.1.3
+ * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
  *
  * Includes Sizzle.js
@@ -11571,7 +11583,7 @@ module.exports = require("handlebars/runtime")["default"];
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2014-12-18T15:11Z
+ * Date: 2015-04-28T16:01Z
  */
 
 (function( global, factory ) {
@@ -11629,7 +11641,7 @@ var
 	// Use the correct document accordingly with window argument (sandbox)
 	document = window.document,
 
-	version = "2.1.3",
+	version = "2.1.4",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -12093,7 +12105,12 @@ jQuery.each("Boolean Number String Function Array Date RegExp Object Error".spli
 });
 
 function isArraylike( obj ) {
-	var length = obj.length,
+
+	// Support: iOS 8.2 (not reproducible in simulator)
+	// `in` check used to prevent JIT error (gh-2145)
+	// hasOwn isn't used here due to false negatives
+	// regarding Nodelist length in IE
+	var length = "length" in obj && obj.length,
 		type = jQuery.type( obj );
 
 	if ( type === "function" || jQuery.isWindow( obj ) ) {
@@ -20766,7 +20783,7 @@ return jQuery;
 
 }));
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /**
  * selectize.js (v0.12.1)
  * Copyright (c) 2013–2015 Brian Reavis & contributors
@@ -23825,7 +23842,7 @@ return jQuery;
 
 	return Selectize;
 }));
-},{"jquery":29,"microplugin":31,"sifter":32}],31:[function(require,module,exports){
+},{"jquery":30,"microplugin":32,"sifter":33}],32:[function(require,module,exports){
 /**
  * microplugin.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -23961,7 +23978,7 @@ return jQuery;
 
 	return MicroPlugin;
 }));
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /**
  * sifter.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -24434,7 +24451,7 @@ return jQuery;
 }));
 
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
