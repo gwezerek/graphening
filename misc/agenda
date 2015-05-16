@@ -1,21 +1,8 @@
-BEFORE LAUNCH
-
-Project Website
-	Visualization
-	Summary of results
-	Link to data
-	Link to process journal
-	Embedded screencast
-
-Screencast
-	Start with the elevator pitch
-	
-README - The README file must give an overview of what you are handing in: which parts are your code, which parts are libraries, and so on. The README must contain URLs to your project websites and screencast videos. The README must also explain any non-obvious features of your interface.
-
-ICEBOX
-Request only the most recent set on load and lazy load the full set after to shorten load times
+Precompile templates, including select boxes
+Scrape all images and serve them from my own database, as well as minify them
 Add a filter to remove reprints from the selection
 Add timeline bar graph or some other solution to showing what sets the selected cards belong to
+Fix removeContent() bug with users who have the Ember Debugger extension installed.
 Add 0s and labels to the rarity bubbles where there are no cards
 Refactor graph js to accept an init flag and DRY out build logic
 Visually filter the filter options based on already selected filters
