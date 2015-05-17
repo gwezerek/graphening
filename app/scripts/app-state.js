@@ -7,6 +7,7 @@
 'use strict';
 
 exports.allCards = [];
+exports.allSets = {};
 exports.currentCards = [];
 exports.filteredCards = [];
 exports.isBrushed = false;

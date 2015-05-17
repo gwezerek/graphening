@@ -37,7 +37,7 @@ function filterCards() {
 	});
 
 	filteredCards = sortCardsByRarity( filteredCards );
-	
+
 	appState.isBrushed = false;
 	appState.filteredCards = filteredCards;
 	appState.currentCards = filteredCards;

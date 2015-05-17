@@ -11,6 +11,7 @@ var Handlebars = require( 'hbsfy/runtime' );
 
 var appState = require( '../app-state' );
 var selectized = require( './selectized' );
+var wrangleData = require( './wrangle-data' )
 
 var index = require( '../templates/index.hbs' );
 var templateColors = require( '../templates/components/colors.hbs' );
@@ -26,39 +27,17 @@ function init( data ) {
 	// Add the filter chrome
 	selectized.init();
 
-	appState.allCards = flattenCards( data );
+	// Wrangle data
+	wrangleData.getAllCards( data );
+	wrangleData.getAllSets( data );
+
+	// Complile the page
 	compileColumns();
 	setVizWidth();
 }
 
 function compilePage() {
 	document.body.innerHTML = index();
-}
-
-// flatten array of cards
-function flattenCards( data ) {
-
-	var allCards = _.each( data, function( set ) {
-		_.each( set.cards, function( card ) {
-			card.set = set.name;
-			card.magicCardsInfoCode = set.magicCardsInfoCode;
-			
-			// while we're at it...
-			if ( _.isArray( card.types ) ) {
-				card.types = card.types.join(' ');
-			}
-			if ( _.isArray( card.subtypes ) ) {
-				card.subtypes = card.subtypes.join(' ');
-			}
-		});
-	});
-
-	allCards = _.chain( allCards )
-			.pluck( 'cards' )
-			.flatten( true )
-			.value();
-
-	return allCards;
 }
 
 function compileColumns() {

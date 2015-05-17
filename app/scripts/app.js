@@ -34,7 +34,7 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 
 });
 
-},{"./components/bind-listeners":4,"./components/compile-page":8,"./components/filter-cards":9,"./components/selectized":11,"./components/update-views":12,"d3":20}],2:[function(require,module,exports){
+},{"./components/bind-listeners":4,"./components/compile-page":8,"./components/filter-cards":9,"./components/selectized":11,"./components/update-views":12,"d3":21}],2:[function(require,module,exports){
 /**
 *
 * App State
@@ -44,6 +44,7 @@ d3.json( '../data/AllSets.json', function( error, data ) {
 'use strict';
 
 exports.allCards = [];
+exports.allSets = {};
 exports.currentCards = [];
 exports.filteredCards = [];
 exports.isBrushed = false;
@@ -266,7 +267,7 @@ exports.initViz = initViz;
 exports.updateViz = updateViz;
 exports.clearBrushes = clearBrushes;
 
-},{"../app-state":2,"../utils":19,"./bind-listeners":4,"d3":20,"jquery":30}],4:[function(require,module,exports){
+},{"../app-state":2,"../utils":20,"./bind-listeners":4,"d3":21,"jquery":31}],4:[function(require,module,exports){
 /**
 *
 * Bind Listeners
@@ -378,7 +379,7 @@ function handleEmptyBrush() {
 exports.init = init;
 exports.bindBrushListeners = bindBrushListeners;
 
-},{"../app-state":2,"./bars":3,"./cards":6,"./filter-cards":9,"./update-views":12,"d3":20,"jquery":30,"underscore":34}],5:[function(require,module,exports){
+},{"../app-state":2,"./bars":3,"./cards":6,"./filter-cards":9,"./update-views":12,"d3":21,"jquery":31,"underscore":35}],5:[function(require,module,exports){
 /**
 *
 * Colors
@@ -537,7 +538,7 @@ var updateViz = function( color, dimension ) {
 exports.initViz = initViz;
 exports.updateViz = updateViz;
 
-},{"../app-state":2,"../utils":19,"d3":20}],6:[function(require,module,exports){
+},{"../app-state":2,"../utils":20,"d3":21}],6:[function(require,module,exports){
 /**
 *
 * Cards
@@ -589,7 +590,7 @@ exports.update = update;
 exports.updateText = updateText;
 exports.addImages = addImages;
 
-},{"../app-state":2,"../templates/components/cards.hbs":13,"../utils":19,"jquery":30}],7:[function(require,module,exports){
+},{"../app-state":2,"../templates/components/cards.hbs":14,"../utils":20,"jquery":31}],7:[function(require,module,exports){
 /**
 *
 * Colors
@@ -796,7 +797,7 @@ function vizDispatch( color, dimension, init ) {
 exports.prepData = prepData;
 exports.updateViews = updateViews;
 
-},{"../app-state":2,"../utils":19,"./bars":3,"./bubbles":5,"./inventory":10,"d3":20,"underscore":34}],8:[function(require,module,exports){
+},{"../app-state":2,"../utils":20,"./bars":3,"./bubbles":5,"./inventory":10,"d3":21,"underscore":35}],8:[function(require,module,exports){
 /**
 *
 * Filter
@@ -810,6 +811,7 @@ var Handlebars = require( 'hbsfy/runtime' );
 
 var appState = require( '../app-state' );
 var selectized = require( './selectized' );
+var wrangleData = require( './wrangle-data' )
 
 var index = require( '../templates/index.hbs' );
 var templateColors = require( '../templates/components/colors.hbs' );
@@ -825,39 +827,17 @@ function init( data ) {
 	// Add the filter chrome
 	selectized.init();
 
-	appState.allCards = flattenCards( data );
+	// Wrangle data
+	wrangleData.getAllCards( data );
+	wrangleData.getAllSets( data );
+
+	// Complile the page
 	compileColumns();
 	setVizWidth();
 }
 
 function compilePage() {
 	document.body.innerHTML = index();
-}
-
-// flatten array of cards
-function flattenCards( data ) {
-
-	var allCards = _.each( data, function( set ) {
-		_.each( set.cards, function( card ) {
-			card.set = set.name;
-			card.magicCardsInfoCode = set.magicCardsInfoCode;
-			
-			// while we're at it...
-			if ( _.isArray( card.types ) ) {
-				card.types = card.types.join(' ');
-			}
-			if ( _.isArray( card.subtypes ) ) {
-				card.subtypes = card.subtypes.join(' ');
-			}
-		});
-	});
-
-	allCards = _.chain( allCards )
-			.pluck( 'cards' )
-			.flatten( true )
-			.value();
-
-	return allCards;
 }
 
 function compileColumns() {
@@ -871,7 +851,7 @@ function setVizWidth() {
 
 module.exports = init;
 
-},{"../app-state":2,"../templates/components/cards.hbs":13,"../templates/components/colors.hbs":14,"../templates/components/filters.hbs":15,"../templates/components/footer.hbs":16,"../templates/index.hbs":17,"./selectized":11,"hbsfy/runtime":29,"underscore":34}],9:[function(require,module,exports){
+},{"../app-state":2,"../templates/components/cards.hbs":14,"../templates/components/colors.hbs":15,"../templates/components/filters.hbs":16,"../templates/components/footer.hbs":17,"../templates/index.hbs":18,"./selectized":11,"./wrangle-data":13,"hbsfy/runtime":30,"underscore":35}],9:[function(require,module,exports){
 /**
 *
 * Filter Cards
@@ -911,7 +891,7 @@ function filterCards() {
 	});
 
 	filteredCards = sortCardsByRarity( filteredCards );
-	
+
 	appState.isBrushed = false;
 	appState.filteredCards = filteredCards;
 	appState.currentCards = filteredCards;
@@ -937,7 +917,7 @@ function sortCardsByRarity( filteredCards ) {
 exports.filterCards = filterCards;
 exports.getCardsById = getCardsById;
 
-},{"../app-state":2,"underscore":34}],10:[function(require,module,exports){
+},{"../app-state":2,"underscore":35}],10:[function(require,module,exports){
 /**
 *
 * Colors
@@ -966,7 +946,7 @@ var updateInventory = function( color, dimension ) {
 
 exports.updateInventory = updateInventory;
 
-},{"../app-state":2,"../templates/partials/colors-inventory.hbs":18,"../utils":19,"underscore":34}],11:[function(require,module,exports){
+},{"../app-state":2,"../templates/partials/colors-inventory.hbs":19,"../utils":20,"underscore":35}],11:[function(require,module,exports){
 /**
 *
 * Selectized
@@ -997,12 +977,13 @@ var populate = function() {
 };
 
 function compileOptions() {
+
 	_.each( _.keys( ranges ), function( dimension ) {
 		var optionsObj = [];
 
 		_.each( ranges[ dimension ], function( dimensionValue ) {
 			optionsObj.push({
-				text: dimensionValue, 
+				text: dimensionValue,
 				value: dimensionValue
 			});
 		});
@@ -1032,7 +1013,7 @@ function getRanges() {
 exports.init = init;
 exports.populate = populate;
 
-},{"../app-state":2,"jquery":30,"selectize":31,"underscore":34}],12:[function(require,module,exports){
+},{"../app-state":2,"jquery":31,"selectize":32,"underscore":35}],12:[function(require,module,exports){
 /**
 *
 * Update views
@@ -1056,6 +1037,65 @@ exports.updateViews = function( init ) {
 // module.exports = updateViews;
 
 },{"./bars":3,"./cards":6,"./colors":7}],13:[function(require,module,exports){
+/**
+*
+* Filter
+*
+**/
+
+'use strict';
+
+var _ = require( 'underscore' );
+var d3 = require( 'd3' );
+
+var appState = require( '../app-state' );
+
+
+// Flatten array of cards
+exports.getAllCards = function( data ) {
+
+	var allCards = _.each( data, function( set ) {
+		_.each( set.cards, function( card ) {
+			card.set = set.name;
+			card.magicCardsInfoCode = set.magicCardsInfoCode;
+
+			// while we're at it...
+			if ( _.isArray( card.types ) ) {
+				card.types = card.types.join(' ');
+			}
+			if ( _.isArray( card.subtypes ) ) {
+				card.subtypes = card.subtypes.join(' ');
+			}
+		});
+	});
+
+	allCards = _.chain( allCards )
+			.pluck( 'cards' )
+			.flatten( true )
+			.value();
+
+	appState.allCards = allCards;
+}
+
+exports.getAllSets = function( data ) {
+
+	// Delete the cards so we're not holding a huge object in memory
+	_.map( data, function( set ) {
+		delete set.booster;
+		delete set.cards;
+	});
+
+	data = _.toArray( data );
+
+	var allSets = d3.nest()
+			.key( function( set ) { return set.type; } )
+			.sortValues( function( a, b ) { return new Date( b.releaseDate ).getTime() - new Date( a.releaseDate ).getTime(); } )
+			.map( data );
+
+	appState.allSets = allSets;
+}
+
+},{"../app-state":2,"d3":21,"underscore":35}],14:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
@@ -1116,7 +1156,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.cards : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"useData":true});
 
-},{"hbsfy/runtime":29}],14:[function(require,module,exports){
+},{"hbsfy/runtime":30}],15:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
@@ -1241,21 +1281,21 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
     + "    </tr>\n  </tbody>\n</table>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":29}],15:[function(require,module,exports){
+},{"hbsfy/runtime":30}],16:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<form class=\"filter\">\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--set\" multiple=\"multiple\" placeholder=\"Filter by sets...\">\n      <option value=\"Dragons of Tarkir\" selected>Dragons of Tarkir</option>\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--rarity\" multiple=\"multiple\" placeholder=\"Filter by rarity...\">\n      <option value=\"Common\">Common</option>\n      <option value=\"Uncommon\">Uncommon</option>\n      <option value=\"Rare\">Rare</option>\n      <option value=\"Mythic Rare\">Mythic Rare</option>\n      <option value=\"Special\">Special</option>\n      <option value=\"Basic Land\">Basic Land</option>\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--types\" multiple=\"multiple\" placeholder=\"Filter by type...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--subtypes\" multiple=\"multiple\" placeholder=\"Filter by subtype...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--artist\" multiple=\"multiple\" placeholder=\"Filter by artist...\">\n    </select>\n  </fieldset>\n<!--           <fieldset class=\"filter__fieldset\">\n    <label class=\"filter__label\"><input class=\"input__radio\" type=\"radio\" name=\"reprints\" value=\"exclude\" checked>Exclude reprints</label>\n    <label class=\"filter__label\"><input class=\"input__radio\" type=\"radio\" name=\"reprints\" value=\"include\">Include reprints</label>\n  </fieldset> -->\n</form>";
 },"useData":true});
 
-},{"hbsfy/runtime":29}],16:[function(require,module,exports){
+},{"hbsfy/runtime":30}],17:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<footer class=\"footer\">\n  <p class=\"footer__text\">The information presented on this site, both literal and graphical, is copyrighted by <a href=\"http://company.wizards.com/\" class=\"footer__link\">Wizards of the Coast</a>. This website is not affiliated with Wizards of the Coast in any way.</p>\n  <p class=\"footer__text\">Many thanks to <a href=\"http://mtgjson.com/\" class=\"footer__link\">MTG JSON</a> for the card data and <a href=\"http://magiccards.info/\" class=\"footer__link\">magiccards.info</a> for the images.</p>\n</footer>";
 },"useData":true});
 
-},{"hbsfy/runtime":29}],17:[function(require,module,exports){
+},{"hbsfy/runtime":30}],18:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -1267,7 +1307,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + ((stack1 = this.invokePartial(partials.footer,depth0,{"name":"footer","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "");
 },"usePartial":true,"useData":true});
 
-},{"hbsfy/runtime":29}],18:[function(require,module,exports){
+},{"hbsfy/runtime":30}],19:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -1280,7 +1320,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + "</li>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":29}],19:[function(require,module,exports){
+},{"hbsfy/runtime":30}],20:[function(require,module,exports){
 /**
 *
 * Utils
@@ -1299,7 +1339,7 @@ var formatCommas = d3.format('0,000');
 exports.formatCommas = formatCommas;
 exports.isInt = isInt;
 
-},{"d3":20}],20:[function(require,module,exports){
+},{"d3":21}],21:[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.5"
@@ -10804,7 +10844,7 @@ exports.isInt = isInt;
   if (typeof define === "function" && define.amd) define(d3); else if (typeof module === "object" && module.exports) module.exports = d3;
   this.d3 = d3;
 }();
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -10865,7 +10905,7 @@ inst['default'] = inst;
 
 exports['default'] = inst;
 module.exports = exports['default'];
-},{"./handlebars/base":22,"./handlebars/exception":23,"./handlebars/no-conflict":24,"./handlebars/runtime":25,"./handlebars/safe-string":26,"./handlebars/utils":27}],22:[function(require,module,exports){
+},{"./handlebars/base":23,"./handlebars/exception":24,"./handlebars/no-conflict":25,"./handlebars/runtime":26,"./handlebars/safe-string":27,"./handlebars/utils":28}],23:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -11139,7 +11179,7 @@ function createFrame(object) {
 }
 
 /* [args, ]options */
-},{"./exception":23,"./utils":27}],23:[function(require,module,exports){
+},{"./exception":24,"./utils":28}],24:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11178,7 +11218,7 @@ Exception.prototype = new Error();
 
 exports['default'] = Exception;
 module.exports = exports['default'];
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -11200,7 +11240,7 @@ exports['default'] = function (Handlebars) {
 module.exports = exports['default'];
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -11433,7 +11473,7 @@ function initData(context, data) {
   }
   return data;
 }
-},{"./base":22,"./exception":23,"./utils":27}],26:[function(require,module,exports){
+},{"./base":23,"./exception":24,"./utils":28}],27:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11448,7 +11488,7 @@ SafeString.prototype.toString = SafeString.prototype.toHTML = function () {
 
 exports['default'] = SafeString;
 module.exports = exports['default'];
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11563,15 +11603,15 @@ function blockParams(params, ids) {
 function appendContextPath(contextPath, id) {
   return (contextPath ? contextPath + '.' : '') + id;
 }
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":21}],29:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":22}],30:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":28}],30:[function(require,module,exports){
+},{"handlebars/runtime":29}],31:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
@@ -20783,7 +20823,7 @@ return jQuery;
 
 }));
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /**
  * selectize.js (v0.12.1)
  * Copyright (c) 2013–2015 Brian Reavis & contributors
@@ -23842,7 +23882,7 @@ return jQuery;
 
 	return Selectize;
 }));
-},{"jquery":30,"microplugin":32,"sifter":33}],32:[function(require,module,exports){
+},{"jquery":31,"microplugin":33,"sifter":34}],33:[function(require,module,exports){
 /**
  * microplugin.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -23978,7 +24018,7 @@ return jQuery;
 
 	return MicroPlugin;
 }));
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /**
  * sifter.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -24451,7 +24491,7 @@ return jQuery;
 }));
 
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors

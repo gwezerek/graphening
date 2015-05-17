@@ -28,12 +28,13 @@ var populate = function() {
 };
 
 function compileOptions() {
+
 	_.each( _.keys( ranges ), function( dimension ) {
 		var optionsObj = [];
 
 		_.each( ranges[ dimension ], function( dimensionValue ) {
 			optionsObj.push({
-				text: dimensionValue, 
+				text: dimensionValue,
 				value: dimensionValue
 			});
 		});

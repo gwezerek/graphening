@@ -1,3 +1,23 @@
+
+
+WANT
+
+OPTGROUP - type
+	OPTION
+	Name
+	Block - block Release date: Date
+
+Get unique list of types, create object with corresponding keys
+For each set
+	Push {
+		'name': ,
+		'block': ,
+		'release':
+	}
+
+
+
+
 Precompile templates, including select boxes
 Scrape all images and serve them from my own database, as well as minify them
 Add a filter to remove reprints from the selection
@@ -18,4 +38,6 @@ Add sharing buttons and counts for Twitter and Facebook
 Design a logo and branding for the site
 Snap brush selection to bars
 Restyle selectize inputs to match app
+Filter sets using set code and not set name
 Add favicon
+Investigate JSONP for JSON
