@@ -969,7 +969,24 @@ var ranges = {
 };
 
 exports.init = function() {
-	appState.filterEls =  $( '.filter__select--multi' ).selectize();
+	appState.filterEls =  $( '.filter__select--multi' ).selectize({
+		render: {
+			option: function( data, escape ) {
+				return '<div class="option">' +
+									'<span class="title">' + escape( data.text ) + '</span>' +
+									'<span class="url">' + escape( data.block ) + '</span>' +
+						'</div>';
+			}
+		},
+		create: function( input ) {
+			return {
+				id: 0,
+				text: '',
+				block: '',
+				release_date: ''
+			};
+		}
+	});
 };
 
 exports.populate = function() {
@@ -1005,14 +1022,38 @@ function populateSets() {
 			});
 
 			_.each( type, function( set ) {
+					debugger;
 					selectizeEl.selectize.addOption({
 				    	text: set.name,
 				    	value: set.name,
+				    	block: set.block,
+				    	release_date: set.releaseDate,
 				    	optgroup: key
 			    });
 			});
 
+			// debugger;
+
 	});
+
+	// selectizeEl.selectize({
+	// 	render: {
+	// 		option: function( data, escape ) {
+	// 			return '<div class="option">' +
+	// 								'<span class="title">' + escape( data.text ) + '</span>' +
+	// 								'<span class="url">' + escape( data.block ) + '</span>' +
+	// 					'</div>';
+	// 		}
+	// 	},
+	// 	create: function( input ) {
+	// 		return {
+	// 			id: 0,
+	// 			text: '',
+	// 			block: '',
+	// 			release_date: ''
+	// 		};
+	// 	}
+	// });
 
 	selectizeEl.selectize.refreshOptions( false );
 }
