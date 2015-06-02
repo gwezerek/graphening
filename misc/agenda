@@ -17,7 +17,7 @@ For each set
 
 
 
-
+Add icons, release date and optGrouping by block to set options
 Precompile templates, including select boxes
 Scrape all images and serve them from my own database, as well as minify them
 Add a filter to remove reprints from the selection
@@ -27,7 +27,6 @@ Add 0s and labels to the rarity bubbles where there are no cards
 Refactor graph js to accept an init flag and DRY out build logic
 Visually filter the filter options based on already selected filters
 Switch from static JSON dump to API
-Add icons, release date and optGrouping by block to set options
 Add “0 cards” copy to bar graphs when there are no cards
 Hide undefined labels if there aren’t any undefined
 Add smarter card filtering for images

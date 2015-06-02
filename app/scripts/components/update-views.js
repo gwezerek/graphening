@@ -16,6 +16,3 @@ exports.updateViews = function( init ) {
 	cards.update();
 	bars.clearBrushes();
 };
-
-// Unsure why the below doesn't work, using exports instead...
-// module.exports = updateViews;

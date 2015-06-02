@@ -379,7 +379,7 @@ function handleEmptyBrush() {
 exports.init = init;
 exports.bindBrushListeners = bindBrushListeners;
 
-},{"../app-state":2,"./bars":3,"./cards":6,"./filter-cards":9,"./update-views":12,"d3":21,"jquery":31,"underscore":35}],5:[function(require,module,exports){
+},{"../app-state":2,"./bars":3,"./cards":6,"./filter-cards":9,"./update-views":12,"d3":21,"jquery":31,"underscore":39}],5:[function(require,module,exports){
 /**
 *
 * Colors
@@ -797,7 +797,7 @@ function vizDispatch( color, dimension, init ) {
 exports.prepData = prepData;
 exports.updateViews = updateViews;
 
-},{"../app-state":2,"../utils":20,"./bars":3,"./bubbles":5,"./inventory":10,"d3":21,"underscore":35}],8:[function(require,module,exports){
+},{"../app-state":2,"../utils":20,"./bars":3,"./bubbles":5,"./inventory":10,"d3":21,"underscore":39}],8:[function(require,module,exports){
 /**
 *
 * Filter
@@ -851,7 +851,7 @@ function setVizWidth() {
 
 module.exports = init;
 
-},{"../app-state":2,"../templates/components/cards.hbs":14,"../templates/components/colors.hbs":15,"../templates/components/filters.hbs":16,"../templates/components/footer.hbs":17,"../templates/index.hbs":18,"./selectized":11,"./wrangle-data":13,"hbsfy/runtime":30,"underscore":35}],9:[function(require,module,exports){
+},{"../app-state":2,"../templates/components/cards.hbs":14,"../templates/components/colors.hbs":15,"../templates/components/filters.hbs":16,"../templates/components/footer.hbs":17,"../templates/index.hbs":18,"./selectized":11,"./wrangle-data":13,"hbsfy/runtime":30,"underscore":39}],9:[function(require,module,exports){
 /**
 *
 * Filter Cards
@@ -917,10 +917,10 @@ function sortCardsByRarity( filteredCards ) {
 exports.filterCards = filterCards;
 exports.getCardsById = getCardsById;
 
-},{"../app-state":2,"underscore":35}],10:[function(require,module,exports){
+},{"../app-state":2,"underscore":39}],10:[function(require,module,exports){
 /**
 *
-* Colors
+* Inventory
 *
 **/
 
@@ -946,7 +946,7 @@ var updateInventory = function( color, dimension ) {
 
 exports.updateInventory = updateInventory;
 
-},{"../app-state":2,"../templates/partials/colors-inventory.hbs":19,"../utils":20,"underscore":35}],11:[function(require,module,exports){
+},{"../app-state":2,"../templates/partials/colors-inventory.hbs":19,"../utils":20,"underscore":39}],11:[function(require,module,exports){
 /**
 *
 * Selectized
@@ -957,27 +957,28 @@ exports.updateInventory = updateInventory;
 
 var $ = require( 'jquery' );
 var _ = require( 'underscore' );
+var titleCase = require( 'titleCase' );
 var selectize = require( 'selectize' );
 var appState = require( '../app-state' );
 
+
 var ranges = {
-	'set': [],
 	'types': [],
 	'subtypes': [],
 	'artist': []
 };
 
-var init = function() {
+exports.init = function() {
 	appState.filterEls =  $( '.filter__select--multi' ).selectize();
 };
 
-var populate = function() {
+exports.populate = function() {
 	getRanges();
+	populateSets();
 	compileOptions();
 };
 
 function compileOptions() {
-
 	_.each( _.keys( ranges ), function( dimension ) {
 		var optionsObj = [];
 
@@ -994,6 +995,29 @@ function compileOptions() {
 	});
 }
 
+function populateSets() {
+
+	var selectizeEl = appState.filterEls.filter( '#filter__select--multi--set' )[0];
+
+	_.each( appState.allSets, function( type, key ) {
+			selectizeEl.selectize.addOptionGroup( key, {
+			    label: titleCase( key )
+			});
+
+			_.each( type, function( set ) {
+					selectizeEl.selectize.addOption({
+				    	text: set.name,
+				    	value: set.name,
+				    	optgroup: key
+			    });
+			});
+
+	});
+
+	selectizeEl.selectize.refreshOptions( false );
+}
+
+
 // get keys for each of the three dynamically populated filters
 function getRanges() {
 	_.each( _.keys( ranges ), function( dimension ) {
@@ -1003,17 +1027,16 @@ function getRanges() {
 			.value();
 
 		if ( dimension === 'set' ) {
-			ranges[ dimension ].reverse();
+
+			// ranges[ dimension ].reverse();
 		} else {
 			ranges[ dimension ].sort();
 		}
 	});
+
 }
 
-exports.init = init;
-exports.populate = populate;
-
-},{"../app-state":2,"jquery":31,"selectize":32,"underscore":35}],12:[function(require,module,exports){
+},{"../app-state":2,"jquery":31,"selectize":32,"titleCase":38,"underscore":39}],12:[function(require,module,exports){
 /**
 *
 * Update views
@@ -1032,9 +1055,6 @@ exports.updateViews = function( init ) {
 	cards.update();
 	bars.clearBrushes();
 };
-
-// Unsure why the below doesn't work, using exports instead...
-// module.exports = updateViews;
 
 },{"./bars":3,"./cards":6,"./colors":7}],13:[function(require,module,exports){
 /**
@@ -1095,7 +1115,7 @@ exports.getAllSets = function( data ) {
 	appState.allSets = allSets;
 }
 
-},{"../app-state":2,"d3":21,"underscore":35}],14:[function(require,module,exports){
+},{"../app-state":2,"d3":21,"underscore":39}],14:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
@@ -1332,12 +1352,9 @@ var d3 = require( 'd3' );
 
 // from http://stackoverflow.com/questions/3885817/how-to-check-if-a-number-is-float-or-integer
 // Accepts positive ints, rejects negative, strings and floats
-var isInt = function(n) { return parseInt(n) === n; };
+exports.isInt = function(n) { return parseInt(n) === n; };
 
-var formatCommas = d3.format('0,000');
-
-exports.formatCommas = formatCommas;
-exports.isInt = isInt;
+exports.formatCommas = d3.format('0,000');
 
 },{"d3":21}],21:[function(require,module,exports){
 !function() {
@@ -24492,6 +24509,181 @@ return jQuery;
 
 
 },{}],35:[function(require,module,exports){
+module.exports = [ 'the', 'a', 'an', 'some' ]
+
+},{}],36:[function(require,module,exports){
+module.exports = [
+    'as'
+  , 'because'
+  , 'for'
+  , 'and'
+  , 'nor'
+  , 'but'
+  , 'or'
+  , 'yet'
+  , 'so'
+]
+
+},{}],37:[function(require,module,exports){
+module.exports = [
+    'a'
+  , 'abaft'
+  , 'aboard'
+  , 'about'
+  , 'above'
+  , 'absent'
+  , 'across'
+  , 'afore'
+  , 'after'
+  , 'against'
+  , 'along'
+  , 'alongside'
+  , 'amid'
+  , 'amidst'
+  , 'among'
+  , 'amongst'
+  , 'an'
+  , 'apropos'
+  , 'apud'
+  , 'around'
+  , 'as'
+  , 'aside'
+  , 'astride'
+  , 'at'
+  , 'athwart'
+  , 'atop'
+  , 'barring'
+  , 'before'
+  , 'behind'
+  , 'below'
+  , 'beneath'
+  , 'beside'
+  , 'besides'
+  , 'between'
+  , 'beyond'
+  , 'but'
+  , 'by'
+  , 'circa'
+  , 'concerning'
+  , 'despite'
+  , 'down'
+  , 'during'
+  , 'except'
+  , 'excluding'
+  , 'failing'
+  , 'following'
+  , 'for'
+  , 'forenenst'
+  , 'from'
+  , 'given'
+  , 'in'
+  , 'including'
+  , 'inside'
+  , 'into'
+  , 'like'
+  , 'mid'
+  , 'midst'
+  , 'minus'
+  , 'modulo'
+  , 'near'
+  , 'next'
+  , 'notwithstanding'
+  , 'o\''
+  , 'of'
+  , 'off'
+  , 'on'
+  , 'onto'
+  , 'opposite'
+  , 'out'
+  , 'outside'
+  , 'over'
+  , 'pace'
+  , 'past'
+  , 'per'
+  , 'plus'
+  , 'pro'
+  , 'qua'
+  , 'regarding'
+  , 'round'
+  , 'sans'
+  , 'save'
+  , 'since'
+  , 'than'
+  , 'through'
+  , 'throughout'
+  , 'thru'
+  , 'thruout'
+  , 'till'
+  , 'times'
+  , 'to'
+  , 'toward'
+  , 'towards'
+  , 'under'
+  , 'underneath'
+  , 'unlike'
+  , 'until'
+  , 'unto'
+  , 'up'
+  , 'upon'
+  , 'versus'
+  , 'via'
+  , 'vice'
+  , 'vis-à-vis'
+  , 'with'
+  , 'within'
+  , 'without'
+  , 'worth'
+]
+
+},{}],38:[function(require,module,exports){
+/* 
+  * To Title Case 2.1 – http://individed.com/code/to-title-case/
+  * Copyright © 2008–2013 David Gouch. Licensed under the MIT License.
+ */
+
+/*
+ * modifications by @rvagg Apr-2014
+ */
+
+//String.prototype.toTitleCase = function(){
+
+
+var smallWords = /^(a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|the|to|vs?\.?|via)$/i;
+module.exports = function toTitleCase(str){
+  return titleCase(str, smallWords)
+}
+module.exports.toTitleCase = module.exports
+
+var laxWords = require('./articles').concat(require('./prepositions')).concat(require('./conjunctions'))
+      .concat(smallWords.source.replace(/(^\^\(|\)\$$)/g, '').split('|'))
+      .concat(['is']) // a personal preference
+  , laxWordsRe = new RegExp('^(' + laxWords.join('|') + ')$', 'i')
+
+module.exports.toLaxTitleCase = function toLaxTitleCase(str){
+  return titleCase(str, laxWordsRe)
+}
+
+
+function titleCase (str, smallWords) {
+  if (!str)
+    return str
+  return str.replace(/[A-Za-z0-9\u00C0-\u00FF]+[^\s-]*/g, function(match, index, title){
+    if (index > 0 && index + match.length !== title.length &&
+      match.search(smallWords) > -1 && title.charAt(index - 2) !== ':' &&
+      (title.charAt(index + match.length) !== '-' || title.charAt(index - 1) === '-') &&
+      title.charAt(index - 1).search(/[^\s-]/) < 0) {
+      return match.toLowerCase();
+    }
+
+    if (match.substr(1).search(/[A-Z]|\../) > -1) {
+      return match;
+    }
+
+    return match.charAt(0).toUpperCase() + match.substr(1);
+  });
+}
+
+},{"./articles":35,"./conjunctions":36,"./prepositions":37}],39:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors

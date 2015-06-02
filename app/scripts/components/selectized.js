@@ -8,27 +8,28 @@
 
 var $ = require( 'jquery' );
 var _ = require( 'underscore' );
+var titleCase = require( 'titleCase' );
 var selectize = require( 'selectize' );
 var appState = require( '../app-state' );
 
+
 var ranges = {
-	'set': [],
 	'types': [],
 	'subtypes': [],
 	'artist': []
 };
 
-var init = function() {
+exports.init = function() {
 	appState.filterEls =  $( '.filter__select--multi' ).selectize();
 };
 
-var populate = function() {
+exports.populate = function() {
 	getRanges();
+	populateSets();
 	compileOptions();
 };
 
 function compileOptions() {
-
 	_.each( _.keys( ranges ), function( dimension ) {
 		var optionsObj = [];
 
@@ -45,6 +46,29 @@ function compileOptions() {
 	});
 }
 
+function populateSets() {
+
+	var selectizeEl = appState.filterEls.filter( '#filter__select--multi--set' )[0];
+
+	_.each( appState.allSets, function( type, key ) {
+			selectizeEl.selectize.addOptionGroup( key, {
+			    label: titleCase( key )
+			});
+
+			_.each( type, function( set ) {
+					selectizeEl.selectize.addOption({
+				    	text: set.name,
+				    	value: set.name,
+				    	optgroup: key
+			    });
+			});
+
+	});
+
+	selectizeEl.selectize.refreshOptions( false );
+}
+
+
 // get keys for each of the three dynamically populated filters
 function getRanges() {
 	_.each( _.keys( ranges ), function( dimension ) {
@@ -54,12 +78,11 @@ function getRanges() {
 			.value();
 
 		if ( dimension === 'set' ) {
-			ranges[ dimension ].reverse();
+
+			// ranges[ dimension ].reverse();
 		} else {
 			ranges[ dimension ].sort();
 		}
 	});
-}
 
-exports.init = init;
-exports.populate = populate;
+}

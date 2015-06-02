@@ -33,6 +33,7 @@
     "run-sequence": "^1.0.1",
     "select2": "^3.5.2-browserify",
     "selectize": "^0.12.1",
+    "titlecase": "^1.0.2",
     "underscore": "^1.8.3",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
