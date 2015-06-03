@@ -57,10 +57,11 @@ exports.stickyNavTop = 0;
 exports.colors = [ 'white', 'blue' , 'black', 'red', 'green', 'multicolor', 'colorless' ];
 exports.dimensions = [ 'cmc', 'power', 'toughness', 'rarity', 'set', 'types', 'subtypes' ];
 exports.filterEls = [];
+exports.defaultSet = 'Modern Masters 2015 Edition';
 exports.filters = [
 	{
 		'dimension': 'set',
-		'values': [ 'Dragons of Tarkir' ]
+		'values': [ exports.defaultSet ]
 	}, {
 		'dimension': 'rarity',
 		'values': []
@@ -580,6 +581,7 @@ function checkAddBtnVisibility() {
 function addImages() {
 	var cardSet = appState.currentCards;
 	var newCards = cardSet.slice( appState.currentSlice, appState.currentSlice + 7 );
+	// debugger;
 	$( '.cards__grid' ).append( cards( { cards: newCards } ) );
 	appState.currentSlice += newCards.length;
 	checkAddBtnVisibility();
@@ -1026,6 +1028,13 @@ function populateSets() {
 			    });
 			});
 	});
+
+	selectDefaultSet( selectizeEl );
+
+}
+
+function selectDefaultSet( setEl ) {
+		setEl.selectize.setValue( appState.defaultSet );
 }
 
 
@@ -1038,7 +1047,6 @@ function getRanges() {
 			.sort()
 			.value();
 	});
-
 }
 
 },{"../app-state":2,"jquery":31,"moment":32,"selectize":33,"titleCase":39,"underscore":40}],12:[function(require,module,exports){
@@ -1080,6 +1088,7 @@ var appState = require( '../app-state' );
 exports.getAllCards = function( data ) {
 
 	var allCards = _.each( data, function( set ) {
+
 		_.each( set.cards, function( card ) {
 			card.set = set.name;
 			card.magicCardsInfoCode = set.magicCardsInfoCode;
@@ -1104,13 +1113,14 @@ exports.getAllCards = function( data ) {
 
 exports.getAllSets = function( data ) {
 
-	var atTheTop = [ 'expansion', 'core', 'masters', 'un' ];
+	var atTheTop = [ 'expansion', 'core', 'reprint', 'un' ];
 
 	// Delete the cards so we're not holding a huge object in memory
 	_.map( data, function( set ) {
 		delete set.booster;
 		delete set.cards;
 	});
+
 
 	data = _.toArray( data );
 
@@ -1316,7 +1326,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<form class=\"filter\">\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--set\" multiple=\"multiple\" placeholder=\"Filter by sets...\">\n      <option value=\"Dragons of Tarkir\" selected>Dragons of Tarkir</option>\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--rarity\" multiple=\"multiple\" placeholder=\"Filter by rarity...\">\n      <option value=\"Common\">Common</option>\n      <option value=\"Uncommon\">Uncommon</option>\n      <option value=\"Rare\">Rare</option>\n      <option value=\"Mythic Rare\">Mythic Rare</option>\n      <option value=\"Special\">Special</option>\n      <option value=\"Basic Land\">Basic Land</option>\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--types\" multiple=\"multiple\" placeholder=\"Filter by type...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--subtypes\" multiple=\"multiple\" placeholder=\"Filter by subtype...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--artist\" multiple=\"multiple\" placeholder=\"Filter by artist...\">\n    </select>\n  </fieldset>\n<!--           <fieldset class=\"filter__fieldset\">\n    <label class=\"filter__label\"><input class=\"input__radio\" type=\"radio\" name=\"reprints\" value=\"exclude\" checked>Exclude reprints</label>\n    <label class=\"filter__label\"><input class=\"input__radio\" type=\"radio\" name=\"reprints\" value=\"include\">Include reprints</label>\n  </fieldset> -->\n</form>";
+    return "<form class=\"filter\">\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--set\" multiple=\"multiple\" placeholder=\"Filter by sets...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--rarity\" multiple=\"multiple\" placeholder=\"Filter by rarity...\">\n      <option value=\"Common\">Common</option>\n      <option value=\"Uncommon\">Uncommon</option>\n      <option value=\"Rare\">Rare</option>\n      <option value=\"Mythic Rare\">Mythic Rare</option>\n      <option value=\"Special\">Special</option>\n      <option value=\"Basic Land\">Basic Land</option>\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--types\" multiple=\"multiple\" placeholder=\"Filter by type...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--subtypes\" multiple=\"multiple\" placeholder=\"Filter by subtype...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--artist\" multiple=\"multiple\" placeholder=\"Filter by artist...\">\n    </select>\n  </fieldset>\n</form>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":30}],17:[function(require,module,exports){
@@ -1332,9 +1342,9 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<main class=\"main\">\n  <header class=\"site__header\">\n    <h1 class=\"site__head\">Magic: The Graphening</h1>\n    <h3 class=\"site__subhead\">What color will you play?</h3>\n    <div class=\"site__header__stickymod\">\n      <h2 class=\"cards__head\"><span class=\"cards__selected\">128</span> cards selected</h2>\n      <button class=\"cards__btn cards__btn--cardview cards__btn--cardview--open\">↓ Show selected cards</button>\n      <button class=\"cards__btn cards__btn--cardview cards__btn--cardview--close\">↑ Hide selected cards</button>\n"
+  return "<main class=\"main\">\n  <header class=\"site__header\">\n    <h1 class=\"site__head\">Magic: The Graphening</h1>\n    <h3 class=\"site__subhead\">What color will you play?</h3>\n    <div class=\"site__header__stickymod\">\n      <h2 class=\"cards__head\"><span class=\"cards__selected\">0</span> cards selected</h2>\n      <button class=\"cards__btn cards__btn--cardview cards__btn--cardview--open\">↓ Show selected cards</button>\n      <button class=\"cards__btn cards__btn--cardview cards__btn--cardview--close\">↑ Hide selected cards</button>\n"
     + ((stack1 = this.invokePartial(partials.filter,depth0,{"name":"filter","data":data,"indent":"      ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
-    + "      <aside class=\"cards\">\n        <ul class=\"cards__grid\">\n        </ul>\n        <button class=\"cards__btn cards__btn--add\">+ Load more</button>\n      </aside>\n    </div>\n  </header>\n\n  <article class=\"stream\">\n    <section class=\"colors\" id=\"colors\"> \n      <!-- Color grid renders here when data is ready -->\n    </section>\n  </article>\n\n</main>\n"
+    + "      <aside class=\"cards\">\n        <ul class=\"cards__grid\">\n        </ul>\n        <button class=\"cards__btn cards__btn--add\">+ Load more</button>\n      </aside>\n    </div>\n  </header>\n\n  <article class=\"stream\">\n    <section class=\"colors\" id=\"colors\">\n      <!-- Color grid renders here when data is ready -->\n    </section>\n  </article>\n\n</main>\n"
     + ((stack1 = this.invokePartial(partials.footer,depth0,{"name":"footer","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "");
 },"usePartial":true,"useData":true});
 

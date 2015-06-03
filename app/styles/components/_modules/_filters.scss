@@ -24,11 +24,6 @@
 	color: white;
 }
 
-
-.filter__opt {
-
-}
-
 .filter__opt__name {
 	display: block;
 }
@@ -40,14 +35,6 @@
 	&:nth-of-type(2) {
 		margin-right: $baseSpace / 4;
 	}
-}
-
-.filter__opt__text--block {
-	// font-size: $fontSmall;
-}
-
-.filter__opt__text--release {
-	// font-size: $fontSmall;
 }
 
 
@@ -63,7 +50,6 @@
 
 .selectize-dropdown {
 	.optgroup {
-		// border-top-color: $colorGray;
 		border-top-color: transparent;
 	}
 	.optgroup-header {

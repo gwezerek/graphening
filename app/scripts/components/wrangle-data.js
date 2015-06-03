@@ -16,6 +16,7 @@ var appState = require( '../app-state' );
 exports.getAllCards = function( data ) {
 
 	var allCards = _.each( data, function( set ) {
+
 		_.each( set.cards, function( card ) {
 			card.set = set.name;
 			card.magicCardsInfoCode = set.magicCardsInfoCode;
@@ -40,13 +41,14 @@ exports.getAllCards = function( data ) {
 
 exports.getAllSets = function( data ) {
 
-	var atTheTop = [ 'expansion', 'core', 'masters', 'un' ];
+	var atTheTop = [ 'expansion', 'core', 'reprint', 'un' ];
 
 	// Delete the cards so we're not holding a huge object in memory
 	_.map( data, function( set ) {
 		delete set.booster;
 		delete set.cards;
 	});
+
 
 	data = _.toArray( data );
 

@@ -77,6 +77,13 @@ function populateSets() {
 			    });
 			});
 	});
+
+	selectDefaultSet( selectizeEl );
+
+}
+
+function selectDefaultSet( setEl ) {
+		setEl.selectize.setValue( appState.defaultSet );
 }
 
 
@@ -89,5 +96,4 @@ function getRanges() {
 			.sort()
 			.value();
 	});
-
 }

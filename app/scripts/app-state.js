@@ -20,10 +20,11 @@ exports.stickyNavTop = 0;
 exports.colors = [ 'white', 'blue' , 'black', 'red', 'green', 'multicolor', 'colorless' ];
 exports.dimensions = [ 'cmc', 'power', 'toughness', 'rarity', 'set', 'types', 'subtypes' ];
 exports.filterEls = [];
+exports.defaultSet = 'Modern Masters 2015 Edition';
 exports.filters = [
 	{
 		'dimension': 'set',
-		'values': [ 'Dragons of Tarkir' ]
+		'values': [ exports.defaultSet ]
 	}, {
 		'dimension': 'rarity',
 		'values': []

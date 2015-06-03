@@ -39,6 +39,7 @@ function checkAddBtnVisibility() {
 function addImages() {
 	var cardSet = appState.currentCards;
 	var newCards = cardSet.slice( appState.currentSlice, appState.currentSlice + 7 );
+	// debugger;
 	$( '.cards__grid' ).append( cards( { cards: newCards } ) );
 	appState.currentSlice += newCards.length;
 	checkAddBtnVisibility();
