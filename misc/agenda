@@ -1,20 +1,7 @@
-
-
-WANT
-
-OPTGROUP - type
-	OPTION
-	Name
-	Block - block Release date: Date
-
-Get unique list of types, create object with corresponding keys
-For each set
-	Push {
-		'name': ,
-		'block': ,
-		'release':
-	}
-
+TODO
+Remove Release Date from filters other than set
+Reorder optgroups so Expansions comes first
+Add card pack images to set options
 
 
 Add icons, release date and optGrouping by block to set options

@@ -8,6 +8,7 @@
 
 var $ = require( 'jquery' );
 var _ = require( 'underscore' );
+var moment = require( 'moment' );
 var titleCase = require( 'titleCase' );
 var selectize = require( 'selectize' );
 var appState = require( '../app-state' );
@@ -24,19 +25,13 @@ exports.init = function() {
 		render: {
 			option: function( data, escape ) {
 				return '<div class="option">' +
-									'<span class="title">' + escape( data.text ) + '</span>' +
-									'<span class="url">' + escape( data.block ) + '</span>' +
+									'<span class="filter__opt__name">' + escape( data.text ) + '</span>' +
+									( data.block ? '<span class="filter__opt__metadata filter__opt__text--block">Block: ' + escape( data.block ) + '</span>' : '' ) +
+									( data.release_date ? '<span class="filter__opt__metadata filter__opt__text--release">Released: ' + escape( data.release_date ) + '</span>' : '' ) +
 						'</div>';
 			}
 		},
-		create: function( input ) {
-			return {
-				id: 0,
-				text: '',
-				block: '',
-				release_date: ''
-			};
-		}
+		searchField: [ 'text', 'block', 'release_date' ]
 	});
 };
 
@@ -67,46 +62,21 @@ function populateSets() {
 
 	var selectizeEl = appState.filterEls.filter( '#filter__select--multi--set' )[0];
 
-	_.each( appState.allSets, function( type, key ) {
-			selectizeEl.selectize.addOptionGroup( key, {
-			    label: titleCase( key )
+	_.each( appState.allSets, function( type ) {
+			selectizeEl.selectize.addOptionGroup( type.key, {
+			    label: titleCase( type.key )
 			});
 
-			_.each( type, function( set ) {
-					debugger;
+			_.each( type.values, function( set ) {
 					selectizeEl.selectize.addOption({
 				    	text: set.name,
 				    	value: set.name,
 				    	block: set.block,
-				    	release_date: set.releaseDate,
-				    	optgroup: key
+				    	release_date: moment( set.releaseDate ).format( 'MMM. [’]YY' ),
+				    	optgroup: type.key
 			    });
 			});
-
-			// debugger;
-
 	});
-
-	// selectizeEl.selectize({
-	// 	render: {
-	// 		option: function( data, escape ) {
-	// 			return '<div class="option">' +
-	// 								'<span class="title">' + escape( data.text ) + '</span>' +
-	// 								'<span class="url">' + escape( data.block ) + '</span>' +
-	// 					'</div>';
-	// 		}
-	// 	},
-	// 	create: function( input ) {
-	// 		return {
-	// 			id: 0,
-	// 			text: '',
-	// 			block: '',
-	// 			release_date: ''
-	// 		};
-	// 	}
-	// });
-
-	selectizeEl.selectize.refreshOptions( false );
 }
 
 
@@ -116,14 +86,8 @@ function getRanges() {
 		ranges[ dimension ] = _.chain( appState.allCards )
 			.pluck( dimension )
 			.uniq()
+			.sort()
 			.value();
-
-		if ( dimension === 'set' ) {
-
-			// ranges[ dimension ].reverse();
-		} else {
-			ranges[ dimension ].sort();
-		}
 	});
 
 }

@@ -40,6 +40,8 @@ exports.getAllCards = function( data ) {
 
 exports.getAllSets = function( data ) {
 
+	var atTheTop = [ 'expansion', 'core', 'masters', 'un' ];
+
 	// Delete the cards so we're not holding a huge object in memory
 	_.map( data, function( set ) {
 		delete set.booster;
@@ -49,9 +51,13 @@ exports.getAllSets = function( data ) {
 	data = _.toArray( data );
 
 	var allSets = d3.nest()
-			.key( function( set ) { return set.type; } )
+			.key( function( set ) { return set.type; } ).sortKeys( function( a, b ) {
+				var compA = _.contains( atTheTop, a ) ? atTheTop.indexOf( a ) : 100;
+				var compB = _.contains( atTheTop, b ) ? atTheTop.indexOf( b ) : 100;
+				return compA - compB;
+			})
 			.sortValues( function( a, b ) { return new Date( b.releaseDate ).getTime() - new Date( a.releaseDate ).getTime(); } )
-			.map( data );
+			.entries( data );
 
 	appState.allSets = allSets;
 }

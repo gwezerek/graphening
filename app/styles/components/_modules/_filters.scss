@@ -24,7 +24,53 @@
 	color: white;
 }
 
+
+.filter__opt {
+
+}
+
+.filter__opt__name {
+	display: block;
+}
+
+.filter__opt__metadata {
+	display: inline-block;
+	font-size: $fontXSmall;
+	color: $colorGrayLight;
+	&:nth-of-type(2) {
+		margin-right: $baseSpace / 4;
+	}
+}
+
+.filter__opt__text--block {
+	// font-size: $fontSmall;
+}
+
+.filter__opt__text--release {
+	// font-size: $fontSmall;
+}
+
+
 // Selectize styling
+
 .selectize-control {
 	margin-bottom: -7px;
 }
+
+.selectize-dropdown-content {
+	max-height: 300px;
+}
+
+.selectize-dropdown {
+	.optgroup {
+		// border-top-color: $colorGray;
+		border-top-color: transparent;
+	}
+	.optgroup-header {
+		padding-top: $baseSpace/2;
+		padding-bottom: $baseSpace/2;
+		font-size: $fontSmall;
+		background: $colorGrayLighter;
+	}
+}
+
