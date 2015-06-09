@@ -1,8 +1,6 @@
 TODO
 Add card pack images to set options
 
-
-Add icons, release date and optGrouping by block to set options
 Precompile templates, including select boxes
 Scrape all images and serve them from my own database, as well as minify them
 Add a filter to remove reprints from the selection

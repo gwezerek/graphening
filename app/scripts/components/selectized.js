@@ -25,9 +25,12 @@ exports.init = function() {
 		render: {
 			option: function( data, escape ) {
 				return '<div class="option">' +
-									'<span class="filter__opt__name">' + escape( data.text ) + '</span>' +
-									( data.block ? '<span class="filter__opt__metadata filter__opt__text--block">Block: ' + escape( data.block ) + '</span>' : '' ) +
-									( data.release_date ? '<span class="filter__opt__metadata filter__opt__text--release">Released: ' + escape( data.release_date ) + '</span>' : '' ) +
+									'<img src="images/boosters/$_35.JPG" class="filter__opt__img">' +
+									'<div class="filter__opt__textwrap">' +
+										'<span class="filter__opt__name">' + escape( data.text ) + '</span>' +
+										( data.block ? '<span class="filter__opt__metadata filter__opt__text--block">Block: ' + escape( data.block ) + '</span>' : '' ) +
+										( data.release_date ? '<span class="filter__opt__metadata filter__opt__text--release">Released: ' + escape( data.release_date ) + '</span>' : '' ) +
+									'</div>' +
 						'</div>';
 			}
 		},
