@@ -972,7 +972,12 @@ var ranges = {
 };
 
 exports.init = function() {
-	appState.filterEls =  $( '.filter__select--multi' ).selectize({
+	initSets();
+	initNoMeta();
+}
+
+function initSets() {
+	appState.filterEls =  $( '.filter__select--sets' ).selectize({
 		render: {
 			option: function( data, escape ) {
 				return '<div class="option">' +
@@ -987,6 +992,10 @@ exports.init = function() {
 		},
 		searchField: [ 'text', 'block', 'release_date' ]
 	});
+};
+
+function initNoMeta() {
+	$.merge( appState.filterEls, $( '.filter__select--no--meta' ).selectize() );
 };
 
 exports.populate = function() {
@@ -1329,7 +1338,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<form class=\"filter\">\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--set\" multiple=\"multiple\" placeholder=\"Filter by sets...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--rarity\" multiple=\"multiple\" placeholder=\"Filter by rarity...\">\n      <option value=\"Common\">Common</option>\n      <option value=\"Uncommon\">Uncommon</option>\n      <option value=\"Rare\">Rare</option>\n      <option value=\"Mythic Rare\">Mythic Rare</option>\n      <option value=\"Special\">Special</option>\n      <option value=\"Basic Land\">Basic Land</option>\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--types\" multiple=\"multiple\" placeholder=\"Filter by type...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--subtypes\" multiple=\"multiple\" placeholder=\"Filter by subtype...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi\" id=\"filter__select--multi--artist\" multiple=\"multiple\" placeholder=\"Filter by artist...\">\n    </select>\n  </fieldset>\n</form>\n";
+    return "<form class=\"filter\">\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi filter__select--sets\" id=\"filter__select--multi--set\" multiple=\"multiple\" placeholder=\"Filter by sets...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi filter__select--no--meta\" id=\"filter__select--multi--rarity\" multiple=\"multiple\" placeholder=\"Filter by rarity...\">\n      <option value=\"Common\">Common</option>\n      <option value=\"Uncommon\">Uncommon</option>\n      <option value=\"Rare\">Rare</option>\n      <option value=\"Mythic Rare\">Mythic Rare</option>\n      <option value=\"Special\">Special</option>\n      <option value=\"Basic Land\">Basic Land</option>\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi filter__select--no--meta\" id=\"filter__select--multi--types\" multiple=\"multiple\" placeholder=\"Filter by type...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi filter__select--no--meta\" id=\"filter__select--multi--subtypes\" multiple=\"multiple\" placeholder=\"Filter by subtype...\">\n    </select>\n  </fieldset>\n  <fieldset class=\"filter__fieldset\">\n    <select class=\"filter__select--multi filter__select--no--meta\" id=\"filter__select--multi--artist\" multiple=\"multiple\" placeholder=\"Filter by artist...\">\n    </select>\n  </fieldset>\n</form>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":30}],17:[function(require,module,exports){

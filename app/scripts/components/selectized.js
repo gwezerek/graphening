@@ -21,7 +21,12 @@ var ranges = {
 };
 
 exports.init = function() {
-	appState.filterEls =  $( '.filter__select--multi' ).selectize({
+	initSets();
+	initNoMeta();
+}
+
+function initSets() {
+	appState.filterEls =  $( '.filter__select--sets' ).selectize({
 		render: {
 			option: function( data, escape ) {
 				return '<div class="option">' +
@@ -36,6 +41,10 @@ exports.init = function() {
 		},
 		searchField: [ 'text', 'block', 'release_date' ]
 	});
+};
+
+function initNoMeta() {
+	$.merge( appState.filterEls, $( '.filter__select--no--meta' ).selectize() );
 };
 
 exports.populate = function() {
