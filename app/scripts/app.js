@@ -901,7 +901,7 @@ function filterCards() {
 
 function getCardsById( ids ) {
 	var currentCards  = _.filter( appState.filteredCards, function( card ) {
-		return ids.indexOf( card.multiverseid ) !== -1;
+		return card.multiverseid && ids.indexOf( card.multiverseid ) !== -1;
 	});
 
 	appState.isBrushed = true;
