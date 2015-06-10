@@ -30,7 +30,7 @@ function initSets() {
 		render: {
 			option: function( data, escape ) {
 				return '<div class="option">' +
-									'<img src="images/boosters/$_35.JPG" class="filter__opt__img">' +
+									'<img src="images/boosters/booster_' + data.code +'.jpg" class="filter__opt__img">' +
 									'<div class="filter__opt__textwrap">' +
 										'<span class="filter__opt__name">' + escape( data.text ) + '</span>' +
 										( data.block ? '<span class="filter__opt__metadata filter__opt__text--block">Block: ' + escape( data.block ) + '</span>' : '' ) +
@@ -84,11 +84,15 @@ function populateSets() {
 				    	text: set.name,
 				    	value: set.name,
 				    	block: set.block,
+				    	code: set.code,
 				    	release_date: moment( set.releaseDate ).format( 'MMM. [’]YY' ),
 				    	optgroup: type.key
 			    });
 			});
 	});
+
+		// debugger;
+
 
 	selectDefaultSet( selectizeEl );
 

@@ -1,25 +1,27 @@
 TODO
-Add card pack images to set options
+Update card pack images to correct images
+Figure out why brushing returns wrong set of cards
+
+Add “0 cards” copy to bar graphs when there are no cards
+Hide undefined labels if there aren’t any undefined
+Design a logo and branding for the site
+Add favicon
+Restyle selectize inputs to match app
+Add sharing buttons and counts for Twitter and Facebook
+Add Google analytics
+QA across modern browsers
 
 Precompile templates, including select boxes
 Scrape all images and serve them from my own database, as well as minify them
 Add a filter to remove reprints from the selection
 Add timeline bar graph or some other solution to showing what sets the selected cards belong to
 Fix removeContent() bug with users who have the Ember Debugger extension installed.
-Add 0s and labels to the rarity bubbles where there are no cards
 Refactor graph js to accept an init flag and DRY out build logic
 Visually filter the filter options based on already selected filters
 Switch from static JSON dump to API
-Add “0 cards” copy to bar graphs when there are no cards
-Hide undefined labels if there aren’t any undefined
 Add smarter card filtering for images
 Add functionality to sort card grid by name, rarity
 Add filtering functionality to bubbles and inventory to mirror already present functionality in the select elements
-Add Google analytics
-Add sharing buttons and counts for Twitter and Facebook
-Design a logo and branding for the site
 Snap brush selection to bars
-Restyle selectize inputs to match app
 Filter sets using set code and not set name
-Add favicon
 Investigate JSONP for JSON
