@@ -1,6 +1,4 @@
 TODO
-Update card pack images to correct images
-Figure out why brushing returns wrong set of cards
 
 Add “0 cards” copy to bar graphs when there are no cards
 Hide undefined labels if there aren’t any undefined
@@ -9,6 +7,7 @@ Add favicon
 Restyle selectize inputs to match app
 Add sharing buttons and counts for Twitter and Facebook
 Add Google analytics
+Turn card packs into sprite sheet
 QA across modern browsers
 
 Precompile templates, including select boxes
