@@ -60,11 +60,18 @@ gulp.task('images', function () {
     .pipe($.size({title: 'images'}));
 });
 
+// Copy data
+gulp.task('data', function () {
+  return gulp.src([
+    'app/data/*'
+  ]).pipe(gulp.dest('dist/data'))
+    .pipe($.size({title: 'data'}));
+});
+
 // Copy all files at the root level (app)
 gulp.task('copy', function () {
   return gulp.src([
     'app/*',
-    'app/data/*',
     '!app/*.html',
     'node_modules/apache-server-configs/dist/.htaccess'
   ], {
@@ -176,7 +183,7 @@ gulp.task('serve:dist', ['default'], function () {
 
 // Build production files, the default task
 gulp.task('default', ['clean'], function (cb) {
-  runSequence('styles', ['jshint', 'html', 'images', 'fonts', 'copy'], cb);
+  runSequence('styles', ['jshint', 'html', 'images', 'fonts', 'copy', 'data'], cb);
 });
 
 // Run PageSpeed Insights
