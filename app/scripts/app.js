@@ -15,7 +15,7 @@ var updateViews = require( './components/update-views' );
 var selectized = require( './components/selectized' );
 var bindListeners = require( './components/bind-listeners' );
 
-d3.json( '../data/AllSets.json', function( error, data ) {
+d3.json( './data/AllSets.json', function( error, data ) {
 
 	// Populate filters
 	compilePage( data );
