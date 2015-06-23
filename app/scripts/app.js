@@ -981,7 +981,7 @@ function initSets() {
 		render: {
 			option: function( data, escape ) {
 				return '<div class="option">' +
-									'<img src="images/boosters/booster_' + data.code + '.jpg" class="filter__opt__img" onerror="this.style.display=&quot;none&quot;">' +
+									'<img src="./images/boosters/booster_' + data.code + '.jpg" class="filter__opt__img" onerror="this.style.display=&quot;none&quot;">' +
 									'<div class="filter__opt__textwrap">' +
 										'<span class="filter__opt__name">' + escape( data.text ) + '</span>' +
 										( data.block ? '<span class="filter__opt__metadata filter__opt__text--block">Block: ' + escape( data.block ) + '</span>' : '' ) +
